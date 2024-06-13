@@ -81,3 +81,23 @@ export const clear = async (id: string): Promise<boolean> => {
 	});
 	return true;
 };
+
+export const addMembers = async (
+	groupId: string,
+	newMembers: Array<string>
+): Promise<Group | null> => {
+	const updatedGroup = await GroupModel.findByIdAndUpdate(groupId, {
+		$push: { members: { $each: newMembers } },
+	});
+	return getObjectFromMongoResponse<Group>(updatedGroup);
+};
+
+export const removeMembers = async (
+	groupId: string,
+	members: Array<string>
+): Promise<Group | null> => {
+	const updatedGroup = await GroupModel.findByIdAndUpdate(groupId, {
+		$pull: { members: { $in: members } },
+	});
+	return getObjectFromMongoResponse<Group>(updatedGroup);
+};

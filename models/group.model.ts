@@ -18,6 +18,12 @@ const GroupSchema = new mongoose.Schema(
 			type: String,
 			default: "Other",
 		},
+		members: [
+			{
+				type: mongoose.Schema.Types.ObjectId,
+				ref: "User",
+			},
+		],
 		createdBy: {
 			type: mongoose.Schema.Types.ObjectId,
 			required: true,
@@ -38,6 +44,7 @@ export type Group = {
 	icon?: string;
 	banner?: string;
 	type?: string;
+	members: string[];
 	createdBy: string;
 	createdAt: string;
 	updatedAt: string;

@@ -82,7 +82,7 @@ export const getBoolean = (input: any): boolean => {
 	}
 };
 
-export const getArray = <T>(input: any): T[] => {
+export const getArray = <T = string>(input: any): T[] => {
 	if (!Array.isArray(input)) {
 		throw new Error(
 			`${input} of type ${typeof input} is not a valid array!`

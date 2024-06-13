@@ -21,6 +21,11 @@ const ExpenseSchema = new mongoose.Schema(
 			required: true,
 			ref: "User",
 		},
+		createdBy: {
+			type: mongoose.Schema.Types.ObjectId,
+			required: true,
+			ref: "User",
+		},
 		status: {
 			type: String,
 			enum: Object.values(EXPENSE_STATUS),
@@ -41,6 +46,7 @@ export type Expense = {
 	amount: number;
 	groupId: string;
 	paidBy: string;
+	createdBy: string;
 	status: T_EXPENSE_STATUS;
 	createdAt: string;
 	updatedAt: string;

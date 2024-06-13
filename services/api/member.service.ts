@@ -50,6 +50,15 @@ export const create = async (
 	return getNonNullValue(getObjectFromMongoResponse<Member>(res));
 };
 
+export const bulkCreate = async (
+	body: Array<Omit<Member, "id" | "createdAt" | "updatedAt">>
+): Promise<Array<Member>> => {
+	const res = await MemberModel.insertMany(body);
+	return res
+		.map((obj) => getObjectFromMongoResponse<Member>(obj))
+		.filter((obj) => obj !== null) as Member[];
+};
+
 export const update = async (
 	query: Partial<Member>,
 	update: Partial<Omit<Member, "id" | "createdAt" | "updatedAt">>
