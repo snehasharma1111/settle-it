@@ -1,4 +1,4 @@
-import { OTP_STATUS } from "@/constants/enum";
+import { OTP_STATUS } from "@/constants";
 import { T_OTP_STATUS } from "@/types/user";
 import mongoose from "mongoose";
 

@@ -60,7 +60,7 @@ export const update = async (
 			})
 		: await ExpenseModel.findOneAndUpdate(query, update, {
 				new: true,
-			}).select("-password");
+			});
 	return getObjectFromMongoResponse<Expense>(res);
 };
 

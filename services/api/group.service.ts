@@ -58,7 +58,7 @@ export const update = async (
 			})
 		: await GroupModel.findOneAndUpdate(query, update, {
 				new: true,
-			}).select("-password");
+			});
 	return getObjectFromMongoResponse<Group>(res);
 };
 

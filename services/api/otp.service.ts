@@ -1,6 +1,7 @@
 import { Otp, OtpModel } from "@/models";
 import { getObjectFromMongoResponse } from "@/utils/parser";
 import { getNonNullValue } from "@/utils/safety";
+import otpGenerator from "otp-generator";
 
 export const findOne = async (query: Partial<Otp>): Promise<Otp | null> => {
 	const res = await OtpModel.findOne(query);
@@ -8,12 +9,10 @@ export const findOne = async (query: Partial<Otp>): Promise<Otp | null> => {
 };
 
 export const findById = async (id: string): Promise<Otp | null> => {
-	const res = await OtpModel.findById(id)
-
-		.catch((error: any) => {
-			if (error.kind === "ObjectId") return null;
-			return Promise.reject(error);
-		});
+	const res = await OtpModel.findById(id).catch((error: any) => {
+		if (error.kind === "ObjectId") return null;
+		return Promise.reject(error);
+	});
 	return getObjectFromMongoResponse<Otp>(res);
 };
 
@@ -56,9 +55,7 @@ export const update = async (
 		? await OtpModel.findByIdAndUpdate(query.id, update, {
 				new: true,
 			})
-		: await OtpModel.findOneAndUpdate(query, update, { new: true }).select(
-				"-password"
-			);
+		: await OtpModel.findOneAndUpdate(query, update, { new: true });
 	return getObjectFromMongoResponse<Otp>(res);
 };
 
@@ -68,3 +65,11 @@ export const remove = async (query: Partial<Otp>): Promise<Otp | null> => {
 		: await OtpModel.findOneAndDelete(query);
 	return getObjectFromMongoResponse<Otp>(res);
 };
+
+export const generate = () =>
+	otpGenerator.generate(6, {
+		upperCaseAlphabets: false,
+		lowerCaseAlphabets: false,
+		specialChars: false,
+		digits: true,
+	});

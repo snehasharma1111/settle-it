@@ -1,5 +1,5 @@
 import { T_EXPENSE_STATUS } from "@/types/user";
-import { EXPENSE_STATUS } from "@/constants/enum";
+import { EXPENSE_STATUS } from "@/constants";
 import mongoose from "mongoose";
 
 const MemberSchema = new mongoose.Schema(

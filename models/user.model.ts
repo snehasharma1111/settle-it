@@ -6,7 +6,6 @@ const UserSchema = new mongoose.Schema(
 	{
 		name: {
 			type: String,
-			required: true,
 		},
 		email: {
 			type: String,
@@ -37,7 +36,7 @@ export const UserModel =
 
 export type User = {
 	id: string;
-	name: string;
+	name?: string;
 	email: string;
 	phone?: string;
 	avatar?: string;

@@ -60,7 +60,7 @@ export const update = async (
 			})
 		: await MemberModel.findOneAndUpdate(query, update, {
 				new: true,
-			}).select("-password");
+			});
 	return getObjectFromMongoResponse<Member>(res);
 };
 

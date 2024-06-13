@@ -3,24 +3,22 @@ import { getObjectFromMongoResponse } from "@/utils/parser";
 import { getNonNullValue } from "@/utils/safety";
 
 export const findOne = async (query: Partial<User>): Promise<User | null> => {
-	const res = await UserModel.findOne(query).select("-password");
+	const res = await UserModel.findOne(query);
 	return getObjectFromMongoResponse<User>(res);
 };
 
 export const findById = async (id: string): Promise<User | null> => {
-	const res = await UserModel.findById(id)
-		.select("-password")
-		.catch((error: any) => {
-			if (error.kind === "ObjectId") return null;
-			return Promise.reject(error);
-		});
+	const res = await UserModel.findById(id).catch((error: any) => {
+		if (error.kind === "ObjectId") return null;
+		return Promise.reject(error);
+	});
 	return getObjectFromMongoResponse<User>(res);
 };
 
 export const find = async (
 	query: Partial<User>
 ): Promise<User | User[] | null> => {
-	const res = await UserModel.find(query).select("-password");
+	const res = await UserModel.find(query);
 	if (res.length > 1) {
 		const parsedRes = res
 			.map((user) => getObjectFromMongoResponse<User>(user))
@@ -33,9 +31,7 @@ export const find = async (
 };
 
 export const findAll = async (): Promise<Array<User>> => {
-	const res = await UserModel.find({})
-		.select("-password")
-		.sort({ createdAt: -1 });
+	const res = await UserModel.find({}).sort({ createdAt: -1 });
 	const parsedRes = res
 		.map((user) => getObjectFromMongoResponse<User>(user))
 		.filter((user) => user !== null) as User[];
@@ -57,16 +53,14 @@ export const update = async (
 	const res = query.id
 		? await UserModel.findByIdAndUpdate(query.id, update, {
 				new: true,
-			}).select("-password")
-		: await UserModel.findOneAndUpdate(query, update, { new: true }).select(
-				"-password"
-			);
+			})
+		: await UserModel.findOneAndUpdate(query, update, { new: true });
 	return getObjectFromMongoResponse<User>(res);
 };
 
 export const remove = async (query: Partial<User>): Promise<User | null> => {
 	const res = query.id
-		? await UserModel.findByIdAndDelete(query.id).select("-password")
-		: await UserModel.findOneAndDelete(query).select("-password");
+		? await UserModel.findByIdAndDelete(query.id)
+		: await UserModel.findOneAndDelete(query);
 	return getObjectFromMongoResponse<User>(res);
 };
