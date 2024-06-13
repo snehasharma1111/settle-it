@@ -12,15 +12,24 @@
 	--theme-white: #ffffff;
 	--theme-black: #090909;
 	--theme-purple: #7e48c9;
-	--theme-green: #7ee787;
-	--theme-red: #ffa28b;
 	--theme-blue: #939aff;
 	--theme-yellow: #edcf63;
 	--theme-cyan: #87d4ff;
 	--theme-pink: #b363c7;
 	--theme-grey: #7d8590;
 	--theme-light-grey: #c4c4c4;
-	--theme-bg: #0c1015;
 	--theme-neon: #64ffda;
-	--accent-color: var(--theme-bg);
+
+	--theme-bg: #f9f9f9;
+	--theme-fg: #0c1015;
+
+	--theme-green: #4aa63c;
+	--theme-green-light: #98bf45;
+	--theme-green-dark: #027333;
+	--theme-red: #bf5517;
+	--theme-orange: #f28c0f;
+
+	--theme-primary: var(--theme-green);
+	--theme-secondary: var(--theme-red);
+	--accent-color: var(--theme-primary);
 }

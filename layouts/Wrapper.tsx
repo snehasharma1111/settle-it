@@ -11,7 +11,7 @@ const Wrapper: React.FC<any> = ({ children }) => {
 				description="Blend in the fun and let us handle your expenses."
 				image={`${frontendBaseUrl}/og-image.png`}
 				canonical={frontendBaseUrl}
-				themeColor="#0C1015"
+				themeColor="#4AA63C"
 				icons={["icon", "shortcut icon", "apple-touch-icon"].map(
 					(item) => {
 						return {

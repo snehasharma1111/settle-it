@@ -1,62 +1,89 @@
-# Next.js + TypeScript + MongoDB + Sass
+# Settle It
+
+Blend in the fun and let us handle your expenses.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
+<p align="center">
+<img src="./public/favicon.svg" alt="Expenses Tracker" width="200" height="200" />
+</p>
+
+## Introduction
+
 ## Features
 
--   [x] Next.js
--   [x] TypeScript
--   [x] MongoDB
--   [x] Sass
--   [x] ESLint
--   [x] Prettier
--   [x] Husky
--   [x] Commitlint
--   [x] Jest
+-   **Expense Tracking:** Easily record and categorize expenses during trips or outings.
+-   **Expense Splitting:** Automatically split expenses among participants and ensure fairness.
+-   **Real-time Updates:** View and manage expenses with real-time updates.
+-   **User-friendly Interface:** Intuitive design for easy navigation and use.
 
-## Usage
+## Technology Stack
 
-1.  Click the `Use this template` button.
-2.  Create a new repository.
-3.  Clone the repository.
-4.  Install dependencies.
+-   **Frontend:** NextJS, TypeScript
+-   **Backend** NextJS API Routes
+-   **Styling:** SASS
+-   **Database:** MongoDB
 
-```sh
-yarn
-```
+## Getting Started
 
-5.  Start development server.
+Follow these instructions to get a copy of the project up and running on your local machine for development and testing purposes.
 
-```sh
-yarn dev
-```
+### Prerequisites
 
-## Scripts
+-   Node.js (>= 18.x)
+-   yarn
 
-```sh
-# Run the app in the development mode.
-yarn dev
+### Installation
 
-# Run the test watcher in an interactive mode.
-yarn test:watch
+1. **Clone the repository:**
 
-# Builds the app for production to the build folder.
-yarn build
+    ```bash
+    git clone https://github.com/akshatmittal61/settle-it.git
+    cd settle-it
+    ```
 
-# Runs the built app in production mode.
-yarn start
+2. **Install dependencies:**
 
-# Lints and fixes files.
-yarn lint
+    ```bash
+    yarn
+    ```
 
-# Formats files.
-yarn format
+3. **Start the development server:**
 
-```
+    ```bash
+    yarn dev
+    ```
+
+4. **Open your browser and navigate to:**
+
+    ```
+    http://localhost:3000
+    ```
+
+## Contributing
+
+We welcome contributions to Settle It! Here’s how you can help:
+
+1. **Fork the repository**
+2. **Create a new branch** (`git checkout -b feature/your-feature-name`)
+3. **Make your changes** and commit them (`git commit -am 'Add your feature'`)
+4. **Push to the branch** (`git push origin feature/your-feature-name`)
+5. **Create a new Pull Request**
 
 ## License
 
-[MIT](LICENSE)
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+-   Special thanks to all contributors and the open-source community for their support.
+-   Inspired by the need for simple and efficient expense management during group activities.
+
+## Contact
+
+For any questions or feedback, please open an issue in the repository or reach out to us at [akshatmittal2506@gmail.com](mailto:akshatmittal2506@gmail.com).
+
+---
 
 ## Author
 

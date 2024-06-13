@@ -39,7 +39,7 @@ const Error: React.FC<ErrorPageProps> = ({
 							url: frontendBaseUrl + "/images/lost.png",
 							width: 800,
 							height: 600,
-							alt: "NextJS Boilerplate",
+							alt: title,
 							type: "image/png",
 						},
 					],
@@ -60,12 +60,7 @@ const Error: React.FC<ErrorPageProps> = ({
 					</Button>
 				</div>
 				<div className={classes("-image")}>
-					<Image
-						src={image}
-						alt="NextJS Boilerplate"
-						width={800}
-						height={600}
-					/>
+					<Image src={image} alt={title} width={800} height={600} />
 				</div>
 			</main>
 		</>
