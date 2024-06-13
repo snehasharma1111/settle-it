@@ -1,0 +1,17 @@
+@import "@/styles/config/typography";
+
+.typography {
+	@each $family in $font-families {
+		@each $size in $font-sizes {
+			@each $weight in $font-weights {
+				&--#{$family}-#{$size}-#{$weight} {
+					@include typography(
+						$name: $family,
+						$size: $size,
+						$weight: $weight
+					);
+				}
+			}
+		}
+	}
+}
