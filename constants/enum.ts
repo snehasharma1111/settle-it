@@ -1,10 +1,17 @@
-import { T_USER_ROLE } from "@/types/user";
+import { T_USER_STATUS, T_OTP_STATUS, T_EXPENSE_STATUS } from "@/types/user";
+import { getEnumeration } from "@/utils/functions";
 
-export const USER_ROLES: Record<T_USER_ROLE, T_USER_ROLE> = {
-	ADMIN: "ADMIN",
-	USER: "USER",
-	GUEST: "GUEST",
-};
+export const USER_STATUS = getEnumeration<T_USER_STATUS>(["INVITED", "JOINED"]);
+export const OTP_STATUS = getEnumeration<T_OTP_STATUS>([
+	"PENDING",
+	"VERIFIED",
+	"EXPIRED",
+]);
+export const EXPENSE_STATUS = getEnumeration<T_EXPENSE_STATUS>([
+	"PENDING",
+	"SETTLED",
+]);
+
 const message = {
 	SUCCESS: "Success",
 	ERROR: "Error",

@@ -132,3 +132,14 @@ export const sanitizeTimestampToDate = (timestamp: string) => {
 export const generateRandomColor = () => {
 	return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
 };
+
+// create an enumeration from collection of strings
+export const getEnumeration = <T extends string>(
+	arr: Array<T>
+): { [K in T]: K } => {
+	const enumeration: { [K in T]: K } = arr.reduce((acc, key) => {
+		acc[key] = key;
+		return acc;
+	}, {} as any);
+	return enumeration;
+};

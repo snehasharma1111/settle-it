@@ -1,4 +1,5 @@
-import { USER_ROLES } from "@/constants";
+import { USER_STATUS } from "@/constants";
+import { T_USER_STATUS } from "@/types/user";
 import mongoose from "mongoose";
 
 const UserSchema = new mongoose.Schema(
@@ -12,10 +13,18 @@ const UserSchema = new mongoose.Schema(
 			required: true,
 			unique: true,
 		},
-		role: {
+		phone: {
 			type: String,
-			default: USER_ROLES.USER,
-			enum: Object.values(USER_ROLES),
+			unique: true,
+		},
+		avatar: {
+			type: String,
+			default: "/vectors/user.svg",
+		},
+		status: {
+			type: String,
+			enum: Object.values(USER_STATUS),
+			default: USER_STATUS.JOINED,
 		},
 	},
 	{
@@ -23,14 +32,16 @@ const UserSchema = new mongoose.Schema(
 	}
 );
 
-const UserModel = mongoose.models.User || mongoose.model("User", UserSchema);
+export const UserModel =
+	mongoose.models.User || mongoose.model("User", UserSchema);
 
-export default UserModel;
-
-export interface User {
+export type User = {
 	id: string;
 	name: string;
 	email: string;
-	createdAt: Date;
-	updatedAt: Date;
-}
+	phone?: string;
+	avatar?: string;
+	status: T_USER_STATUS;
+	createdAt: string;
+	updatedAt: string;
+};
