@@ -1,5 +1,4 @@
-import * as user from "./user.controller";
+import * as authController from "./auth.controller";
+import * as userController from "./user.controller";
 
-const controllers = { user };
-
-export default controllers;
+export { authController, userController };
