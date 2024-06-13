@@ -35,9 +35,9 @@ export const GroupModel =
 export type Group = {
 	id: string;
 	name: string;
-	icon: string;
-	banner: string;
-	type: string;
+	icon?: string;
+	banner?: string;
+	type?: string;
 	createdBy: string;
 	createdAt: string;
 	updatedAt: string;

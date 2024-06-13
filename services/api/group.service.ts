@@ -1,6 +1,7 @@
 import { Group, GroupModel } from "@/models";
 import { getObjectFromMongoResponse } from "@/utils/parser";
 import { getNonNullValue } from "@/utils/safety";
+import { expenseService, memberService } from "@/services/api";
 
 export const findOne = async (query: Partial<Group>): Promise<Group | null> => {
 	const res = await GroupModel.findOne(query);
@@ -67,4 +68,16 @@ export const remove = async (query: Partial<Group>): Promise<Group | null> => {
 		? await GroupModel.findByIdAndDelete(query.id)
 		: await GroupModel.findOneAndDelete(query);
 	return getObjectFromMongoResponse<Group>(res);
+};
+
+export const clear = async (id: string): Promise<boolean> => {
+	const group = await findById(id);
+	if (!group) return false;
+	await memberService.removeMultiple({
+		groupId: id,
+	});
+	await expenseService.removeMultiple({
+		groupId: id,
+	});
+	return true;
 };

@@ -21,7 +21,7 @@ export const findById = async (id: string): Promise<Member | null> => {
 
 export const find = async (
 	query: Partial<Member>
-): Promise<Member | Member[] | null> => {
+): Promise<Member | Array<Member> | null> => {
 	const res = await MemberModel.find(query);
 	if (res.length > 1) {
 		const parsedRes = res
@@ -71,4 +71,11 @@ export const remove = async (
 		? await MemberModel.findByIdAndDelete(query.id)
 		: await MemberModel.findOneAndDelete(query);
 	return getObjectFromMongoResponse<Member>(res);
+};
+
+export const removeMultiple = async (
+	query: Partial<Member>
+): Promise<number> => {
+	const res = await MemberModel.deleteMany(query);
+	return res.deletedCount;
 };

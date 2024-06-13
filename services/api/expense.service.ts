@@ -72,3 +72,10 @@ export const remove = async (
 		: await ExpenseModel.findOneAndDelete(query);
 	return getObjectFromMongoResponse<Expense>(res);
 };
+
+export const removeMultiple = async (
+	query: Partial<Expense>
+): Promise<number> => {
+	const res = await ExpenseModel.deleteMany(query);
+	return res.deletedCount;
+};

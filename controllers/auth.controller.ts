@@ -1,7 +1,7 @@
 import { HTTP, OTP_STATUS, USER_STATUS } from "@/constants";
 import { authService, otpService, userService } from "@/services/api";
 import { ApiRequest, ApiResponse } from "@/types/api";
-import { getNonEmptyString, safeParse } from "@/utils/safety";
+import { getNonEmptyString, genericParse } from "@/utils/safety";
 
 export const requestOtpWithEmail = async (
 	req: ApiRequest,
@@ -28,10 +28,12 @@ export const requestOtpWithEmail = async (
 			});
 			await otpService.send(email, otp);
 		}
-		return res.status(200).json({ message: "OTP sent successfully" });
+		return res
+			.status(HTTP.status.SUCCESS)
+			.json({ message: "OTP sent successfully" });
 	} catch (error) {
 		console.error(error);
-		return res.status(500).json({
+		return res.status(HTTP.status.INTERNAL_SERVER_ERROR).json({
 			message: HTTP.message.INTERNAL_SERVER_ERROR,
 		});
 	}
@@ -39,35 +41,48 @@ export const requestOtpWithEmail = async (
 
 export const verifyOtpWithEmail = async (req: ApiRequest, res: ApiResponse) => {
 	try {
-		const email = safeParse(getNonEmptyString, req.body.email);
+		const email = genericParse(getNonEmptyString, req.body.email);
 		if (!email)
-			return res.status(400).json({ message: "Email is required" });
-		const otp = safeParse(getNonEmptyString, req.body.otp);
-		if (!otp) return res.status(400).json({ message: "OTP is required" });
+			return res
+				.status(HTTP.status.BAD_REQUEST)
+				.json({ message: "Email is required" });
+		const otp = genericParse(getNonEmptyString, req.body.otp);
+		if (!otp)
+			return res
+				.status(HTTP.status.BAD_REQUEST)
+				.json({ message: "OTP is required" });
 		const foundOtp = await otpService.findOne({ email });
 		if (!foundOtp)
 			return res
-				.status(400)
+				.status(HTTP.status.BAD_REQUEST)
 				.json({ message: "No OTP was requested from this email" });
 		if (foundOtp.status === OTP_STATUS.VERIFIED)
-			return res.status(400).json({ message: "OTP already verified" });
+			return res
+				.status(HTTP.status.BAD_REQUEST)
+				.json({ message: "OTP already verified" });
 		if (
 			new Date().getTime() - new Date(foundOtp.updatedAt).getTime() >
 			5 * 60 * 1000
 		)
-			return res.status(400).json({ message: "OTP Expired" });
+			return res
+				.status(HTTP.status.BAD_REQUEST)
+				.json({ message: "OTP Expired" });
 		if (foundOtp.otp !== otp)
-			return res.status(400).json({ message: "Invalid OTP provided" });
+			return res
+				.status(HTTP.status.BAD_REQUEST)
+				.json({ message: "Invalid OTP provided" });
 		await otpService.update({ email }, { status: OTP_STATUS.VERIFIED });
-		return res.status(200).json({ message: "OTP verified successfully" });
+		return res
+			.status(HTTP.status.SUCCESS)
+			.json({ message: "OTP verified successfully" });
 	} catch (error: any) {
 		console.error(error);
 		if (error.message.toLowerCase().startsWith("invalid input")) {
 			return res
-				.status(400)
+				.status(HTTP.status.BAD_REQUEST)
 				.json({ message: "Please provide a valid OTP" });
 		}
-		return res.status(500).json({
+		return res.status(HTTP.status.INTERNAL_SERVER_ERROR).json({
 			message: HTTP.message.INTERNAL_SERVER_ERROR,
 		});
 	}
@@ -75,11 +90,16 @@ export const verifyOtpWithEmail = async (req: ApiRequest, res: ApiResponse) => {
 
 export const login = async (req: ApiRequest, res: ApiResponse) => {
 	try {
-		const email = safeParse(getNonEmptyString, req.body.email);
+		const email = genericParse(getNonEmptyString, req.body.email);
 		if (!email)
-			return res.status(400).json({ message: "Email is required" });
-		const otp = safeParse(getNonEmptyString, req.body.otp);
-		if (!otp) return res.status(400).json({ message: "OTP is required" });
+			return res
+				.status(HTTP.status.BAD_REQUEST)
+				.json({ message: "Email is required" });
+		const otp = genericParse(getNonEmptyString, req.body.otp);
+		if (!otp)
+			return res
+				.status(HTTP.status.BAD_REQUEST)
+				.json({ message: "OTP is required" });
 		// search in otp table for email, otp, status = verified
 		const foundOtp = await otpService.findOne({
 			email,
@@ -88,7 +108,7 @@ export const login = async (req: ApiRequest, res: ApiResponse) => {
 		});
 		if (!foundOtp) {
 			return res
-				.status(401)
+				.status(HTTP.status.UNAUTHORIZED)
 				.json({ message: "Please verify your email" });
 		}
 		// update otp status to OTP_STATUS.Expired
@@ -98,7 +118,9 @@ export const login = async (req: ApiRequest, res: ApiResponse) => {
 			new Date().getTime() - new Date(foundOtp.updatedAt).getTime() >
 			5 * 60 * 1000
 		) {
-			return res.status(410).json({ message: "OTP Expired" });
+			return res
+				.status(HTTP.status.GONE)
+				.json({ message: "OTP Expired" });
 		}
 		// search in user table for email
 		const foundUser = await userService.findOne({ email });
@@ -115,7 +137,7 @@ export const login = async (req: ApiRequest, res: ApiResponse) => {
 					30 * 24 * 60 * 60 * 1000
 				}; SameSite=None; Secure=true`
 			);
-			return res.status(201).json({
+			return res.status(HTTP.status.CREATED).json({
 				message: HTTP.message.SUCCESS,
 				data: user,
 			});
@@ -128,14 +150,14 @@ export const login = async (req: ApiRequest, res: ApiResponse) => {
 					30 * 24 * 60 * 60 * 1000
 				}; SameSite=None; Secure=true`
 			);
-			return res.status(200).json({
+			return res.status(HTTP.status.SUCCESS).json({
 				message: HTTP.message.SUCCESS,
 				data: foundUser,
 			});
 		}
 	} catch (error) {
 		console.error(error);
-		return res.status(500).json({
+		return res.status(HTTP.status.INTERNAL_SERVER_ERROR).json({
 			message: HTTP.message.INTERNAL_SERVER_ERROR,
 		});
 	}
@@ -145,19 +167,23 @@ export const verify = async (req: ApiRequest, res: ApiResponse) => {
 	try {
 		const token = req.cookies.token;
 		if (!token) {
-			return res.status(401).json({ message: HTTP.message.BAD_REQUEST });
+			return res
+				.status(HTTP.status.UNAUTHORIZED)
+				.json({ message: HTTP.message.BAD_REQUEST });
 		}
 		const user = await authService.authenticate(token);
 		if (!user) {
-			return res.status(401).json({ message: HTTP.message.UNAUTHORIZED });
+			return res
+				.status(HTTP.status.UNAUTHORIZED)
+				.json({ message: HTTP.message.UNAUTHORIZED });
 		}
-		return res.status(200).json({
+		return res.status(HTTP.status.SUCCESS).json({
 			message: HTTP.message.SUCCESS,
 			data: user,
 		});
 	} catch (error) {
 		console.error(error);
-		return res.status(500).json({
+		return res.status(HTTP.status.INTERNAL_SERVER_ERROR).json({
 			message: HTTP.message.INTERNAL_SERVER_ERROR,
 		});
 	}
@@ -169,10 +195,12 @@ export const logout = async (_: ApiRequest, res: ApiResponse) => {
 			"Set-Cookie",
 			"token=; HttpOnly; Path=/; Max-Age=0; SameSite=None; Secure=true"
 		);
-		return res.status(200).json({ message: HTTP.message.SUCCESS });
+		return res
+			.status(HTTP.status.SUCCESS)
+			.json({ message: HTTP.message.SUCCESS });
 	} catch (error) {
 		console.error(error);
-		return res.status(500).json({
+		return res.status(HTTP.status.INTERNAL_SERVER_ERROR).json({
 			message: HTTP.message.INTERNAL_SERVER_ERROR,
 		});
 	}

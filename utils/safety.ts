@@ -1,10 +1,19 @@
-export const safeParse = <T>(parse: (_: any) => T, input: any): T => {
+export const genericParse = <T>(parse: (_: any) => T, input: any): T => {
 	try {
 		const output = parse(input);
 		return output;
 	} catch {
 		// return null;
 		throw new Error(`Invalid input: ${input}`);
+	}
+};
+
+export const safeParse = <T>(parse: (_: any) => T, input: any): T | null => {
+	try {
+		const output = parse(input);
+		return output;
+	} catch {
+		return null;
 	}
 };
 
