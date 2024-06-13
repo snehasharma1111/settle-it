@@ -1,4 +1,5 @@
 import { Otp, OtpModel } from "@/models";
+import { sendEmailTemplate } from "@/services";
 import { getObjectFromMongoResponse } from "@/utils/parser";
 import { getNonNullValue } from "@/utils/safety";
 import otpGenerator from "otp-generator";
@@ -73,3 +74,18 @@ export const generate = () =>
 		specialChars: false,
 		digits: true,
 	});
+
+export const send = async (email: string, otp: string) => {
+	try {
+		await sendEmailTemplate(
+			email,
+			"OTP requested for Login | Blink N Find",
+			"OTP",
+			{ otp }
+		);
+		return Promise.resolve();
+	} catch (error: any) {
+		console.error(error);
+		return Promise.reject(error);
+	}
+};
