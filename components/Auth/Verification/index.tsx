@@ -22,24 +22,6 @@ const AuthVerification: React.FC<IAuthVerificationProps> = ({
 	const [otp, setOtp] = useState(Array(6).fill(""));
 	return (
 		<>
-			<Typography size="sm" as="p">
-				We sent a 6-digit code to{" "}
-				<span style={{ fontWeight: "bold" }}>{email}</span>.
-				<br />
-				Not the right email?
-				<span
-					onClick={() => {
-						onGoBack();
-					}}
-					style={{
-						color: "var(--accent-color)",
-						cursor: "pointer",
-					}}
-				>
-					{" "}
-					Change it here.
-				</span>
-			</Typography>
 			<form
 				className={classes("-form")}
 				onSubmit={(e) => {
@@ -49,6 +31,24 @@ const AuthVerification: React.FC<IAuthVerificationProps> = ({
 					onSubmit(otp.join(""));
 				}}
 			>
+				<Typography size="s" as="p">
+					We sent a 6-digit code to{" "}
+					<span style={{ fontWeight: "bold" }}>{email}</span>.
+					<br />
+					Not the right email?
+					<span
+						onClick={() => {
+							onGoBack();
+						}}
+						style={{
+							color: "var(--accent-color)",
+							cursor: "pointer",
+						}}
+					>
+						{" "}
+						Change it here.
+					</span>
+				</Typography>
 				<div className={classes("-input-group", "-input-group--otp")}>
 					{otp.map((data, index) => (
 						<input

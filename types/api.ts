@@ -12,6 +12,8 @@ interface ApiResponse extends NextApiResponse {
 	};
 }
 
+export type ApiRes<T> = { message: string; data: T };
+
 export type T_RESPONSE_MESSAGES =
 	| "SUCCESS"
 	| "FAILED"

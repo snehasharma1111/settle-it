@@ -1,4 +1,5 @@
 import { Auth as Components } from "@/components";
+import { UserDetails } from "@/components/Auth";
 import { api } from "@/connections";
 import { routes } from "@/constants";
 import { useStore } from "@/hooks";
@@ -6,22 +7,29 @@ import { Typography } from "@/library";
 import { notify } from "@/messages";
 import { authMiddleware } from "@/middlewares";
 import styles from "@/styles/pages/Auth.module.scss";
+import { IUser } from "@/types/user";
 import { stylesConfig } from "@/utils/functions";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const classes = stylesConfig(styles, "auth");
 
-const LoginPage: React.FC = () => {
-	const { setUser } = useStore();
+type T_Auth_Frame = "input" | "otp-verification" | "onboarding";
+
+interface LoginPageProps {
+	frame: T_Auth_Frame;
+	user: IUser;
+}
+
+const LoginPage: React.FC<LoginPageProps> = (props) => {
+	const { setUser, user, dispatch } = useStore();
 	const router = useRouter();
-	const [authFrame, setAuthFrame] = useState<"input" | "otp-verification">(
-		"input"
-	);
+	const [authFrame, setAuthFrame] = useState<T_Auth_Frame>(props.frame);
 	const [email, setEmail] = useState("");
 	const [requestingOtp, setRequestingOtp] = useState(false);
 	const [verifyingOtp, setVerifyingOtp] = useState(false);
+	const [updatingUserDetails, setUpdatingUserDetails] = useState(false);
 
 	const requestOtpWithEmail = async () => {
 		try {
@@ -47,7 +55,7 @@ const LoginPage: React.FC = () => {
 					router.query.redirect?.toString() ?? routes.HOME;
 				router.push(redirectUrl);
 			} else {
-				router.push(routes.ONBOARDING);
+				setAuthFrame("onboarding");
 			}
 		} catch (error: any) {
 			console.error(error);
@@ -56,6 +64,26 @@ const LoginPage: React.FC = () => {
 			setVerifyingOtp(false);
 		}
 	};
+
+	const saveUserDetails = async (data: UserDetails) => {
+		try {
+			setUpdatingUserDetails(true);
+			const res = await api.user.updateUser(user.id, data);
+			setUser(res.data);
+		} catch (error: any) {
+			console.error(error);
+			notify.error(error);
+		} finally {
+			setUpdatingUserDetails(false);
+		}
+	};
+
+	useEffect(() => {
+		if (props.user) {
+			dispatch(setUser(props.user));
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [props.user]);
 
 	return (
 		<main className={classes("")}>
@@ -75,7 +103,7 @@ const LoginPage: React.FC = () => {
 						onContinueWithEmail={requestOtpWithEmail}
 						requestingOtp={requestingOtp}
 					/>
-				) : (
+				) : authFrame === "otp-verification" ? (
 					<Components.Verification
 						email={email}
 						verifyingOtp={verifyingOtp}
@@ -84,7 +112,12 @@ const LoginPage: React.FC = () => {
 							setAuthFrame("input");
 						}}
 					/>
-				)}
+				) : authFrame === "onboarding" ? (
+					<Components.Onboarding
+						loading={updatingUserDetails}
+						onContinue={saveUserDetails}
+					/>
+				) : null}
 			</section>
 			<Typography size="sm" className={classes("-footer")} as="p">
 				By joining, you agree to the Settle It Terms of Service and to
@@ -108,17 +141,19 @@ export const getServerSideProps = async (context: any) => {
 				},
 			};
 		},
-		onLoggedInAndNotOnboarded() {
+		onLoggedInAndNotOnboarded(user) {
 			return {
-				redirect: {
-					destination: `${routes.ONBOARDING}?redirect=${routes.HOME}`,
-					permanent: false,
+				props: {
+					frame: "onboarding",
+					user,
 				},
 			};
 		},
 		onLoggedOut() {
 			return {
-				props: {},
+				props: {
+					frame: "input",
+				},
 			};
 		},
 	});

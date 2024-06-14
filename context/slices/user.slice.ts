@@ -1,11 +1,13 @@
 import { IUser } from "@/types/user";
 import { createSlice } from "@reduxjs/toolkit";
 import { authHelpers, userHelpers } from "@/context/helpers";
+import { USER_STATUS } from "@/constants";
 
 const initialState: IUser = {
 	id: "",
 	name: "",
 	email: "",
+	status: USER_STATUS.JOINED,
 };
 
 export const userSlice = createSlice({

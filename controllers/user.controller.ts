@@ -1,9 +1,46 @@
 import { HTTP } from "@/constants";
 import { userService } from "@/services/api";
 import { ApiRequest, ApiResponse } from "@/types/api";
-import { getNonEmptyString, genericParse } from "@/utils/safety";
+import { genericParse, getNonEmptyString } from "@/utils/safety";
 
-export const update = async (req: ApiRequest, res: ApiResponse) => {
+export const getLoggedInUserDetails = async (
+	req: ApiRequest,
+	res: ApiResponse
+) => {
+	try {
+		const loggedInUserId = genericParse(getNonEmptyString, req.user?.id);
+		const id = genericParse(getNonEmptyString, req.query.id);
+		if (!id || !loggedInUserId)
+			return res
+				.status(HTTP.status.BAD_REQUEST)
+				.json({ message: HTTP.message.BAD_REQUEST });
+		if (loggedInUserId !== id)
+			return res
+				.status(HTTP.status.FORBIDDEN)
+				.json({ message: HTTP.message.FORBIDDEN });
+		const foundUser = await userService.findById(id);
+		if (!foundUser)
+			return res
+				.status(HTTP.status.NOT_FOUND)
+				.json({ message: HTTP.message.NOT_FOUND });
+		return res
+			.status(HTTP.status.SUCCESS)
+			.json({ message: HTTP.message.SUCCESS, data: foundUser });
+	} catch (error: any) {
+		console.error(error);
+		if (error.message && error.message.startsWith("Invalid input:")) {
+			return res
+				.status(HTTP.status.BAD_REQUEST)
+				.json({ message: HTTP.message.BAD_REQUEST });
+		} else {
+			return res.status(HTTP.status.INTERNAL_SERVER_ERROR).json({
+				message: HTTP.message.INTERNAL_SERVER_ERROR,
+			});
+		}
+	}
+};
+
+export const updateUserDetails = async (req: ApiRequest, res: ApiResponse) => {
 	try {
 		const loggedInUserId = genericParse(getNonEmptyString, req.user?.id);
 		const id = genericParse(getNonEmptyString, req.query.id);

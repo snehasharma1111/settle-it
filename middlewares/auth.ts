@@ -2,7 +2,7 @@ import { jwtSecret } from "@/config";
 import { HTTP } from "@/constants";
 import { ApiRequest, ApiResponse } from "@/types/api";
 import { IUser } from "@/types/user";
-import http from "@/utils/http";
+import { http } from "@/connections";
 import jwt from "jsonwebtoken";
 
 export const page = async (
@@ -33,7 +33,7 @@ export const page = async (
 				cookie: req.headers.cookie,
 			},
 		});
-		if (res.data.data.onboarded) {
+		if (res.data.data.name) {
 			return onLoggedInAndOnboarded(userDetailsRes.data.data, {
 				cookie: req.headers.cookie,
 			});

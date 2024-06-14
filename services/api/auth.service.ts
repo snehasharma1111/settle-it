@@ -6,7 +6,7 @@ import { User } from "@/models";
 export const authenticate = async (token: string): Promise<User | null> => {
 	try {
 		const decoded: any = jwt.verify(token, jwtSecret);
-		const foundUser = await userService.find({ id: decoded.id });
+		const foundUser = await userService.findById(decoded.id);
 		if (!foundUser) {
 			return null;
 		}

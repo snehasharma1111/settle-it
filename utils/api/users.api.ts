@@ -1,5 +1,5 @@
+import { http } from "@/connections";
 import { IUser } from "@/types/user";
-import http from "@/utils/http";
 
 export const getAllUsers = async () => {
 	try {

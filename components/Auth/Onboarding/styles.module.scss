@@ -1,0 +1,21 @@
+@import "@/styles/config/mixins";
+@import "@/styles/config/typography";
+
+.auth-onboarding {
+	&-form {
+		width: 100%;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		flex-direction: column;
+		gap: 24px;
+
+		input {
+			@include typography(body, extra-large, regular);
+		}
+
+		button svg path {
+			fill: var(--theme-white);
+		}
+	}
+}
