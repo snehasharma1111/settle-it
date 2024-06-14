@@ -310,3 +310,119 @@ export const updateExpense = async (req: ApiRequest, res: ApiResponse) => {
 		}
 	}
 };
+
+export const removeExpense = async (req: ApiRequest, res: ApiResponse) => {
+	try {
+		const loggedInUserId = getNonEmptyString(req.user?.id);
+		const id = getNonEmptyString(req.query.id);
+		const foundExpense = await expenseService.findById(id);
+		if (!foundExpense)
+			return res
+				.status(HTTP.status.NOT_FOUND)
+				.json({ message: HTTP.message.NOT_FOUND });
+		if (foundExpense.createdBy !== loggedInUserId)
+			return res
+				.status(HTTP.status.FORBIDDEN)
+				.json({ message: HTTP.message.FORBIDDEN });
+		// remove all members for the current expense
+		await memberService.bulkRemove({ expenseId: id });
+		await expenseService.remove({ id });
+		return res.status(HTTP.status.SUCCESS).json({
+			message: HTTP.message.SUCCESS,
+		});
+	} catch (error: any) {
+		console.error(error);
+		if (error.message && error.message.startsWith("Invalid input:")) {
+			return res
+				.status(HTTP.status.BAD_REQUEST)
+				.json({ message: HTTP.message.BAD_REQUEST });
+		} else {
+			return res.status(HTTP.status.INTERNAL_SERVER_ERROR).json({
+				message: HTTP.message.INTERNAL_SERVER_ERROR,
+			});
+		}
+	}
+};
+
+export const settleExpense = async (req: ApiRequest, res: ApiResponse) => {
+	try {
+		const loggedInUserId = getNonEmptyString(req.user?.id);
+		const id = getNonEmptyString(req.query.id);
+		const foundExpense = await expenseService.findById(id);
+		if (!foundExpense)
+			return res
+				.status(HTTP.status.NOT_FOUND)
+				.json({ message: HTTP.message.NOT_FOUND });
+		if (foundExpense.paidBy !== loggedInUserId)
+			return res
+				.status(HTTP.status.FORBIDDEN)
+				.json({ message: "Only the person who paid can settle" });
+		await memberService.settleMany({ expenseId: id });
+		return res.status(HTTP.status.SUCCESS).json({
+			message: HTTP.message.SUCCESS,
+		});
+	} catch (error: any) {
+		console.error(error);
+		if (error.message && error.message.startsWith("Invalid input:")) {
+			return res
+				.status(HTTP.status.BAD_REQUEST)
+				.json({ message: HTTP.message.BAD_REQUEST });
+		} else {
+			return res.status(HTTP.status.INTERNAL_SERVER_ERROR).json({
+				message: HTTP.message.INTERNAL_SERVER_ERROR,
+			});
+		}
+	}
+};
+
+export const memberPaid = async (req: ApiRequest, res: ApiResponse) => {
+	try {
+		const loggedInUserId = getNonEmptyString(req.user?.id);
+		const memberId = genericParse(getNonEmptyString, req.query.memberId);
+		const paidAmount = genericParse(
+			getNonNegativeNumber,
+			req.body.paidAmount
+		);
+		const foundMember = await memberService.findById(memberId);
+		if (!foundMember)
+			return res
+				.status(HTTP.status.NOT_FOUND)
+				.json({ message: HTTP.message.NOT_FOUND });
+		const foundExpense = await expenseService.findById(
+			foundMember.expenseId
+		);
+		if (!foundExpense)
+			return res
+				.status(HTTP.status.NOT_FOUND)
+				.json({ message: HTTP.message.NOT_FOUND });
+		if (foundExpense.paidBy !== loggedInUserId)
+			return res
+				.status(HTTP.status.FORBIDDEN)
+				.json({ message: "Only the person who paid can settle" });
+		if (foundMember.owed === paidAmount) {
+			await memberService.settleOne({
+				expenseId: foundMember.expenseId,
+				id: memberId,
+			});
+		} else {
+			await memberService.update(
+				{ id: memberId },
+				{
+					owed: foundMember.owed - paidAmount,
+					paid: foundMember.paid + paidAmount,
+				}
+			);
+		}
+	} catch (error: any) {
+		console.error(error);
+		if (error.message && error.message.startsWith("Invalid input:")) {
+			return res
+				.status(HTTP.status.BAD_REQUEST)
+				.json({ message: HTTP.message.BAD_REQUEST });
+		} else {
+			return res.status(HTTP.status.INTERNAL_SERVER_ERROR).json({
+				message: HTTP.message.INTERNAL_SERVER_ERROR,
+			});
+		}
+	}
+};

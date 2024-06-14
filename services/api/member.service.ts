@@ -65,6 +65,18 @@ export const update = async (
 	return getObjectFromMongoResponse<Member>(res);
 };
 
+export const settleOne = async (
+	query: Partial<Member>
+): Promise<Member | null> => {
+	const res = await MemberModel.findOneAndUpdate(query, {
+		$set: {
+			owed: 0,
+			paid: "$owed",
+		},
+	});
+	return getObjectFromMongoResponse<Member>(res);
+};
+
 export const settleMany = async (query: Partial<Member>): Promise<number> => {
 	const members = await MemberModel.find(query);
 	if (members.length === 0) return 0;
