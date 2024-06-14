@@ -9,6 +9,23 @@ import {
 	safeParse,
 } from "@/utils/safety";
 
+export const getAllGroups = async (req: ApiRequest, res: ApiResponse) => {
+	try {
+		const loggedInUserId = getNonEmptyString(req.user?.id);
+		// search for group whose members array contains loggedInUserId
+		const groups = await groupService.find({
+			members: { $in: [loggedInUserId] },
+		});
+		return res
+			.status(HTTP.status.SUCCESS)
+			.json({ message: HTTP.message.SUCCESS, data: groups });
+	} catch (error) {
+		return res
+			.status(HTTP.status.INTERNAL_SERVER_ERROR)
+			.json({ message: HTTP.message.INTERNAL_SERVER_ERROR });
+	}
+};
+
 export const createGroup = async (req: ApiRequest, res: ApiResponse) => {
 	try {
 		const name = getNonEmptyString(req.body.name);
@@ -19,6 +36,9 @@ export const createGroup = async (req: ApiRequest, res: ApiResponse) => {
 		const members = safeParse(getArray<string>, req.body.members) || [
 			loggedInUserId,
 		];
+		if (!members.includes(loggedInUserId)) {
+			members.push(loggedInUserId);
+		}
 		const foundGroup = await groupService.findOne({ name });
 		if (foundGroup)
 			return res

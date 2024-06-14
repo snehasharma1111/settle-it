@@ -1,7 +1,8 @@
 import { Group, GroupModel } from "@/models";
+import { expenseService, memberService } from "@/services/api";
 import { getObjectFromMongoResponse } from "@/utils/parser";
 import { getNonNullValue } from "@/utils/safety";
-import { expenseService, memberService } from "@/services/api";
+import { FilterQuery } from "mongoose";
 
 export const findOne = async (query: Partial<Group>): Promise<Group | null> => {
 	const res = await GroupModel.findOne(query);
@@ -19,7 +20,7 @@ export const findById = async (id: string): Promise<Group | null> => {
 };
 
 export const find = async (
-	query: Partial<Group>
+	query: FilterQuery<Group>
 ): Promise<Group | Group[] | null> => {
 	const res = await GroupModel.find(query);
 	if (res.length > 1) {
@@ -40,6 +41,58 @@ export const findAll = async (): Promise<Array<Group>> => {
 		.filter((obj) => obj !== null) as Group[];
 	if (parsedRes.length > 0) return parsedRes;
 	return [];
+};
+
+export const getGroupsUserIsPartOf = async (userId: string): Promise<any> => {
+	// also count number of expenses in every group
+	const result = await GroupModel.aggregate([
+		{
+			$match: {
+				members: { $in: [userId] },
+			},
+		},
+		{
+			$lookup: {
+				from: "members",
+				localField: "id",
+				foreignField: "groupId",
+				as: "members",
+			},
+		},
+		{
+			$unwind: "$members",
+		},
+		{
+			$match: {
+				"members.userId": userId,
+			},
+		},
+		{
+			$group: {
+				_id: "$id",
+				name: { $first: "$name" },
+				icon: { $first: "$icon" },
+				banner: { $first: "$banner" },
+				type: { $first: "$type" },
+				totalOwed: { $sum: "$members.owed" },
+				totalPaid: { $sum: "$members.paid" },
+			},
+		},
+		{
+			$project: {
+				_id: 0,
+				id: "$_id",
+				name: 1,
+				icon: 1,
+				banner: 1,
+				type: 1,
+				totalOwed: 1,
+				totalPaid: 1,
+				netBalance: { $subtract: ["$totalPaid", "$totalOwed"] },
+			},
+		},
+	]);
+	return result;
 };
 
 export const create = async (

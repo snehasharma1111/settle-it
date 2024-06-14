@@ -69,8 +69,8 @@ export const createNewExpense = async (req: ApiRequest, res: ApiResponse) => {
 			groupId,
 			expenseId: createdExpense.id,
 			amount: member.amount,
-			owed: member.amount,
-			paid: 0,
+			owed: member.userId === paidBy ? 0 : member.amount,
+			paid: member.userId === paidBy ? member.amount : 0,
 		}));
 		const createdMembers: Array<Member> = await memberService.bulkCreate(
 			membersForCurrentExpense
@@ -198,8 +198,14 @@ export const updateExpense = async (req: ApiRequest, res: ApiResponse) => {
 						groupId: foundExpense.groupId,
 						expenseId: id,
 						amount: member.amount,
-						owed: member.amount,
-						paid: 0,
+						owed:
+							member.userId === foundExpense.paidBy
+								? 0
+								: member.amount,
+						paid:
+							member.userId === foundExpense.paidBy
+								? member.amount
+								: 0,
 					}));
 				if (membersToCreateForCurrentExpense.length > 0) {
 					memberService.bulkCreate(membersToCreateForCurrentExpense);
