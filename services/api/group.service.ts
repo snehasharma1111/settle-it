@@ -73,7 +73,7 @@ export const remove = async (query: Partial<Group>): Promise<Group | null> => {
 export const clear = async (id: string): Promise<boolean> => {
 	const group = await findById(id);
 	if (!group) return false;
-	await memberService.removeMultiple({
+	await memberService.bulkRemove({
 		groupId: id,
 	});
 	await expenseService.removeMultiple({

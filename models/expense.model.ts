@@ -1,5 +1,3 @@
-import { EXPENSE_STATUS } from "@/constants";
-import { T_EXPENSE_STATUS } from "@/types/user";
 import mongoose from "mongoose";
 
 const ExpenseSchema = new mongoose.Schema(
@@ -26,11 +24,6 @@ const ExpenseSchema = new mongoose.Schema(
 			required: true,
 			ref: "User",
 		},
-		status: {
-			type: String,
-			enum: Object.values(EXPENSE_STATUS),
-			default: EXPENSE_STATUS.PENDING,
-		},
 	},
 	{
 		timestamps: true,
@@ -47,7 +40,6 @@ export type Expense = {
 	groupId: string;
 	paidBy: string;
 	createdBy: string;
-	status: T_EXPENSE_STATUS;
 	createdAt: string;
 	updatedAt: string;
 };

@@ -1,5 +1,3 @@
-import { T_EXPENSE_STATUS } from "@/types/user";
-import { EXPENSE_STATUS } from "@/constants";
 import mongoose from "mongoose";
 
 const MemberSchema = new mongoose.Schema(
@@ -18,11 +16,6 @@ const MemberSchema = new mongoose.Schema(
 			type: mongoose.Schema.Types.ObjectId,
 			required: true,
 			ref: "Expense",
-		},
-		status: {
-			type: String,
-			enum: Object.values(EXPENSE_STATUS),
-			default: EXPENSE_STATUS.PENDING,
 		},
 		amount: {
 			type: Number,
@@ -50,7 +43,6 @@ export type Member = {
 	userId: string;
 	groupId: string;
 	expenseId: string;
-	status: T_EXPENSE_STATUS;
 	amount: number;
 	owed: number;
 	paid: number;

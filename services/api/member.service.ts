@@ -1,6 +1,7 @@
 import { Member, MemberModel } from "@/models";
 import { getObjectFromMongoResponse } from "@/utils/parser";
 import { getNonNullValue } from "@/utils/safety";
+import { FilterQuery, UpdateQuery } from "mongoose";
 
 export const findOne = async (
 	query: Partial<Member>
@@ -50,15 +51,6 @@ export const create = async (
 	return getNonNullValue(getObjectFromMongoResponse<Member>(res));
 };
 
-export const bulkCreate = async (
-	body: Array<Omit<Member, "id" | "createdAt" | "updatedAt">>
-): Promise<Array<Member>> => {
-	const res = await MemberModel.insertMany(body);
-	return res
-		.map((obj) => getObjectFromMongoResponse<Member>(obj))
-		.filter((obj) => obj !== null) as Member[];
-};
-
 export const update = async (
 	query: Partial<Member>,
 	update: Partial<Omit<Member, "id" | "createdAt" | "updatedAt">>
@@ -73,6 +65,25 @@ export const update = async (
 	return getObjectFromMongoResponse<Member>(res);
 };
 
+export const settleMany = async (query: Partial<Member>): Promise<number> => {
+	const members = await MemberModel.find(query);
+	if (members.length === 0) return 0;
+	const res = await MemberModel.bulkWrite(
+		members.map((member) => ({
+			updateOne: {
+				filter: { id: member.id },
+				update: {
+					$set: {
+						owed: 0,
+						paid: member.amount,
+					},
+				},
+			},
+		}))
+	);
+	return res.modifiedCount;
+};
+
 export const remove = async (
 	query: Partial<Member>
 ): Promise<Member | null> => {
@@ -82,8 +93,25 @@ export const remove = async (
 	return getObjectFromMongoResponse<Member>(res);
 };
 
-export const removeMultiple = async (
-	query: Partial<Member>
+export const bulkCreate = async (
+	body: Array<Omit<Member, "id" | "createdAt" | "updatedAt">>
+): Promise<Array<Member>> => {
+	const res = await MemberModel.insertMany(body);
+	return res
+		.map((obj) => getObjectFromMongoResponse<Member>(obj))
+		.filter((obj) => obj !== null) as Member[];
+};
+
+export const bulkUpdate = async (
+	query: FilterQuery<Member>,
+	update: UpdateQuery<Omit<Member, "id" | "createdAt" | "updatedAt">>
+): Promise<number> => {
+	const res = await MemberModel.updateMany(query, update);
+	return res.modifiedCount;
+};
+
+export const bulkRemove = async (
+	query: FilterQuery<Member>
 ): Promise<number> => {
 	const res = await MemberModel.deleteMany(query);
 	return res.deletedCount;
