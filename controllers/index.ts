@@ -1,4 +1,11 @@
-import * as authController from "./auth.controller";
-import * as userController from "./user.controller";
+import * as authControllers from "./auth.controller";
+import * as expenseControllers from "./expense.controller";
+import * as groupControlllers from "./group.controller";
+import * as userControllers from "./user.controller";
 
-export { authController, userController };
+export {
+	authControllers,
+	expenseControllers,
+	groupControlllers,
+	userControllers,
+};

@@ -1,5 +1,5 @@
-import mongoose, { ConnectOptions } from "mongoose";
 import { url } from "@/config";
+import mongoose from "mongoose";
 
 declare global {
 	// eslint-disable-next-line no-unused-vars
@@ -15,10 +15,7 @@ export class DatabaseManager {
 		}
 
 		const db = await mongoose
-			.connect(url.db, {
-				useNewUrlParser: true,
-				useUnifiedTopology: true,
-			} as ConnectOptions)
+			.connect(url.db)
 			.then((db) => {
 				console.info("Connected to MongoDB");
 				return db;

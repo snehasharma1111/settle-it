@@ -1,4 +1,4 @@
-import { T_USER_STATUS, T_OTP_STATUS, T_EXPENSE_STATUS } from "@/types/user";
+import { T_EXPENSE_STATUS, T_OTP_STATUS, T_USER_STATUS } from "@/types/user";
 import { getEnumeration } from "@/utils/functions";
 
 export const USER_STATUS = getEnumeration<T_USER_STATUS>(["INVITED", "JOINED"]);
@@ -22,7 +22,7 @@ const message = {
 	INTERNAL_SERVER_ERROR: "Internal Server Error",
 };
 
-const status = {
+const status = Object.freeze({
 	SUCCESS: 200,
 	CREATED: 201,
 	REMOVED: 204,
@@ -31,10 +31,11 @@ const status = {
 	UNAUTHORIZED: 401,
 	FORBIDDEN: 403,
 	NOT_FOUND: 404,
+	METHOD_NOT_ALLOWED: 405,
 	GONE: 410,
 	CONFLICT: 409,
 	INTERNAL_SERVER_ERROR: 500,
-};
+});
 
 export const HTTP = {
 	status,
