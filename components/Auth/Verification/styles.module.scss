@@ -1,0 +1,62 @@
+@import "@/styles/config/mixins";
+@import "@/styles/config/typography";
+
+.auth-verification {
+	&-form {
+		width: 100%;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		flex-direction: column;
+		gap: 24px;
+	}
+
+	&-input-group {
+		width: 100%;
+		display: flex;
+		justify-content: flex-start;
+		align-items: stretch;
+		gap: 16px;
+
+		&--otp {
+			justify-content: space-between;
+			border-radius: 10px;
+			border: 2px solid var(--Natural-400, #b3b9c4);
+			background: var(--Natural-100, #f7f8f9);
+			padding: 30px 30px 20px 30px;
+
+			@include responsive(phone) {
+				padding: 20px 10px 10px 10px;
+				justify-content: center;
+				gap: 16px;
+			}
+		}
+
+		& > * {
+			flex: 0 1 auto;
+
+			input {
+				height: 100%;
+			}
+		}
+	}
+
+	&-input--otp {
+		all: unset;
+		box-sizing: border-box;
+		width: 3rem;
+		text-align: center;
+		border-bottom: 2px solid #b3b9c4;
+		padding: 0 0 4px 0;
+		transition: all var(--transition-time) ease-in-out;
+
+		@include responsive(phone) {
+			padding: 0 8px;
+		}
+
+		&:active,
+		&:focus {
+			border-color: #454f59;
+		}
+	}
+}

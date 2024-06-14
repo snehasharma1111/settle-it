@@ -1,3 +1,4 @@
+import * as Auth from "./Auth";
 import Error from "./Error";
 
-export { Error };
+export { Auth, Error };

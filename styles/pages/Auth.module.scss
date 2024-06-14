@@ -1,0 +1,45 @@
+@import "@/styles/config/mixins";
+
+.auth {
+	max-width: 550px;
+	height: 100vh;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	flex-direction: column;
+	overflow: hidden;
+	text-align: center;
+	margin: 0 auto;
+	padding: 60px 0;
+
+	section {
+		width: 100%;
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-start;
+		flex-direction: column;
+		gap: 24px;
+		padding: 0 5%;
+
+		button {
+			width: 100%;
+		}
+	}
+
+	&-logo {
+		width: 60%;
+		height: auto;
+		object-fit: contain;
+	}
+
+	&-footer {
+		width: 100%;
+		padding: 0 7.5%;
+	}
+
+	@include responsive(phone) {
+		max-width: 100%;
+		height: auto;
+		padding: 20px;
+	}
+}
