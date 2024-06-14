@@ -5,4 +5,5 @@ export const routes = Object.freeze({
 	EXPENSES: "/expenses",
 	EXPENSE: "/expenses/:id",
 	ONBOARDING: "/onboarding",
+	GROUP: (id: string) => `/group/${id}`,
 });

@@ -1,3 +1,5 @@
+@import "@/styles/config/mixins.scss";
+
 .home {
 	width: 100vw;
 	min-height: 100vh;
@@ -6,4 +8,54 @@
 	align-items: center;
 	flex-flow: column;
 	gap: 36px;
+}
+
+.home-page {
+	width: 100%;
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	flex-direction: column;
+	gap: 24px;
+
+	header {
+		width: 100%;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		gap: 24px;
+		padding: 12px 24px;
+
+		button {
+			@include init-button;
+			width: 48px;
+			height: 48px;
+			border-radius: 50%;
+		}
+	}
+
+	&-groups {
+		width: 100%;
+		padding: 0 8px;
+	}
+
+	&-group {
+		width: 100%;
+		border-radius: 8px;
+		display: flex;
+		justify-content: flex-start;
+		align-items: flex-start;
+		flex-direction: column;
+		gap: 16px;
+		padding: 16px;
+		border: 1px solid var(--theme-green);
+		cursor: pointer;
+		user-select: none;
+		color: var(--theme-black);
+		text-decoration: none;
+
+		&:hover {
+			background-color: rgba(74, 166, 60, 0.1);
+		}
+	}
 }

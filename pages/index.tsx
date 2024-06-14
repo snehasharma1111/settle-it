@@ -1,4 +1,7 @@
+import { api } from "@/connections";
+import { routes } from "@/constants";
 import { Typography } from "@/library";
+import { authMiddleware } from "@/middlewares";
 import styles from "@/styles/pages/Home.module.scss";
 import { stylesConfig } from "@/utils/functions";
 import React from "react";
@@ -19,3 +22,33 @@ const HomePage: React.FC = () => {
 };
 
 export default HomePage;
+
+export const getServerSideProps = async (context: any) => {
+	return await authMiddleware.page(context, {
+		async onLoggedInAndOnboarded(user, headers) {
+			const groupsRes = await api.group.getAllGroups(headers);
+			return {
+				props: {
+					user,
+					groups: groupsRes.data,
+				},
+			};
+		},
+		onLoggedInAndNotOnboarded() {
+			return {
+				redirect: {
+					destination: routes.ONBOARDING,
+					permanent: false,
+				},
+			};
+		},
+		onLoggedOut() {
+			return {
+				redirect: {
+					destination: routes.LOGIN,
+					permanent: false,
+				},
+			};
+		},
+	});
+};

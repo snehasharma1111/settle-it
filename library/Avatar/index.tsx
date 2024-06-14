@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
-import styles from "./styles.module.scss";
+import Typography from "@/library/Typography";
 import { stylesConfig } from "@/utils/functions";
 import Image from "next/image";
-import Typography from "@/library/Typography";
+import React, { useEffect, useState } from "react";
+import Avatars from "./multiple";
+import styles from "./styles.module.scss";
 
-interface IAvatarProps {
+export interface IAvatarProps extends React.HTMLAttributes<HTMLDivElement> {
 	src: string;
 	alt: string;
 	className?: string;
@@ -20,6 +21,7 @@ const Avatar: React.FC<IAvatarProps> = ({
 	className,
 	onClick,
 	size = "medium",
+	...props
 }) => {
 	const [isImageValid, setIsImageValid] = useState(src ? true : false);
 
@@ -44,6 +46,7 @@ const Avatar: React.FC<IAvatarProps> = ({
 		<div
 			className={classes("avatar") + ` ${className ?? ""}`}
 			onClick={onClick}
+			{...props}
 			style={{
 				width: getAvatarSize(),
 				height: getAvatarSize(),
@@ -51,6 +54,7 @@ const Avatar: React.FC<IAvatarProps> = ({
 					onClick && typeof onClick === "function"
 						? "pointer"
 						: "auto",
+				...props.style,
 			}}
 		>
 			{isImageValid ? (
@@ -66,8 +70,8 @@ const Avatar: React.FC<IAvatarProps> = ({
 				/>
 			) : (
 				<div className={classes("avatar-placeholder")}>
-					<Typography family="poppins" size="head-2">
-						{alt ? alt[0] : "A"}
+					<Typography family="poppins" size="head-4">
+						{alt ? (alt[0] === "+" ? alt : alt[0]) : "A"}
 					</Typography>
 				</div>
 			)}
@@ -76,3 +80,4 @@ const Avatar: React.FC<IAvatarProps> = ({
 };
 
 export default Avatar;
+export { Avatars };

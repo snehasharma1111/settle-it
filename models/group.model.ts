@@ -1,3 +1,4 @@
+import { fallbackAssets } from "@/constants";
 import mongoose from "mongoose";
 
 const GroupSchema = new mongoose.Schema(
@@ -8,11 +9,11 @@ const GroupSchema = new mongoose.Schema(
 		},
 		icon: {
 			type: String,
-			default: "/vectors/group.svg",
+			default: fallbackAssets.groupIcon,
 		},
 		banner: {
 			type: String,
-			default: "/vectors/banner.svg",
+			default: fallbackAssets.banner,
 		},
 		type: {
 			type: String,

@@ -13,9 +13,7 @@ export const getAllGroups = async (req: ApiRequest, res: ApiResponse) => {
 	try {
 		const loggedInUserId = getNonEmptyString(req.user?.id);
 		// search for group whose members array contains loggedInUserId
-		const groups = await groupService.find({
-			members: { $in: [loggedInUserId] },
-		});
+		const groups = await groupService.getGroupsUserIsPartOf(loggedInUserId);
 		return res
 			.status(HTTP.status.SUCCESS)
 			.json({ message: HTTP.message.SUCCESS, data: groups });
@@ -28,7 +26,7 @@ export const getAllGroups = async (req: ApiRequest, res: ApiResponse) => {
 
 export const createGroup = async (req: ApiRequest, res: ApiResponse) => {
 	try {
-		const name = getNonEmptyString(req.body.name);
+		const name = genericParse(getNonEmptyString, req.body.name);
 		const icon = safeParse(getNonEmptyString, req.body.icon);
 		const banner = safeParse(getNonEmptyString, req.body.banner);
 		const type = safeParse(getNonEmptyString, req.body.type);

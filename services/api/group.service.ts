@@ -44,55 +44,18 @@ export const findAll = async (): Promise<Array<Group>> => {
 };
 
 export const getGroupsUserIsPartOf = async (userId: string): Promise<any> => {
-	// also count number of expenses in every group
-	const result = await GroupModel.aggregate([
-		{
-			$match: {
-				members: { $in: [userId] },
-			},
-		},
-		{
-			$lookup: {
-				from: "members",
-				localField: "id",
-				foreignField: "groupId",
-				as: "members",
-			},
-		},
-		{
-			$unwind: "$members",
-		},
-		{
-			$match: {
-				"members.userId": userId,
-			},
-		},
-		{
-			$group: {
-				_id: "$id",
-				name: { $first: "$name" },
-				icon: { $first: "$icon" },
-				banner: { $first: "$banner" },
-				type: { $first: "$type" },
-				totalOwed: { $sum: "$members.owed" },
-				totalPaid: { $sum: "$members.paid" },
-			},
-		},
-		{
-			$project: {
-				_id: 0,
-				id: "$_id",
-				name: 1,
-				icon: 1,
-				banner: 1,
-				type: 1,
-				totalOwed: 1,
-				totalPaid: 1,
-				netBalance: { $subtract: ["$totalPaid", "$totalOwed"] },
-			},
-		},
-	]);
-	return result;
+	const result = await GroupModel.find({
+		members: { $in: [userId] },
+	}).populate("members createdBy");
+	const ans = result
+		.map((obj) => getObjectFromMongoResponse<Group>(obj))
+		.map((obj) => ({
+			...obj,
+			createdBy: getObjectFromMongoResponse(obj?.createdBy),
+			members:
+				obj?.members.map((m) => getObjectFromMongoResponse(m)) || [],
+		}));
+	return ans;
 };
 
 export const create = async (

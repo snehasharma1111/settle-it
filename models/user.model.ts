@@ -1,4 +1,4 @@
-import { USER_STATUS } from "@/constants";
+import { USER_STATUS, fallbackAssets } from "@/constants";
 import { T_USER_STATUS } from "@/types/user";
 import mongoose from "mongoose";
 
@@ -18,7 +18,7 @@ const UserSchema = new mongoose.Schema(
 		},
 		avatar: {
 			type: String,
-			default: "/vectors/user.svg",
+			default: fallbackAssets.avatar,
 		},
 		status: {
 			type: String,

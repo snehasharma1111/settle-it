@@ -49,7 +49,7 @@ export const page = async (
 };
 
 export const apiRoute =
-	(next: Function) => (req: ApiRequest, res: ApiResponse) => {
+	(next: Function) => async (req: ApiRequest, res: ApiResponse) => {
 		const token = req.cookies.token;
 		if (!token) {
 			return res
@@ -59,7 +59,7 @@ export const apiRoute =
 		try {
 			const decoded: any = jwt.verify(token, jwtSecret);
 			req.user = decoded;
-			return next(req, res);
+			return await next(req, res);
 		} catch (err) {
 			return res
 				.status(HTTP.status.UNAUTHORIZED)

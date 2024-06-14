@@ -49,7 +49,7 @@ const LoginPage: React.FC<LoginPageProps> = (props) => {
 			setVerifyingOtp(true);
 			await api.auth.verifyOtpWithEmail(email, otp);
 			const res = await api.auth.loginWithEmail(email, otp);
-			setUser(res.data);
+			dispatch(setUser(res.data));
 			if (res.data.name) {
 				const redirectUrl =
 					router.query.redirect?.toString() ?? routes.HOME;
@@ -70,6 +70,7 @@ const LoginPage: React.FC<LoginPageProps> = (props) => {
 			setUpdatingUserDetails(true);
 			const res = await api.user.updateUser(user.id, data);
 			setUser(res.data);
+			router.push(routes.HOME);
 		} catch (error: any) {
 			console.error(error);
 			notify.error(error);
