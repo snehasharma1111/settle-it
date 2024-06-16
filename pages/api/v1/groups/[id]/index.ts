@@ -15,6 +15,11 @@ const handler: NextApiHandler = async (req: ApiRequest, res: ApiResponse) => {
 				return authMiddleware.apiRoute(
 					groupControlllers.getGroupDetailsAndExpenses
 				)(req, res);
+			case "PATCH":
+				return authMiddleware.apiRoute(groupControlllers.updateGroup)(
+					req,
+					res
+				);
 			default:
 				res.setHeader("Allow", ["GET"]);
 				return res

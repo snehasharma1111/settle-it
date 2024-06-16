@@ -1,4 +1,3 @@
-import { api } from "@/connections";
 import { routes } from "@/constants";
 import { Typography } from "@/library";
 import { authMiddleware } from "@/middlewares";
@@ -25,12 +24,11 @@ export default HomePage;
 
 export const getServerSideProps = async (context: any) => {
 	return await authMiddleware.page(context, {
-		async onLoggedInAndOnboarded(user, headers) {
-			const groupsRes = await api.group.getAllGroups(headers);
+		async onLoggedInAndOnboarded() {
 			return {
-				props: {
-					user,
-					groups: groupsRes.data,
+				redirect: {
+					destination: routes.HOME,
+					permanent: false,
 				},
 			};
 		},

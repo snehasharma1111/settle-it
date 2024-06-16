@@ -28,6 +28,15 @@ export const groupSlice = createSlice({
 			state = [...state, action.payload];
 			return state;
 		});
+		builder.addCase(groupHelpers.updateGroup.fulfilled, (state, action) => {
+			state = state.map((group) => {
+				if (group.id === action.payload.id) {
+					return action.payload;
+				}
+				return group;
+			});
+			return state;
+		});
 	},
 });
 

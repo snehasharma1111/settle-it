@@ -1,9 +1,23 @@
 import { frontendBaseUrl } from "@/constants/variables";
-import React from "react";
+import React, { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 import Seo from "./Seo";
+import { useStore } from "@/hooks";
 
 const Wrapper: React.FC<any> = ({ children }) => {
+	const { dispatch, user, groups, getAllGroups, fetchAuthenticatedUser } =
+		useStore();
+
+	useEffect(() => {
+		if (!user) {
+			dispatch(fetchAuthenticatedUser());
+		}
+		if (groups.length === 0) {
+			dispatch(getAllGroups());
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
 	return (
 		<>
 			<Seo

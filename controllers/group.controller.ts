@@ -29,12 +29,18 @@ export const getGroupDetailsAndExpenses = async (
 	res: ApiResponse
 ) => {
 	try {
+		const loggedInUserId = getNonEmptyString(req.user?.id);
 		const groupId = getNonEmptyString(req.query.id);
 		const group = await groupService.findById(groupId);
 		if (!group)
 			return res
 				.status(HTTP.status.NOT_FOUND)
 				.json({ message: HTTP.message.NOT_FOUND });
+		// if logged in user is not in the members list of the group, then return forbidden
+		if (!group.members.map((u) => u.id).includes(loggedInUserId))
+			return res
+				.status(HTTP.status.FORBIDDEN)
+				.json({ message: HTTP.message.FORBIDDEN });
 		const expenses = await groupService.getExpensesForGroup(groupId);
 		return res.status(HTTP.status.SUCCESS).json({
 			message: HTTP.message.SUCCESS,
@@ -99,9 +105,11 @@ export const updateGroup = async (req: ApiRequest, res: ApiResponse) => {
 	try {
 		const loggedInUserId = getNonEmptyString(req.user?.id);
 		const id = getNonEmptyString(req.query.id);
+		const name = safeParse(getNonEmptyString, req.body.name);
 		const icon = safeParse(getNonEmptyString, req.body.icon);
 		const banner = safeParse(getNonEmptyString, req.body.banner);
 		const type = safeParse(getNonEmptyString, req.body.type);
+		const members = safeParse(getArray<string>, req.body.members);
 		if (!id || !loggedInUserId)
 			return res
 				.status(HTTP.status.BAD_REQUEST)
@@ -112,9 +120,16 @@ export const updateGroup = async (req: ApiRequest, res: ApiResponse) => {
 				.status(HTTP.status.NOT_FOUND)
 				.json({ message: HTTP.message.NOT_FOUND });
 		const newGroupBody: Partial<Group> = {};
+		if (name) newGroupBody.name = name;
 		if (icon) newGroupBody.icon = icon;
 		if (banner) newGroupBody.banner = banner;
 		if (type) newGroupBody.type = type;
+		if (members) {
+			if (!members.includes(loggedInUserId)) {
+				members.push(loggedInUserId);
+			}
+			newGroupBody.members = members;
+		}
 		const updatedGroup = await groupService.update({ id }, newGroupBody);
 		return res.status(HTTP.status.SUCCESS).json({
 			message: HTTP.message.SUCCESS,

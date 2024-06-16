@@ -78,31 +78,35 @@ export const getExpensesForGroup = async (groupId: string): Promise<any> => {
 
 export const create = async (
 	body: Omit<Group, "id" | "createdAt" | "updatedAt">
-): Promise<Group> => {
+): Promise<IGroup> => {
 	const res = await GroupModel.create(body);
 	await res.populate("members createdBy");
-	return getNonNullValue(getObjectFromMongoResponse<Group>(res));
+	return getNonNullValue(parsePopulatedGroup(res));
 };
 
 export const update = async (
 	query: Partial<Group>,
 	update: Partial<Omit<Group, "id" | "createdAt" | "updatedAt">>
-): Promise<Group | null> => {
+): Promise<IGroup | null> => {
 	const res = query.id
 		? await GroupModel.findByIdAndUpdate(query.id, update, {
 				new: true,
-			})
+			}).populate("members createdBy")
 		: await GroupModel.findOneAndUpdate(query, update, {
 				new: true,
-			});
-	return getObjectFromMongoResponse<Group>(res);
+			}).populate("members createdBy");
+	return parsePopulatedGroup(res);
 };
 
-export const remove = async (query: Partial<Group>): Promise<Group | null> => {
+export const remove = async (query: Partial<Group>): Promise<IGroup | null> => {
 	const res = query.id
-		? await GroupModel.findByIdAndDelete(query.id)
-		: await GroupModel.findOneAndDelete(query);
-	return getObjectFromMongoResponse<Group>(res);
+		? await GroupModel.findByIdAndDelete(query.id).populate(
+				"members createdBy"
+			)
+		: await GroupModel.findOneAndDelete(query).populate(
+				"members createdBy"
+			);
+	return parsePopulatedGroup(res);
 };
 
 export const clear = async (id: string): Promise<boolean> => {
@@ -120,19 +124,19 @@ export const clear = async (id: string): Promise<boolean> => {
 export const addMembers = async (
 	groupId: string,
 	newMembers: Array<string>
-): Promise<Group | null> => {
+): Promise<IGroup | null> => {
 	const updatedGroup = await GroupModel.findByIdAndUpdate(groupId, {
 		$push: { members: { $each: newMembers } },
-	});
-	return getObjectFromMongoResponse<Group>(updatedGroup);
+	}).populate("members createdBy");
+	return parsePopulatedGroup(updatedGroup);
 };
 
 export const removeMembers = async (
 	groupId: string,
 	members: Array<string>
-): Promise<Group | null> => {
+): Promise<IGroup | null> => {
 	const updatedGroup = await GroupModel.findByIdAndUpdate(groupId, {
 		$pull: { members: { $in: members } },
-	});
-	return getObjectFromMongoResponse<Group>(updatedGroup);
+	}).populate("members createdBy");
+	return parsePopulatedGroup(updatedGroup);
 };

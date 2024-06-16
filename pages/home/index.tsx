@@ -6,6 +6,7 @@ import { Responsive } from "@/layouts";
 import { Avatars, Button, Typography } from "@/library";
 import { notify } from "@/messages";
 import { authMiddleware } from "@/middlewares";
+import PageNotFound from "@/pages/404";
 import styles from "@/styles/pages/Home.module.scss";
 import { CreateGroupData, IGroup } from "@/types/group";
 import { IUser } from "@/types/user";
@@ -31,6 +32,8 @@ const HomePage: React.FC<HomePageProps> = (props) => {
 		dispatch(setGroups(props.groups));
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
+
+	if (!props.groups) return <PageNotFound />;
 
 	const createGroupHelper = async (newGroupData: CreateGroupData) => {
 		try {
@@ -131,31 +134,39 @@ const HomePage: React.FC<HomePageProps> = (props) => {
 export default HomePage;
 
 export const getServerSideProps = async (context: any) => {
-	return await authMiddleware.page(context, {
-		async onLoggedInAndOnboarded(user, headers) {
-			const groupsRes = await api.group.getAllGroups(headers);
-			return {
-				props: {
-					user,
-					groups: groupsRes.data,
-				},
-			};
-		},
-		onLoggedInAndNotOnboarded() {
-			return {
-				redirect: {
-					destination: routes.ONBOARDING,
-					permanent: false,
-				},
-			};
-		},
-		onLoggedOut() {
-			return {
-				redirect: {
-					destination: routes.LOGIN,
-					permanent: false,
-				},
-			};
-		},
-	});
+	try {
+		return await authMiddleware.page(context, {
+			async onLoggedInAndOnboarded(user, headers) {
+				const groupsRes = await api.group.getAllGroups(headers);
+				return {
+					props: {
+						user,
+						groups: groupsRes.data,
+					},
+				};
+			},
+			onLoggedInAndNotOnboarded() {
+				return {
+					redirect: {
+						destination: routes.ONBOARDING,
+						permanent: false,
+					},
+				};
+			},
+			onLoggedOut() {
+				return {
+					redirect: {
+						destination: routes.LOGIN,
+						permanent: false,
+					},
+				};
+			},
+		});
+	} catch (error: any) {
+		return {
+			props: {
+				error: error.message,
+			},
+		};
+	}
 };

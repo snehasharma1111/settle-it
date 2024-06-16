@@ -1,7 +1,7 @@
 import { http } from "@/connections";
 import { ApiRes } from "@/types/api";
 import { IExpense } from "@/types/expenses";
-import { CreateGroupData, IGroup } from "@/types/group";
+import { CreateGroupData, IGroup, UpdateGroupData } from "@/types/group";
 
 export const getAllGroups = async (
 	headers?: any
@@ -39,6 +39,20 @@ export const createGroup = async (
 ): Promise<ApiRes<IGroup>> => {
 	try {
 		const response = await http.post("/groups", data, { headers });
+		return Promise.resolve(response.data);
+	} catch (error: any) {
+		console.error(error);
+		return Promise.reject(error?.response?.data);
+	}
+};
+
+export const updateGroup = async (
+	id: string,
+	data: UpdateGroupData,
+	headers?: any
+): Promise<ApiRes<IGroup>> => {
+	try {
+		const response = await http.patch(`/groups/${id}`, data, { headers });
 		return Promise.resolve(response.data);
 	} catch (error: any) {
 		console.error(error);

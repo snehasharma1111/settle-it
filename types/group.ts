@@ -6,10 +6,9 @@ export type IGroup = Omit<Group, "members" | "createdBy"> & {
 	createdBy: IUser;
 };
 
-export type CreateGroupData = {
-	name: string;
-	icon?: string;
-	banner?: string;
-	type: string;
-	members: string[];
-};
+export type CreateGroupData = Omit<
+	Group,
+	"id" | "createdBy" | "createdAt" | "updatedAt"
+>;
+
+export type UpdateGroupData = CreateGroupData;
