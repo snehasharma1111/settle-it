@@ -135,3 +135,47 @@
 	user-select: none;
 	transition: all var(--transition-time) ease-in-out;
 }
+
+@mixin dropdown {
+	display: none;
+	justify-content: flex-start;
+	align-items: flex-start;
+	flex-flow: column;
+	position: absolute;
+	top: 100%;
+	left: 0;
+	z-index: 15;
+	min-width: 100%;
+	max-height: 150px;
+	height: fit-content;
+	box-shadow: var(--shadow-elevation-4dp);
+	border-radius: 8px;
+	overflow: hidden;
+	overflow-y: auto;
+	background-color: var(--theme-white);
+	color: var(--color-black);
+	@include hide-scrollbar();
+
+	&:active,
+	&:focus {
+		display: flex;
+	}
+}
+
+@mixin dropdown-option {
+	width: 100%;
+	padding: 10px 8px;
+	transition: all var(--transition-time) ease-in-out;
+	background-color: var(--theme-white);
+	color: var(--color-black);
+	white-space: nowrap;
+	cursor: pointer;
+	user-select: none;
+
+	&:hover,
+	&:active,
+	&:focus {
+		background-color: var(--theme-bg);
+		color: var(--color-black);
+	}
+}

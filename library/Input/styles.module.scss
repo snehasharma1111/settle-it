@@ -44,5 +44,60 @@
 			width: 100%;
 			position: relative;
 		}
+
+		&-size {
+			&--small {
+				padding: 8px 16px;
+				@include typography($size: sm);
+			}
+
+			&--medium {
+				padding: 12px 24px;
+				@include typography($size: md);
+			}
+
+			&--large {
+				padding: 16px 30px;
+				@include typography($size: lg);
+			}
+		}
+	}
+
+	&__dropdown {
+		@include dropdown;
+
+		&__option {
+			@include dropdown-option;
+		}
+	}
+
+	&__icon {
+		width: 20px;
+		height: 20px;
+		position: absolute;
+		top: 50%;
+		cursor: pointer;
+		user-select: none;
+		display: inline-flex;
+		justify-content: center;
+		align-items: center;
+		right: 0;
+		transform: translate(-50%, -50%);
+
+		&--dropdown svg path {
+			&:first-child {
+				fill: var(--theme-light-grey);
+				stroke: var(--theme-light-grey);
+			}
+
+			&:last-child {
+				fill: var(--theme-black);
+				stroke: var(--theme-black);
+			}
+		}
+	}
+
+	&__input:focus ~ &__dropdown {
+		display: flex;
 	}
 }

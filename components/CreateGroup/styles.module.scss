@@ -1,0 +1,106 @@
+@import "@/styles/config/mixins";
+
+.create-group,
+.create-group-members {
+	width: 100%;
+
+	&-form {
+		width: 100%;
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
+		flex-direction: column;
+
+		& > div > div {
+			padding: 16px;
+		}
+
+		button {
+			margin: 0 auto;
+		}
+	}
+
+	&-members {
+		&-bar {
+			width: 100%;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			border-radius: 8px;
+			padding: 6px 12px;
+			border: 1px solid var(--theme-light-grey);
+			cursor: pointer;
+
+			button {
+				@include init-button;
+				border-radius: 500px;
+				padding: 6px;
+
+				svg {
+					width: 16px;
+					height: 16px;
+				}
+
+				&:hover {
+					background-color: rgba(0, 0, 0, 0.025);
+				}
+			}
+		}
+	}
+
+	&-manage-col {
+		flex-direction: column;
+		gap: 12px;
+	}
+
+	&-member {
+		width: calc(100% - 12px);
+		margin: 6px 0;
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
+		gap: 12px;
+		padding: 6px 12px;
+		border-radius: 8px;
+		border: 1px solid var(--theme-light-grey);
+		cursor: pointer;
+		user-select: none;
+		color: var(--theme-black);
+		text-decoration: none;
+		transition: all var(--transition-time) ease-in-out;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+
+		&-info {
+			width: 100%;
+			display: flex;
+			justify-content: center;
+			align-items: flex-start;
+			flex-direction: column;
+			overflow: hidden;
+		}
+	}
+
+	&-placeholder {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		flex-direction: column;
+		gap: 24px;
+		padding: 60px 0;
+		text-align: center;
+
+		img {
+			width: 200px;
+			height: auto;
+			object-fit: contain;
+		}
+	}
+
+	&-members-bar {
+		width: calc(100% - 16px);
+		margin: 0 auto;
+		margin: 12px 0 6px 0;
+	}
+}

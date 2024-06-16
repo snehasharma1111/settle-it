@@ -14,3 +14,15 @@ export const updateUser = async (
 		return Promise.reject(error?.response?.data);
 	}
 };
+
+export const searchForUsers = async (
+	query: string
+): Promise<ApiRes<Array<IUser>>> => {
+	try {
+		const response = await http.post("/users/search", { query });
+		return Promise.resolve(response.data);
+	} catch (error: any) {
+		console.error(error);
+		return Promise.reject(error?.response?.data);
+	}
+};

@@ -1,0 +1,18 @@
+@import "@/styles/config/mixins";
+
+.header {
+	width: 100%;
+	height: var(--head-height);
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 24px;
+	padding: 12px 24px;
+
+	button {
+		@include init-button;
+		width: 48px;
+		height: 48px;
+		border-radius: 50%;
+	}
+}

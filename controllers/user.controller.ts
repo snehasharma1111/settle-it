@@ -1,4 +1,4 @@
-import { HTTP } from "@/constants";
+import { HTTP, USER_STATUS } from "@/constants";
 import { userService } from "@/services/api";
 import { ApiRequest, ApiResponse } from "@/types/api";
 import { genericParse, getNonEmptyString } from "@/utils/safety";
@@ -94,6 +94,63 @@ export const updateUserDetails = async (req: ApiRequest, res: ApiResponse) => {
 		return res.status(HTTP.status.SUCCESS).json({
 			message: HTTP.message.SUCCESS,
 			data: updatedUser,
+		});
+	} catch (error: any) {
+		console.error(error);
+		return res.status(HTTP.status.INTERNAL_SERVER_ERROR).json({
+			message: HTTP.message.INTERNAL_SERVER_ERROR,
+		});
+	}
+};
+
+export const inviteUser = async (req: ApiRequest, res: ApiResponse) => {
+	try {
+		const loggedInUserId = genericParse(getNonEmptyString, req.user?.id);
+		const email = genericParse(getNonEmptyString, req.body.email);
+		if (!email || !loggedInUserId)
+			return res
+				.status(HTTP.status.BAD_REQUEST)
+				.json({ message: HTTP.message.BAD_REQUEST });
+		const foundUser = await userService.findOne({ email });
+		if (foundUser)
+			return res
+				.status(HTTP.status.CONFLICT)
+				.json({ message: "User already exists" });
+		await userService.invite(email, loggedInUserId);
+		const createdUser = await userService.create({
+			email,
+			status: USER_STATUS.INVITED,
+		});
+		return res.status(HTTP.status.CREATED).json({
+			message: "User created successfully",
+			data: createdUser,
+		});
+	} catch (error: any) {
+		console.error(error);
+		return res.status(HTTP.status.INTERNAL_SERVER_ERROR).json({
+			message: HTTP.message.INTERNAL_SERVER_ERROR,
+		});
+	}
+};
+
+export const searchForUsers = async (req: ApiRequest, res: ApiResponse) => {
+	try {
+		const loggedInUserId = genericParse(getNonEmptyString, req.user?.id);
+		const query = genericParse(getNonEmptyString, req.body.query);
+		if (!query || !loggedInUserId) {
+			return res
+				.status(HTTP.status.BAD_REQUEST)
+				.json({ message: HTTP.message.BAD_REQUEST });
+		}
+		if (query.length < 3) {
+			return res.status(HTTP.status.BAD_REQUEST).json({
+				message: "Query must be at least 3 characters",
+			});
+		}
+		const foundUsers = await userService.searchByEmail(query);
+		return res.status(HTTP.status.SUCCESS).json({
+			message: "User found successfully",
+			data: foundUsers || [],
 		});
 	} catch (error: any) {
 		console.error(error);

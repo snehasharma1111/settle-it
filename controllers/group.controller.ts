@@ -24,6 +24,32 @@ export const getAllGroups = async (req: ApiRequest, res: ApiResponse) => {
 	}
 };
 
+export const getGroupDetailsAndExpenses = async (
+	req: ApiRequest,
+	res: ApiResponse
+) => {
+	try {
+		const groupId = getNonEmptyString(req.query.id);
+		const group = await groupService.findById(groupId);
+		if (!group)
+			return res
+				.status(HTTP.status.NOT_FOUND)
+				.json({ message: HTTP.message.NOT_FOUND });
+		const expenses = await groupService.getExpensesForGroup(groupId);
+		return res.status(HTTP.status.SUCCESS).json({
+			message: HTTP.message.SUCCESS,
+			data: {
+				group,
+				expenses,
+			},
+		});
+	} catch (error) {
+		return res
+			.status(HTTP.status.INTERNAL_SERVER_ERROR)
+			.json({ message: HTTP.message.INTERNAL_SERVER_ERROR });
+	}
+};
+
 export const createGroup = async (req: ApiRequest, res: ApiResponse) => {
 	try {
 		const name = genericParse(getNonEmptyString, req.body.name);
@@ -121,7 +147,7 @@ export const deleteGroup = async (req: ApiRequest, res: ApiResponse) => {
 			return res
 				.status(HTTP.status.NOT_FOUND)
 				.json({ message: HTTP.message.NOT_FOUND });
-		if (foundGroup.createdBy !== loggedInUserId)
+		if (foundGroup.createdBy.id !== loggedInUserId)
 			return res
 				.status(HTTP.status.FORBIDDEN)
 				.json({ message: HTTP.message.FORBIDDEN });
@@ -159,12 +185,13 @@ export const addGroupMembers = async (req: ApiRequest, res: ApiResponse) => {
 			return res
 				.status(HTTP.status.NOT_FOUND)
 				.json({ message: HTTP.message.NOT_FOUND });
-		if (foundGroup.createdBy !== loggedInUserId)
+		if (foundGroup.createdBy.id !== loggedInUserId)
 			return res
 				.status(HTTP.status.FORBIDDEN)
 				.json({ message: HTTP.message.FORBIDDEN });
 		const membersToAdd = members.filter(
-			(member) => !foundGroup.members.includes(member)
+			(member) =>
+				!foundGroup.members.map((member) => member.id).includes(member)
 		);
 		const updatedGroup = await groupService.addMembers(id, membersToAdd);
 		return res.status(HTTP.status.SUCCESS).json({
@@ -199,12 +226,12 @@ export const removeGroupMembers = async (req: ApiRequest, res: ApiResponse) => {
 			return res
 				.status(HTTP.status.NOT_FOUND)
 				.json({ message: HTTP.message.NOT_FOUND });
-		if (foundGroup.createdBy !== loggedInUserId)
+		if (foundGroup.createdBy.id !== loggedInUserId)
 			return res
 				.status(HTTP.status.FORBIDDEN)
 				.json({ message: HTTP.message.FORBIDDEN });
 		const membersToRemove = members.filter((member) =>
-			foundGroup.members.includes(member)
+			foundGroup.members.map((member) => member.id).includes(member)
 		);
 		const updatedGroup = await groupService.removeMembers(
 			id,

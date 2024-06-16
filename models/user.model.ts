@@ -11,10 +11,15 @@ const UserSchema = new mongoose.Schema(
 			type: String,
 			required: true,
 			unique: true,
+			index: {
+				unique: true,
+				sparse: true,
+			},
 		},
 		phone: {
 			type: String,
 			unique: true,
+			sparse: true,
 		},
 		avatar: {
 			type: String,
@@ -31,8 +36,13 @@ const UserSchema = new mongoose.Schema(
 	}
 );
 
-export const UserModel =
-	mongoose.models.User || mongoose.model("User", UserSchema);
+UserSchema.index({ name: "text", email: "text", phone: "text" });
+
+const UserModel = mongoose.models.User || mongoose.model("User", UserSchema);
+
+UserModel.createIndexes();
+
+export { UserModel };
 
 export type User = {
 	id: string;

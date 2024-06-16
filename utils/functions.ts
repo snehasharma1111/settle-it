@@ -19,13 +19,13 @@ export const max = (a: number, b: number) => (a > b ? a : b);
 export const min = (a: number, b: number) => (a < b ? a : b);
 
 // debounce function for delaying function calls
-export const debounce = (func: any, wait: number) => {
-	let timeout: any;
-	return (e: any) => {
-		clearTimeout(timeout);
-		timeout = setTimeout(() => {
-			func(e);
-		}, wait);
+export const debounce = (fn: Function, delay: number): Function => {
+	let timeoutId: ReturnType<typeof setTimeout>;
+	return (...args: any) => {
+		clearTimeout(timeoutId);
+		timeoutId = setTimeout(() => {
+			fn(...args);
+		}, delay);
 	};
 };
 

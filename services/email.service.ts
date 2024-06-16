@@ -400,7 +400,7 @@ ${
         
   <div style="font-size: 12px; line-height: 140%; text-align: center; word-wrap: break-word;">
     <p style="line-height: 140%;">This is a system generated e-mail. Please do not reply to it.</p>
-<p style="line-height: 140%;">For any queries: contact: <a rel="noopener" href="mailto:admin@blinknfind.com?subject=Query%20Regarding%20Blink%20N%20Find" target="_blank">admin@blinknfind.com</a></p>
+<p style="line-height: 140%;">For any queries: contact: <a rel="noopener" href="mailto:akshatmittal2506@gmail.com?subject=Query%20Regarding%20Settle%20It" target="_blank">akshatmittal2506@gmail.com</a></p>
   </div>
 
       </td>
@@ -433,7 +433,7 @@ ${
 	return template;
 };
 
-type EMAIL_TEMPLATE = "OTP" | "NEW_USER_ONBOARDED";
+type EMAIL_TEMPLATE = "OTP" | "NEW_USER_ONBOARDED" | "USER_INVITED";
 
 export const getEmailTemplate = async (template: EMAIL_TEMPLATE, data: any) => {
 	switch (template) {
@@ -446,6 +446,14 @@ export const getEmailTemplate = async (template: EMAIL_TEMPLATE, data: any) => {
 			return getEmailTemplateHTML(
 				"Welcome to Settle It",
 				"Your account has been created successfully. You can now login to your account.",
+				"",
+				"Login",
+				`${frontendBaseUrl}/login`
+			);
+		case "USER_INVITED":
+			return getEmailTemplateHTML(
+				"Welcome to Settle It",
+				`<a href="mailto:${data.invitedBy.email}" style="color:inherit;text-decoration:none">${data.invitedBy.name}</a> has invited you to join Settle It. You can now login to your account.`,
 				"",
 				"Login",
 				`${frontendBaseUrl}/login`

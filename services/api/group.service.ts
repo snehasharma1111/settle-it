@@ -1,46 +1,62 @@
-import { Group, GroupModel } from "@/models";
+import { Expense, ExpenseModel, Group, GroupModel, User } from "@/models";
 import { expenseService, memberService } from "@/services/api";
+import { IGroup } from "@/types/group";
 import { getObjectFromMongoResponse } from "@/utils/parser";
 import { getNonNullValue } from "@/utils/safety";
 import { FilterQuery } from "mongoose";
 
-export const findOne = async (query: Partial<Group>): Promise<Group | null> => {
-	const res = await GroupModel.findOne(query);
-	return getObjectFromMongoResponse<Group>(res);
+export const parsePopulatedGroup = (group: Group): IGroup | null => {
+	if (!group) return null;
+	const res = getObjectFromMongoResponse<Group>(group);
+	if (!res) return null;
+	return {
+		...res,
+		createdBy: getObjectFromMongoResponse<User>(res.createdBy) as User,
+		members: res.members
+			.map((obj) => getObjectFromMongoResponse<User>(obj))
+			.filter((obj) => obj !== null) as User[],
+	};
 };
 
-export const findById = async (id: string): Promise<Group | null> => {
-	const res = await GroupModel.findById(id)
+export const findOne = async (
+	query: Partial<Group>
+): Promise<IGroup | null> => {
+	const res = await GroupModel.findOne(query).populate("members createdBy");
+	return parsePopulatedGroup(res);
+};
 
+export const findById = async (id: string): Promise<IGroup | null> => {
+	const res = await GroupModel.findById(id)
+		.populate("members createdBy")
 		.catch((error: any) => {
 			if (error.kind === "ObjectId") return null;
 			return Promise.reject(error);
 		});
-	return getObjectFromMongoResponse<Group>(res);
+	return parsePopulatedGroup(res);
 };
 
 export const find = async (
 	query: FilterQuery<Group>
-): Promise<Group | Group[] | null> => {
-	const res = await GroupModel.find(query);
+): Promise<IGroup | IGroup[] | null> => {
+	const res = await GroupModel.find(query).populate("members createdBy");
 	if (res.length > 1) {
-		const parsedRes = res
-			.map((obj) => getObjectFromMongoResponse<Group>(obj))
-			.filter((obj) => obj !== null) as Group[];
-		if (parsedRes.length > 0) return parsedRes;
+		return res
+			.map((obj) => parsePopulatedGroup(obj))
+			.filter((obj) => obj !== null) as IGroup[];
 	} else if (res.length === 1) {
-		return getObjectFromMongoResponse<Group>(res[0]);
+		return parsePopulatedGroup(res[0]);
 	}
 	return null;
 };
 
-export const findAll = async (): Promise<Array<Group>> => {
-	const res = await GroupModel.find({}).sort({ createdAt: -1 });
+export const findAll = async (): Promise<Array<IGroup>> => {
+	const res = await GroupModel.find({})
+		.sort({ createdAt: -1 })
+		.populate("members createdBy");
 	const parsedRes = res
-		.map((obj) => getObjectFromMongoResponse<Group>(obj))
-		.filter((obj) => obj !== null) as Group[];
-	if (parsedRes.length > 0) return parsedRes;
-	return [];
+		.map((obj) => parsePopulatedGroup(obj))
+		.filter((obj) => obj !== null) as IGroup[];
+	return parsedRes;
 };
 
 export const getGroupsUserIsPartOf = async (userId: string): Promise<any> => {
@@ -48,20 +64,23 @@ export const getGroupsUserIsPartOf = async (userId: string): Promise<any> => {
 		members: { $in: [userId] },
 	}).populate("members createdBy");
 	const ans = result
-		.map((obj) => getObjectFromMongoResponse<Group>(obj))
-		.map((obj) => ({
-			...obj,
-			createdBy: getObjectFromMongoResponse(obj?.createdBy),
-			members:
-				obj?.members.map((m) => getObjectFromMongoResponse(m)) || [],
-		}));
+		.map((obj) => parsePopulatedGroup(obj))
+		.filter((obj) => obj !== null) as IGroup[];
 	return ans;
+};
+
+export const getExpensesForGroup = async (groupId: string): Promise<any> => {
+	const res = await ExpenseModel.find({ groupId }).populate(
+		"paidBy createdBy"
+	);
+	return res.map((obj) => getObjectFromMongoResponse<Expense>(obj));
 };
 
 export const create = async (
 	body: Omit<Group, "id" | "createdAt" | "updatedAt">
 ): Promise<Group> => {
 	const res = await GroupModel.create(body);
+	await res.populate("members createdBy");
 	return getNonNullValue(getObjectFromMongoResponse<Group>(res));
 };
 

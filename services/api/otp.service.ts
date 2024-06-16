@@ -79,7 +79,7 @@ export const send = async (email: string, otp: string) => {
 	try {
 		await sendEmailTemplate(
 			email,
-			"OTP requested for Login | Blink N Find",
+			"OTP requested for Login | Settle It",
 			"OTP",
 			{ otp }
 		);

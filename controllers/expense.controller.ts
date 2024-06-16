@@ -16,7 +16,7 @@ export const createNewExpense = async (req: ApiRequest, res: ApiResponse) => {
 		const loggedInUserId = getNonEmptyString(req.user?.id);
 		const title = genericParse(getNonEmptyString, req.body.title);
 		const amount = genericParse(getNonNegativeNumber, req.body.amount);
-		const groupId = genericParse(getNonEmptyString, req.body.groupId);
+		const groupId = genericParse(getNonEmptyString, req.query.id);
 		const paidBy = safeParse(getNonEmptyString, req.body.paidBy);
 		const members = genericParse(
 			getArray<{ userId: string; amount: number }>,
@@ -44,7 +44,8 @@ export const createNewExpense = async (req: ApiRequest, res: ApiResponse) => {
 		const includedMembers = members.filter((member) => member.amount > 0);
 		if (
 			includedMembers.some(
-				(member) => !foundGroup.members.includes(member.userId)
+				(member) =>
+					!foundGroup.members.map((m) => m.id).includes(member.userId)
 			)
 		) {
 			// check if all sent members are in the group
@@ -79,11 +80,17 @@ export const createNewExpense = async (req: ApiRequest, res: ApiResponse) => {
 			message: "Expense created successfully",
 			data: createdMembers,
 		});
-	} catch (error) {
+	} catch (error: any) {
 		console.error(error);
-		return res.status(HTTP.status.INTERNAL_SERVER_ERROR).json({
-			message: HTTP.message.INTERNAL_SERVER_ERROR,
-		});
+		if (error.message && error.message.startsWith("Invalid input:")) {
+			return res
+				.status(HTTP.status.BAD_REQUEST)
+				.json({ message: HTTP.message.BAD_REQUEST });
+		} else {
+			return res.status(HTTP.status.INTERNAL_SERVER_ERROR).json({
+				message: HTTP.message.INTERNAL_SERVER_ERROR,
+			});
+		}
 	}
 };
 
@@ -140,7 +147,10 @@ export const updateExpense = async (req: ApiRequest, res: ApiResponse) => {
 			// check if all sent members are in the group
 			if (
 				members.some(
-					(member) => !foundGroup.members.includes(member.userId)
+					(member) =>
+						!foundGroup.members
+							.map((m) => m.id)
+							.includes(member.userId)
 				)
 			) {
 				return res
@@ -283,7 +293,9 @@ export const updateExpense = async (req: ApiRequest, res: ApiResponse) => {
 		if (amount) updatedExpenseBody.amount = amount;
 		if (paidBy) {
 			// person who paid should be a part of the group
-			if (!foundGroup.members.find((m) => m === paidBy)) {
+			if (
+				!foundGroup.members.map((m) => m.id).find((m) => m === paidBy)
+			) {
 				return res.status(HTTP.status.BAD_REQUEST).json({
 					message: "Person who paid should be a part of the group",
 				});

@@ -5,6 +5,6 @@ export const backendBaseUrl: string = url.backend;
 
 export const fallbackAssets = Object.freeze({
 	avatar: "/vectors/user.svg",
-	groupIcon: "/vectors/group.svg",
-	banner: "/vectors/banner.svg",
+	groupIcon: "/images/group-icon.png",
+	banner: "/images/banner.png",
 });

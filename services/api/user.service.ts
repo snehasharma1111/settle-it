@@ -1,6 +1,7 @@
 import { User, UserModel } from "@/models";
 import { getObjectFromMongoResponse } from "@/utils/parser";
 import { getNonNullValue } from "@/utils/safety";
+import { sendEmailTemplate } from "../email.service";
 
 export const findOne = async (query: Partial<User>): Promise<User | null> => {
 	const res = await UserModel.findOne(query);
@@ -63,4 +64,32 @@ export const remove = async (query: Partial<User>): Promise<User | null> => {
 		? await UserModel.findByIdAndDelete(query.id)
 		: await UserModel.findOneAndDelete(query);
 	return getObjectFromMongoResponse<User>(res);
+};
+
+export const invite = async (
+	email: string,
+	invitedBy: string
+): Promise<void> => {
+	try {
+		const invitedByUser = await UserModel.findById(invitedBy);
+		await sendEmailTemplate(email, "Invite to Settle It", "USER_INVITED", {
+			invitedBy: {
+				email: invitedByUser?.email,
+				name: invitedByUser?.name,
+			},
+		});
+	} catch (error) {
+		console.error(error);
+	}
+};
+
+export const searchByEmail = async (
+	emailQuery: string
+): Promise<Array<User> | null> => {
+	const res = await UserModel.find({ email: { $regex: emailQuery } });
+	const parsedRes = res
+		.map((user) => getObjectFromMongoResponse<User>(user))
+		.filter((user) => user !== null) as User[];
+	if (parsedRes.length > 0) return parsedRes;
+	return null;
 };

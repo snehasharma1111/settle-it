@@ -1,15 +1,18 @@
+import { CreateGroup, Header } from "@/components";
 import { api } from "@/connections";
 import { fallbackAssets, routes } from "@/constants";
-import { authMiddleware } from "@/middlewares";
-import { IGroup } from "@/types/group";
-import React, { useEffect } from "react";
-import styles from "@/styles/pages/Home.module.scss";
-import { stylesConfig } from "@/utils/functions";
-import { Avatar, Avatars, Typography } from "@/library";
-import { IUser } from "@/types/user";
 import { useStore } from "@/hooks";
 import { Responsive } from "@/layouts";
+import { Avatars, Button, Typography } from "@/library";
+import { notify } from "@/messages";
+import { authMiddleware } from "@/middlewares";
+import styles from "@/styles/pages/Home.module.scss";
+import { CreateGroupData, IGroup } from "@/types/group";
+import { IUser } from "@/types/user";
+import { stylesConfig } from "@/utils/functions";
+import Image from "next/image";
 import Link from "next/link";
+import React, { useEffect, useState } from "react";
 
 const classes = stylesConfig(styles, "home-page");
 
@@ -19,69 +22,109 @@ type HomePageProps = {
 };
 
 const HomePage: React.FC<HomePageProps> = (props) => {
-	const { setUser, dispatch } = useStore();
+	const { setUser, setGroups, dispatch, createGroup, groups } = useStore();
+	const [openCreateGroupPopup, setOpenCreateGroupPopup] = useState(false);
+	const [creatingGroup, setCreatingGroup] = useState(false);
+
 	useEffect(() => {
 		dispatch(setUser(props.user));
+		dispatch(setGroups(props.groups));
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
+	const createGroupHelper = async (newGroupData: CreateGroupData) => {
+		try {
+			setCreatingGroup(true);
+			const res = await dispatch(createGroup(newGroupData));
+			if (res) {
+				setOpenCreateGroupPopup(false);
+			}
+		} catch (error) {
+			notify.error(error);
+		} finally {
+			setCreatingGroup(false);
+		}
+	};
+
 	return (
-		<main className={classes("")}>
-			<header>
-				<Typography size="head-4" as="h1" weight="medium">
-					Good{" "}
-					{new Date().getHours() < 12
-						? "morning"
-						: new Date().getHours() < 18
-							? "afternoon"
-							: new Date().getHours() < 24
-								? "evening"
-								: "night"}{" "}
-					{props.user.name?.split(" ")[0]}
-				</Typography>
-				<button>
-					<Avatar
-						src={props.user.avatar || fallbackAssets.avatar}
-						alt={props.user.name || "User"}
-						size={48}
-					/>
-				</button>
-			</header>
-			<section className={classes("-groups")}>
-				<Responsive.Row>
-					{props.groups.map((group) => (
-						<Responsive.Col
-							key={group.id}
-							xlg={25}
-							lg={33}
-							md={50}
-							sm={100}
-							xsm={100}
-							style={{
-								padding: "8px",
-							}}
-						>
-							<Link
-								className={classes("-group")}
-								href={routes.GROUP(group.id)}
+		<>
+			<Header />
+			<main className={classes("")}>
+				{groups.length > 0 ? (
+					<Responsive.Row>
+						{groups.map((group) => (
+							<Responsive.Col
+								key={group.id}
+								xlg={25}
+								lg={33}
+								md={50}
+								sm={100}
+								xsm={100}
+								style={{
+									padding: "8px",
+								}}
 							>
-								<Typography size="lg" as="h2" weight="medium">
-									{group.name}
-								</Typography>
-								<Avatars size={36}>
-									{group.members.map((member) => ({
-										src:
-											member.avatar ||
-											fallbackAssets.avatar,
-										alt: member.name || "User",
-									}))}
-								</Avatars>
-							</Link>
-						</Responsive.Col>
-					))}
-				</Responsive.Row>
-			</section>
-		</main>
+								<Link
+									className={classes("-group")}
+									href={routes.GROUP(group.id)}
+								>
+									<Image
+										src={
+											group.icon ||
+											fallbackAssets.groupIcon
+										}
+										alt={group.name}
+										width={1920}
+										height={1080}
+									/>
+									<div>
+										<Typography
+											size="xl"
+											as="h2"
+											weight="medium"
+										>
+											{group.name}
+										</Typography>
+										<Avatars size={36}>
+											{group.members.map((member) => ({
+												src:
+													member.avatar ||
+													fallbackAssets.avatar,
+												alt: member.name || "User",
+											}))}
+										</Avatars>
+									</div>
+								</Link>
+							</Responsive.Col>
+						))}
+					</Responsive.Row>
+				) : (
+					<div className={classes("-placeholder")}>
+						<Image
+							src="/vectors/empty-records.svg"
+							alt="empty-records"
+							width={1920}
+							height={1080}
+						/>
+						<Typography>
+							You&apos;re not part of any groups yet.
+							<br />
+							Plan a trip or an outing to get started.
+						</Typography>
+						<Button onClick={() => setOpenCreateGroupPopup(true)}>
+							Create Group
+						</Button>
+					</div>
+				)}
+			</main>
+			{openCreateGroupPopup ? (
+				<CreateGroup
+					loading={creatingGroup}
+					onClose={() => setOpenCreateGroupPopup(false)}
+					onSave={createGroupHelper}
+				/>
+			) : null}
+		</>
 	);
 };
 

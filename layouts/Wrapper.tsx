@@ -1,7 +1,7 @@
+import { frontendBaseUrl } from "@/constants/variables";
 import React from "react";
 import { Toaster } from "react-hot-toast";
 import Seo from "./Seo";
-import { frontendBaseUrl } from "@/constants/variables";
 
 const Wrapper: React.FC<any> = ({ children }) => {
 	return (

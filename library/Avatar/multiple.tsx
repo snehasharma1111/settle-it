@@ -34,7 +34,9 @@ const Avatars: React.FC<IAvatarsProps> = ({
 								? index === 0
 									? 0
 									: -(props.size || 50) / 3
-								: 0,
+								: index === 0
+									? 0
+									: 8,
 							...props.style,
 						}}
 					/>
