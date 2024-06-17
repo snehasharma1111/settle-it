@@ -1,9 +1,11 @@
-import { Expense, ExpenseModel, Group, GroupModel, User } from "@/models";
+import { ExpenseModel, Group, GroupModel, User } from "@/models";
 import { expenseService, memberService } from "@/services/api";
+import { IExpense } from "@/types/expense";
 import { IGroup } from "@/types/group";
 import { getObjectFromMongoResponse } from "@/utils/parser";
 import { getNonNullValue } from "@/utils/safety";
 import { FilterQuery } from "mongoose";
+import { parsePopulatedExpense } from "./expense.service";
 
 export const parsePopulatedGroup = (group: Group): IGroup | null => {
 	if (!group) return null;
@@ -69,11 +71,13 @@ export const getGroupsUserIsPartOf = async (userId: string): Promise<any> => {
 	return ans;
 };
 
-export const getExpensesForGroup = async (groupId: string): Promise<any> => {
+export const getExpensesForGroup = async (
+	groupId: string
+): Promise<Array<IExpense>> => {
 	const res = await ExpenseModel.find({ groupId }).populate(
-		"paidBy createdBy"
+		"groupId paidBy createdBy"
 	);
-	return res.map((obj) => getObjectFromMongoResponse<Expense>(obj));
+	return res.map((obj) => parsePopulatedExpense(obj) as IExpense);
 };
 
 export const create = async (

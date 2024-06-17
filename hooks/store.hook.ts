@@ -24,6 +24,7 @@ const useStore = () => {
 		...groupSlice.actions,
 		// helpers
 		...allHelpers.authHelpers,
+		...allHelpers.expenseHelpers,
 		...allHelpers.groupHelpers,
 		...allHelpers.userHelpers,
 	};

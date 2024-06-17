@@ -1,0 +1,75 @@
+@import "@/styles/config/mixins";
+
+.create-expense {
+	width: 100%;
+
+	&-form {
+		width: 100%;
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
+		flex-direction: column;
+
+		& > div > div {
+			padding: 16px;
+		}
+
+		button {
+			margin: 0 auto;
+		}
+	}
+
+	&-members {
+		width: 100%;
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
+		flex-direction: column;
+	}
+
+	&-manage-col {
+		flex-direction: column;
+		gap: 12px;
+	}
+
+	&-member {
+		width: 100%;
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
+		gap: 8px;
+		padding: 12px;
+		border-radius: 4px;
+
+		&:hover {
+			background-color: rgba(0, 0, 0, 0.025);
+		}
+
+		&-amount {
+			width: fit-content;
+			margin-left: auto;
+		}
+	}
+
+	&-placeholder {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		flex-direction: column;
+		gap: 24px;
+		padding: 60px 0;
+		text-align: center;
+
+		img {
+			width: 200px;
+			height: auto;
+			object-fit: contain;
+		}
+	}
+
+	&-members-bar {
+		width: calc(100% - 16px);
+		margin: 0 auto;
+		margin: 12px 0 6px 0;
+	}
+}

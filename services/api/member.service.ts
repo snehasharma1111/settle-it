@@ -1,80 +1,103 @@
 import { Member, MemberModel } from "@/models";
+import { IExpense } from "@/types/expense";
+import { IGroup } from "@/types/group";
+import { IMember } from "@/types/member";
+import { IUser } from "@/types/user";
 import { getObjectFromMongoResponse } from "@/utils/parser";
 import { getNonNullValue } from "@/utils/safety";
 import { FilterQuery, UpdateQuery } from "mongoose";
 
-export const findOne = async (
-	query: Partial<Member>
-): Promise<Member | null> => {
-	const res = await MemberModel.findOne(query);
-	return getObjectFromMongoResponse<Member>(res);
+export const parsePopulatedMember = (member: Member): IMember | null => {
+	if (!member) return null;
+	const res = getObjectFromMongoResponse<Member>(member);
+	if (!res) return null;
+	return {
+		...res,
+		user: getObjectFromMongoResponse<IUser>(res.userId) as IUser,
+		group: getObjectFromMongoResponse<IGroup>(res.groupId) as IGroup,
+		expense: getObjectFromMongoResponse<IExpense>(
+			res.expenseId
+		) as IExpense,
+	};
 };
 
-export const findById = async (id: string): Promise<Member | null> => {
-	const res = await MemberModel.findById(id)
+export const findOne = async (
+	query: Partial<Member>
+): Promise<IMember | null> => {
+	const res = await MemberModel.findOne(query).populate(
+		"userId groupId expenseId"
+	);
+	return parsePopulatedMember(res);
+};
 
+export const findById = async (id: string): Promise<IMember | null> => {
+	const res = await MemberModel.findById(id)
+		.populate("userId groupId expenseId")
 		.catch((error: any) => {
 			if (error.kind === "ObjectId") return null;
 			return Promise.reject(error);
 		});
-	return getObjectFromMongoResponse<Member>(res);
+	return parsePopulatedMember(res);
 };
 
 export const find = async (
 	query: Partial<Member>
-): Promise<Member | Array<Member> | null> => {
+): Promise<IMember | Array<IMember> | null> => {
 	const res = await MemberModel.find(query);
 	if (res.length > 1) {
 		const parsedRes = res
-			.map((obj) => getObjectFromMongoResponse<Member>(obj))
-			.filter((obj) => obj !== null) as Member[];
+			.map((obj) => parsePopulatedMember(obj))
+			.filter((obj) => obj !== null) as IMember[];
 		if (parsedRes.length > 0) return parsedRes;
 	} else if (res.length === 1) {
-		return getObjectFromMongoResponse<Member>(res[0]);
+		return parsePopulatedMember(res[0]);
 	}
 	return null;
 };
 
-export const findAll = async (): Promise<Array<Member>> => {
-	const res = await MemberModel.find({}).sort({ createdAt: -1 });
+export const findAll = async (): Promise<Array<IMember>> => {
+	const res = await MemberModel.find({})
+		.sort({ createdAt: -1 })
+		.populate("userId groupId expenseId");
 	const parsedRes = res
-		.map((obj) => getObjectFromMongoResponse<Member>(obj))
-		.filter((obj) => obj !== null) as Member[];
+		.map((obj) => parsePopulatedMember(obj))
+		.filter((obj) => obj !== null) as IMember[];
 	if (parsedRes.length > 0) return parsedRes;
 	return [];
 };
 
 export const create = async (
 	body: Omit<Member, "id" | "createdAt" | "updatedAt">
-): Promise<Member> => {
+): Promise<IMember> => {
 	const res = await MemberModel.create(body);
-	return getNonNullValue(getObjectFromMongoResponse<Member>(res));
+	await res.populate("userId groupId expenseId");
+	return getNonNullValue(parsePopulatedMember(res));
 };
 
 export const update = async (
 	query: Partial<Member>,
 	update: Partial<Omit<Member, "id" | "createdAt" | "updatedAt">>
-): Promise<Member | null> => {
+): Promise<IMember | null> => {
 	const res = query.id
 		? await MemberModel.findByIdAndUpdate(query.id, update, {
 				new: true,
-			})
+			}).populate("userId groupId expenseId")
 		: await MemberModel.findOneAndUpdate(query, update, {
 				new: true,
-			});
-	return getObjectFromMongoResponse<Member>(res);
+			}).populate("userId groupId expenseId");
+	return parsePopulatedMember(res);
 };
 
 export const settleOne = async (
 	query: Partial<Member>
-): Promise<Member | null> => {
+): Promise<IMember | null> => {
 	const res = await MemberModel.findOneAndUpdate(query, {
 		$set: {
 			owed: 0,
 			paid: "$owed",
 		},
-	});
-	return getObjectFromMongoResponse<Member>(res);
+	}).populate("userId groupId expenseId");
+	return parsePopulatedMember(res);
 };
 
 export const settleMany = async (query: Partial<Member>): Promise<number> => {
@@ -98,20 +121,25 @@ export const settleMany = async (query: Partial<Member>): Promise<number> => {
 
 export const remove = async (
 	query: Partial<Member>
-): Promise<Member | null> => {
+): Promise<IMember | null> => {
 	const res = query.id
-		? await MemberModel.findByIdAndDelete(query.id)
-		: await MemberModel.findOneAndDelete(query);
-	return getObjectFromMongoResponse<Member>(res);
+		? await MemberModel.findByIdAndDelete(query.id).populate(
+				"userId groupId expenseId"
+			)
+		: await MemberModel.findOneAndDelete(query).populate(
+				"userId groupId expenseId"
+			);
+	return parsePopulatedMember(res);
 };
 
 export const bulkCreate = async (
 	body: Array<Omit<Member, "id" | "createdAt" | "updatedAt">>
-): Promise<Array<Member>> => {
+): Promise<Array<IMember>> => {
 	const res = await MemberModel.insertMany(body);
+	res.map(async (obj) => await obj.populate("userId groupId expenseId"));
 	return res
-		.map((obj) => getObjectFromMongoResponse<Member>(obj))
-		.filter((obj) => obj !== null) as Member[];
+		.map((obj) => parsePopulatedMember(obj))
+		.filter((obj) => obj !== null) as IMember[];
 };
 
 export const bulkUpdate = async (

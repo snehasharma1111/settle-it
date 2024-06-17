@@ -1,17 +1,20 @@
-import { UpdateGroup } from "@/components";
+import { CreateExpense, UpdateGroup } from "@/components";
 import { api } from "@/connections";
 import { fallbackAssets, routes } from "@/constants";
 import { useStore } from "@/hooks";
+import { Responsive } from "@/layouts";
 import { Avatars, Button, Typography } from "@/library";
 import { notify } from "@/messages";
 import { authMiddleware } from "@/middlewares";
 import PageNotFound from "@/pages/404";
 import styles from "@/styles/pages/Group.module.scss";
+import { CreateExpenseData } from "@/types/expense";
 import { IExpense } from "@/types/expenses";
 import { IGroup, UpdateGroupData } from "@/types/group";
 import { IUser } from "@/types/user";
 import { stylesConfig } from "@/utils/functions";
 import { getNonEmptyString } from "@/utils/safety";
+import moment from "moment";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { FiSettings } from "react-icons/fi";
@@ -25,9 +28,18 @@ type GroupPageProps = {
 };
 
 const GroupPage: React.FC<GroupPageProps> = (props) => {
-	const { setUser, dispatch, updateGroup, groups } = useStore();
+	const {
+		setUser,
+		dispatch,
+		updateGroup,
+		createExpense,
+		groups,
+		user: loggedInUser,
+	} = useStore();
 	const [openManageGroupPopup, setOpenManageGroupPopup] = useState(false);
+	const [openAddExpensePopup, setOpenAddExpensePopup] = useState(false);
 	const [updatingGroup, setUpdatingGroup] = useState(false);
+	const [creatingExpense, setCreatingExpense] = useState(false);
 	const [groupDetails, setGroupDetails] = useState<IGroup>(props.group);
 
 	useEffect(() => {
@@ -56,6 +68,20 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 			notify.error(error);
 		} finally {
 			setUpdatingGroup(false);
+		}
+	};
+
+	const createExpenseHelper = async (data: CreateExpenseData) => {
+		try {
+			setCreatingExpense(true);
+			const res = await dispatch(createExpense(data));
+			if (res) {
+				setOpenAddExpensePopup(false);
+			}
+		} catch (error) {
+			notify.error(error);
+		} finally {
+			setCreatingExpense(false);
 		}
 	};
 
@@ -106,9 +132,32 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 								No expenses yet <br />
 								Add one to get this party started
 							</Typography>
-							<Button>Add expense</Button>
+							<Button
+								onClick={() => setOpenAddExpensePopup(true)}
+							>
+								Add expense
+							</Button>
 						</div>
-					) : null}
+					) : (
+						<Responsive.Row>
+							{props.expenses.map((expense) => (
+								<Responsive.Col key={`expense-${expense.id}`}>
+									<div className={classes("-expense")}>
+										<Typography>
+											{moment(expense.createdAt).format(
+												"MMM DD, YYYY"
+											)}
+										</Typography>
+										<Typography>{expense.title}</Typography>
+										<Typography>
+											{expense.paidBy.name} paid{" "}
+											{expense.amount}
+										</Typography>
+									</div>
+								</Responsive.Col>
+							))}
+						</Responsive.Row>
+					)}
 				</section>
 			</main>
 			{openManageGroupPopup ? (
@@ -119,6 +168,14 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 						updateGroupHelper(groupDetails.id, updatedGroupData);
 					}}
 					loading={updatingGroup}
+				/>
+			) : null}
+			{openAddExpensePopup ? (
+				<CreateExpense
+					groupId={groupDetails.id}
+					onClose={() => setOpenAddExpensePopup(false)}
+					onSave={createExpenseHelper}
+					loading={creatingExpense}
 				/>
 			) : null}
 		</>

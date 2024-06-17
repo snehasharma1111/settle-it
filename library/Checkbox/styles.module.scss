@@ -1,0 +1,21 @@
+@import "@/styles/config/typography";
+
+.form-checkbox {
+	display: inline-flex;
+	justify-content: flex-start;
+	align-items: center;
+	gap: 10px;
+	cursor: pointer;
+
+	input {
+		display: none;
+	}
+
+	&-label {
+		@include typography(body, medium, regular);
+	}
+
+	svg {
+		flex: 0 0 auto;
+	}
+}

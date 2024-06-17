@@ -2,6 +2,7 @@ import { EXPENSE_STATUS, HTTP } from "@/constants";
 import { Expense, Member } from "@/models";
 import { expenseService, groupService, memberService } from "@/services/api";
 import { ApiRequest, ApiResponse } from "@/types/api";
+import { IMember } from "@/types/member";
 import { T_EXPENSE_STATUS } from "@/types/user";
 import {
 	genericParse,
@@ -36,7 +37,7 @@ export const createNewExpense = async (req: ApiRequest, res: ApiResponse) => {
 				.json({ message: "Total amount distributed doesn't match" });
 		}
 		// check if it is a valid group
-		const foundGroup = await groupService.findOne({ id: groupId });
+		const foundGroup = await groupService.findById(groupId);
 		if (!foundGroup)
 			return res
 				.status(HTTP.status.NOT_FOUND)
@@ -73,7 +74,7 @@ export const createNewExpense = async (req: ApiRequest, res: ApiResponse) => {
 			owed: member.userId === paidBy ? 0 : member.amount,
 			paid: member.userId === paidBy ? member.amount : 0,
 		}));
-		const createdMembers: Array<Member> = await memberService.bulkCreate(
+		const createdMembers: Array<IMember> = await memberService.bulkCreate(
 			membersForCurrentExpense
 		);
 		return res.status(HTTP.status.CREATED).json({
@@ -135,12 +136,12 @@ export const updateExpense = async (req: ApiRequest, res: ApiResponse) => {
 			return res
 				.status(HTTP.status.NOT_FOUND)
 				.json({ message: HTTP.message.NOT_FOUND });
-		if (foundExpense.createdBy !== loggedInUserId)
+		if (foundExpense.createdBy.id !== loggedInUserId)
 			return res
 				.status(HTTP.status.FORBIDDEN)
 				.json({ message: HTTP.message.FORBIDDEN });
 		const foundGroup = await groupService.findOne({
-			id: foundExpense.groupId,
+			id: foundExpense.group.id,
 		});
 		if (!foundGroup) return res.status(HTTP.status.NOT_FOUND);
 		if (amount !== null && members !== null) {
@@ -166,7 +167,7 @@ export const updateExpense = async (req: ApiRequest, res: ApiResponse) => {
 						Omit<Member, "id" | "createdAt" | "updatedAt">
 					> = members.map((member) => ({
 						userId: member.userId,
-						groupId: foundExpense.groupId,
+						groupId: foundExpense.group.id,
 						expenseId: id,
 						amount: member.amount,
 						owed: member.amount,
@@ -181,17 +182,25 @@ export const updateExpense = async (req: ApiRequest, res: ApiResponse) => {
 				const membersToRemoveForCurrentExpense: Array<Member> = [];
 				currentMembersOfExpense.forEach((member) => {
 					const foundMember = members.find(
-						(m) => m.userId === member.userId
+						(m) => m.userId === member.user.id
 					);
 					if (foundMember) {
 						membersToUpdateForCurrentExpense.push({
 							...member,
+							userId: member.user.id,
+							groupId: member.group.id,
+							expenseId: member.expense.id,
 							amount: foundMember.amount,
 							owed: foundMember.amount,
 							paid: 0,
 						});
 					} else {
-						membersToRemoveForCurrentExpense.push(member);
+						membersToRemoveForCurrentExpense.push({
+							...member,
+							userId: member.user.id,
+							groupId: member.group.id,
+							expenseId: member.expense.id,
+						});
 					}
 				});
 				const membersToCreateForCurrentExpense: Array<
@@ -200,20 +209,20 @@ export const updateExpense = async (req: ApiRequest, res: ApiResponse) => {
 					.filter(
 						(m) =>
 							!currentMembersOfExpense
-								.map((m) => m.userId)
+								.map((m) => m.user.id)
 								.includes(m.userId)
 					)
 					.map((member) => ({
 						userId: member.userId,
-						groupId: foundExpense.groupId,
+						groupId: foundExpense.group.id,
 						expenseId: id,
 						amount: member.amount,
 						owed:
-							member.userId === foundExpense.paidBy
+							member.userId === foundExpense.paidBy.id
 								? 0
 								: member.amount,
 						paid:
-							member.userId === foundExpense.paidBy
+							member.userId === foundExpense.paidBy.id
 								? member.amount
 								: 0,
 					}));
@@ -245,7 +254,7 @@ export const updateExpense = async (req: ApiRequest, res: ApiResponse) => {
 				}
 			} else {
 				if (members.length === 1) {
-					if (members[0].userId === currentMembersOfExpense.userId) {
+					if (members[0].userId === currentMembersOfExpense.user.id) {
 						await memberService.update(
 							{ id: currentMembersOfExpense.id },
 							{ amount: amount, owed: amount, paid: 0 }
@@ -253,7 +262,7 @@ export const updateExpense = async (req: ApiRequest, res: ApiResponse) => {
 					} else {
 						await memberService.create({
 							userId: members[0].userId,
-							groupId: foundExpense.groupId,
+							groupId: foundExpense.group.id,
 							expenseId: id,
 							amount: members[0].amount,
 							owed: members[0].amount,
@@ -268,11 +277,11 @@ export const updateExpense = async (req: ApiRequest, res: ApiResponse) => {
 						Omit<Member, "id" | "createdAt" | "updatedAt">
 					> = members
 						.filter(
-							(m) => m.userId !== currentMembersOfExpense.userId
+							(m) => m.userId !== currentMembersOfExpense.user.id
 						)
 						.map((member) => ({
 							userId: member.userId,
-							groupId: foundExpense.groupId,
+							groupId: foundExpense.group.id,
 							expenseId: id,
 							amount: member.amount,
 							owed: member.amount,
@@ -338,7 +347,7 @@ export const removeExpense = async (req: ApiRequest, res: ApiResponse) => {
 			return res
 				.status(HTTP.status.NOT_FOUND)
 				.json({ message: HTTP.message.NOT_FOUND });
-		if (foundExpense.createdBy !== loggedInUserId)
+		if (foundExpense.createdBy.id !== loggedInUserId)
 			return res
 				.status(HTTP.status.FORBIDDEN)
 				.json({ message: HTTP.message.FORBIDDEN });
@@ -371,7 +380,7 @@ export const settleExpense = async (req: ApiRequest, res: ApiResponse) => {
 			return res
 				.status(HTTP.status.NOT_FOUND)
 				.json({ message: HTTP.message.NOT_FOUND });
-		if (foundExpense.paidBy !== loggedInUserId)
+		if (foundExpense.paidBy.id !== loggedInUserId)
 			return res
 				.status(HTTP.status.FORBIDDEN)
 				.json({ message: "Only the person who paid can settle" });
@@ -407,19 +416,19 @@ export const memberPaid = async (req: ApiRequest, res: ApiResponse) => {
 				.status(HTTP.status.NOT_FOUND)
 				.json({ message: HTTP.message.NOT_FOUND });
 		const foundExpense = await expenseService.findById(
-			foundMember.expenseId
+			foundMember.expense.id
 		);
 		if (!foundExpense)
 			return res
 				.status(HTTP.status.NOT_FOUND)
 				.json({ message: HTTP.message.NOT_FOUND });
-		if (foundExpense.paidBy !== loggedInUserId)
+		if (foundExpense.paidBy.id !== loggedInUserId)
 			return res
 				.status(HTTP.status.FORBIDDEN)
 				.json({ message: "Only the person who paid can settle" });
 		if (foundMember.owed === paidAmount) {
 			await memberService.settleOne({
-				expenseId: foundMember.expenseId,
+				expenseId: foundMember.expense.id,
 				id: memberId,
 			});
 		} else {
