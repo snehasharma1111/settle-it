@@ -5,8 +5,15 @@ import Seo from "./Seo";
 import { useStore } from "@/hooks";
 
 const Wrapper: React.FC<any> = ({ children }) => {
-	const { dispatch, user, groups, getAllGroups, fetchAuthenticatedUser } =
-		useStore();
+	const {
+		dispatch,
+		expenses,
+		user,
+		groups,
+		getAllGroups,
+		getAllExpensesForUser,
+		fetchAuthenticatedUser,
+	} = useStore();
 
 	useEffect(() => {
 		if (!user) {
@@ -14,6 +21,9 @@ const Wrapper: React.FC<any> = ({ children }) => {
 		}
 		if (groups.length === 0) {
 			dispatch(getAllGroups());
+		}
+		if (expenses.length === 0) {
+			dispatch(getAllExpensesForUser());
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);

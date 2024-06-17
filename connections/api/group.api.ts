@@ -1,6 +1,6 @@
 import { http } from "@/connections";
 import { ApiRes } from "@/types/api";
-import { IExpense } from "@/types/expenses";
+import { IExpense } from "@/types/expense";
 import { CreateGroupData, IGroup, UpdateGroupData } from "@/types/group";
 
 export const getAllGroups = async (

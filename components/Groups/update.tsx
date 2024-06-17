@@ -28,7 +28,6 @@ const UpdateGroup: React.FC<IUpdateGroupProps> = ({
 	const { user: loggedInuser, groups } = useStore();
 	const [fields, setFields] = useState<UpdateGroupData>(() => {
 		const group = groups.find((group) => group.id === id);
-		console.log(group, id, groups);
 		if (group) {
 			return {
 				name: group.name,
@@ -86,12 +85,6 @@ const UpdateGroup: React.FC<IUpdateGroupProps> = ({
 								setSelectedMembers(users)
 							}
 							onSave={() => {
-								console.log({
-									...fields,
-									members: selectedMembers.map(
-										(user) => user.id
-									),
-								});
 								setFields({
 									...fields,
 									members: selectedMembers.map(

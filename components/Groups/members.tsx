@@ -43,7 +43,6 @@ const CreateGroupMembers: React.FC<ICreateGroupMembersProps> = ({
 	};
 
 	const handleSelectUser = (user: IUser) => {
-		console.log(selectedMembers, user);
 		const isUserSelected = selectedMembers
 			.map((user) => user.id)
 			.includes(user.id);

@@ -1,0 +1,39 @@
+import { IExpense } from "@/types/expense";
+import { createSlice } from "@reduxjs/toolkit";
+import { expenseHelpers } from "../helpers";
+
+const initialState: Array<IExpense> = [];
+
+export const expenseSlice = createSlice({
+	name: "expense",
+	initialState,
+	reducers: {
+		setExpenses: (
+			state,
+			action: { payload: Array<IExpense>; type: string }
+		) => {
+			state = action.payload;
+			return state;
+		},
+	},
+	extraReducers(builder) {
+		builder.addCase(
+			expenseHelpers.getAllExpensesForUser.fulfilled,
+			(state, action) => {
+				state = action.payload;
+				return state;
+			}
+		);
+		builder.addCase(
+			expenseHelpers.createExpense.fulfilled,
+			(state, action) => {
+				state = [...state, action.payload];
+				return state;
+			}
+		);
+	},
+});
+export const { setExpenses } = expenseSlice.actions;
+export default expenseSlice.reducer;
+export const expenseSelector = (state: { expense: Array<IExpense> }) =>
+	state.expense;

@@ -153,12 +153,6 @@ const CreateExpense: React.FC<ICreateExpenseProps> = ({
 							)
 						)
 							return "Enter Amount for all members";
-						console.log(
-							selectedMembers
-								.map((user) => user.amount)
-								.reduce((a, b) => a + b, 0),
-							fields.amount
-						);
 						if (
 							selectedMembers
 								.map((user) => user.amount)

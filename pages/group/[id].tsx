@@ -8,8 +8,7 @@ import { notify } from "@/messages";
 import { authMiddleware } from "@/middlewares";
 import PageNotFound from "@/pages/404";
 import styles from "@/styles/pages/Group.module.scss";
-import { CreateExpenseData } from "@/types/expense";
-import { IExpense } from "@/types/expenses";
+import { CreateExpenseData, IExpense } from "@/types/expense";
 import { IGroup, UpdateGroupData } from "@/types/group";
 import { IUser } from "@/types/user";
 import { stylesConfig } from "@/utils/functions";
@@ -17,7 +16,7 @@ import { getNonEmptyString } from "@/utils/safety";
 import moment from "moment";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import { FiSettings } from "react-icons/fi";
+import { FiPlus, FiSettings } from "react-icons/fi";
 
 const classes = stylesConfig(styles, "group");
 
@@ -28,14 +27,8 @@ type GroupPageProps = {
 };
 
 const GroupPage: React.FC<GroupPageProps> = (props) => {
-	const {
-		setUser,
-		dispatch,
-		updateGroup,
-		createExpense,
-		groups,
-		user: loggedInUser,
-	} = useStore();
+	const { setUser, dispatch, updateGroup, createExpense, groups, expenses } =
+		useStore();
 	const [openManageGroupPopup, setOpenManageGroupPopup] = useState(false);
 	const [openAddExpensePopup, setOpenAddExpensePopup] = useState(false);
 	const [updatingGroup, setUpdatingGroup] = useState(false);
@@ -120,7 +113,8 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 					</Avatars>
 				</div>
 				<section className={classes("-body")}>
-					{props.expenses.length === 0 ? (
+					{expenses.filter((exp) => exp.group.id === groupDetails.id)
+						.length === 0 ? (
 						<div className={classes("-placeholder")}>
 							<Image
 								src="/vectors/empty-records.svg"
@@ -159,6 +153,15 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 						</Responsive.Row>
 					)}
 				</section>
+				{expenses.filter((exp) => exp.group.id === groupDetails.id)
+					.length > 0 ? (
+					<Button
+						onClick={() => setOpenAddExpensePopup(true)}
+						className={classes("-add-fab")}
+					>
+						<FiPlus /> Add expense
+					</Button>
+				) : null}
 			</main>
 			{openManageGroupPopup ? (
 				<UpdateGroup

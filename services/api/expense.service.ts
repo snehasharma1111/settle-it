@@ -2,15 +2,16 @@ import { Expense, ExpenseModel } from "@/models";
 import { IExpense } from "@/types/expense";
 import { IGroup } from "@/types/group";
 import { IUser } from "@/types/user";
+import { omitKeys } from "@/utils/functions";
 import { getObjectFromMongoResponse } from "@/utils/parser";
 import { getNonNullValue } from "@/utils/safety";
-import { omitKeys } from "@/utils/functions";
+import { FilterQuery } from "mongoose";
+import { expenseService, groupService } from ".";
 
 export const parsePopulatedExpense = (expense: Expense): IExpense | null => {
 	if (!expense) return null;
 	const res = getObjectFromMongoResponse<Expense>(expense);
 	if (!res) return null;
-	console.log("res", res, expense);
 	return {
 		...omitKeys(res, ["groupId"]),
 		group: getObjectFromMongoResponse<IGroup>(res.groupId) as IGroup,
@@ -39,9 +40,11 @@ export const findById = async (id: string): Promise<IExpense | null> => {
 };
 
 export const find = async (
-	query: Partial<Expense>
+	query: FilterQuery<Expense>
 ): Promise<IExpense | IExpense[] | null> => {
-	const res = await ExpenseModel.find(query);
+	const res = await ExpenseModel.find(query).populate(
+		"groupId paidBy createdBy"
+	);
 	if (res.length > 1) {
 		const parsedRes = res
 			.map((obj) => parsePopulatedExpense(obj))
@@ -104,4 +107,19 @@ export const removeMultiple = async (
 ): Promise<number> => {
 	const res = await ExpenseModel.deleteMany(query);
 	return res.deletedCount;
+};
+
+export const getExpensesForUser = async (
+	userId: string
+): Promise<Array<IExpense>> => {
+	const groups = await groupService.find({ members: { $in: [userId] } });
+	const groupIds = Array.isArray(groups)
+		? groups.map((group) => group.id)
+		: groups
+			? [groups.id]
+			: [];
+	const expenses = await expenseService.find({ groupId: { $in: groupIds } });
+	if (!expenses) return [];
+	if (!Array.isArray(expenses)) return [expenses];
+	return expenses.filter((obj) => obj !== null) as IExpense[];
 };

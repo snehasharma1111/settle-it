@@ -12,6 +12,24 @@ import {
 	safeParse,
 } from "@/utils/safety";
 
+export const getAllExpensesForUser = async (
+	req: ApiRequest,
+	res: ApiResponse
+) => {
+	try {
+		const loggedInUserId = getNonEmptyString(req.user?.id);
+		const expenses =
+			await expenseService.getExpensesForUser(loggedInUserId);
+		return res
+			.status(HTTP.status.SUCCESS)
+			.json({ message: HTTP.message.SUCCESS, data: expenses });
+	} catch (error) {
+		return res
+			.status(HTTP.status.INTERNAL_SERVER_ERROR)
+			.json({ message: HTTP.message.INTERNAL_SERVER_ERROR });
+	}
+};
+
 export const createNewExpense = async (req: ApiRequest, res: ApiResponse) => {
 	try {
 		const loggedInUserId = getNonEmptyString(req.user?.id);

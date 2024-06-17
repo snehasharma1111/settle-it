@@ -1,15 +1,18 @@
-import { useDispatch, useSelector } from "react-redux";
+import * as allHelpers from "@/context/helpers";
 import {
-	userSelector,
-	userSlice,
+	expenseSelector,
+	expenseSlice,
 	groupSelector,
 	groupSlice,
+	userSelector,
+	userSlice,
 } from "@/context/slices";
-import * as allHelpers from "@/context/helpers";
+import { useDispatch, useSelector } from "react-redux";
 
 const useStore = () => {
 	const dispatch = useDispatch<any>();
 
+	const expenses = useSelector(expenseSelector);
 	const user = useSelector(userSelector);
 	const groups = useSelector(groupSelector);
 
@@ -18,8 +21,10 @@ const useStore = () => {
 		dispatch,
 		// user and skills: state values
 		user,
+		expenses,
 		groups,
 		// actions
+		...expenseSlice.actions,
 		...userSlice.actions,
 		...groupSlice.actions,
 		// helpers
