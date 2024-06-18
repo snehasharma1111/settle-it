@@ -11,12 +11,13 @@ const handler: NextApiHandler = async (req: ApiRequest, res: ApiResponse) => {
 		const { method } = req;
 
 		switch (method) {
-			case "GET":
+			case "PATCH":
+				// use both authMiddleware and validationMiddleware
 				return authMiddleware.apiRoute(
-					userControllers.getLoggedInUserDetails
+					userControllers.updateUserDetails
 				)(req, res);
 			default:
-				res.setHeader("Allow", ["GET"]);
+				res.setHeader("Allow", ["PATCH"]);
 				return res
 					.status(HTTP.status.METHOD_NOT_ALLOWED)
 					.send(`Method ${method} Not Allowed`);

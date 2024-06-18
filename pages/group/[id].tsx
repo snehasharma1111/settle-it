@@ -90,10 +90,16 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 						backgroundImage: `url(${groupDetails.banner || fallbackAssets.banner})`,
 					}}
 				>
-					<button onClick={() => router.back()}>
+					<button
+						onClick={() => router.back()}
+						className={classes("-banner-btn")}
+					>
 						<FiArrowLeft />
 					</button>
-					<button onClick={() => setOpenManageGroupPopup(true)}>
+					<button
+						onClick={() => setOpenManageGroupPopup(true)}
+						className={classes("-banner-btn")}
+					>
 						<FiSettings />
 					</button>
 				</div>

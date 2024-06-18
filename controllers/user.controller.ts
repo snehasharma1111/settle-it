@@ -43,16 +43,11 @@ export const getLoggedInUserDetails = async (
 export const updateUserDetails = async (req: ApiRequest, res: ApiResponse) => {
 	try {
 		const loggedInUserId = genericParse(getNonEmptyString, req.user?.id);
-		const id = genericParse(getNonEmptyString, req.query.id);
-		if (!id || !loggedInUserId)
+		if (!loggedInUserId)
 			return res
 				.status(HTTP.status.BAD_REQUEST)
 				.json({ message: HTTP.message.BAD_REQUEST });
-		if (loggedInUserId !== id)
-			return res
-				.status(HTTP.status.FORBIDDEN)
-				.json({ message: HTTP.message.FORBIDDEN });
-		const foundUser = await userService.findById(id);
+		const foundUser = await userService.findById(loggedInUserId);
 		if (!foundUser)
 			return res
 				.status(HTTP.status.NOT_FOUND)
@@ -88,7 +83,7 @@ export const updateUserDetails = async (req: ApiRequest, res: ApiResponse) => {
 			}
 		}
 		const updatedUser = await userService.update(
-			{ id: id as string },
+			{ id: loggedInUserId },
 			updatedBody
 		);
 		return res.status(HTTP.status.SUCCESS).json({

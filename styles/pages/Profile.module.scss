@@ -13,6 +13,26 @@
 
 	&-banner {
 		@include banner;
-		background-image: url("https://c0.wallpaperflare.com/preview/231/247/682/5be98e06c77ea.jpg");
+		background-image: url("https://b.kisscc0.com/20180517/rge/kisscc0-software-development-computer-software-custom-soft-education-5afda3f5697368.5694534815265720214319.jpg");
+	}
+
+	&-meta {
+		width: 100%;
+		padding: 0 5%;
+		z-index: 5;
+	}
+
+	&-form {
+		width: 50%;
+		padding: 24px 5%;
+		display: flex;
+		justify-content: flex-start;
+		align-items: flex-start;
+		flex-direction: column;
+		gap: 16px;
+
+		@include responsive(phone) {
+			width: 100%;
+		}
 	}
 }

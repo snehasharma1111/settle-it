@@ -3,11 +3,10 @@ import { ApiRes } from "@/types/api";
 import { IUser } from "@/types/user";
 
 export const updateUser = async (
-	id: string,
 	data: Partial<IUser>
 ): Promise<ApiRes<IUser>> => {
 	try {
-		const response = await http.patch(`/users/${id}`, data);
+		const response = await http.patch("/users", data);
 		return Promise.resolve(response.data);
 	} catch (error: any) {
 		console.error(error);
