@@ -120,6 +120,7 @@ export const inviteUser = async (req: ApiRequest, res: ApiResponse) => {
 		const createdUser = await userService.create({
 			email,
 			status: USER_STATUS.INVITED,
+			invitedBy: loggedInUserId,
 		});
 		return res.status(HTTP.status.CREATED).json({
 			message: "User created successfully",

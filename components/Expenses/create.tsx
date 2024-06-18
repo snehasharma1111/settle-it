@@ -113,11 +113,18 @@ const CreateExpense: React.FC<ICreateExpenseProps> = ({
 							name="paidBy"
 							placeholder={loggedInuser.name}
 							size="small"
-							value={
-								group.members.find(
+							value={(() => {
+								const foundMember = group.members.find(
 									(user) => user.id === fields.paidBy
-								)?.name
-							}
+								);
+								if (foundMember) {
+									if (foundMember.name) {
+										return foundMember.name;
+									}
+									return foundMember.email;
+								}
+								return loggedInuser.name;
+							})()}
 							dropdown={{
 								enabled: true,
 								options: group.members.map((user) => ({

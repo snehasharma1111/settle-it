@@ -1,11 +1,13 @@
 import { api } from "@/connections";
-import { fallbackAssets } from "@/constants";
+import { fallbackAssets, regex } from "@/constants";
+import { useDebounce } from "@/hooks";
 import { Responsive } from "@/layouts";
 import { Avatar, Avatars, Button, Input, Typography } from "@/library";
+import { notify } from "@/messages";
 import { IUser } from "@/types/user";
-import { debounce, stylesConfig } from "@/utils/functions";
+import { stylesConfig } from "@/utils/functions";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./styles.module.scss";
 
 interface ICreateGroupMembersProps {
@@ -14,7 +16,95 @@ interface ICreateGroupMembersProps {
 	setSelectedMembers: (_: Array<IUser>) => void;
 }
 
+interface MembersPlaceholderProps {
+	loading: boolean;
+	searchStr: string;
+	onInvited: (_: IUser) => void;
+}
+
 const classes = stylesConfig(styles, "create-group-members");
+
+const MembersPlaceholder: React.FC<MembersPlaceholderProps> = ({
+	loading,
+	searchStr,
+	onInvited,
+}) => {
+	const [inviting, setInviting] = useState(false);
+	const inviteMember = async () => {
+		try {
+			setInviting(true);
+			const res = await api.user.inviteUser(searchStr);
+			onInvited(res.data);
+		} catch (error) {
+			notify.error(error);
+		} finally {
+			setInviting(false);
+		}
+	};
+	if (loading) {
+		return (
+			<Responsive.Col xlg={100} lg={100} md={100} sm={100} xsm={100}>
+				<p className={classes("-loading")}>Searching...</p>
+			</Responsive.Col>
+		);
+	}
+	if (searchStr.length < 3) {
+		return (
+			<Responsive.Col xlg={100} lg={100} md={100} sm={100} xsm={100}>
+				<div className={classes("-placeholder")}>
+					<Image
+						src="/vectors/empty-records.svg"
+						alt="empty-records"
+						width={1920}
+						height={1080}
+					/>
+					<Typography>
+						Please type at least 3 characters of user email
+					</Typography>
+				</div>
+			</Responsive.Col>
+		);
+	}
+	if (searchStr.length >= 3) {
+		if (!regex.email.test(searchStr)) {
+			return (
+				<Responsive.Col xlg={100} lg={100} md={100} sm={100} xsm={100}>
+					<div className={classes("-placeholder")}>
+						<Image
+							src="/vectors/empty-records.svg"
+							alt="empty-records"
+							width={1920}
+							height={1080}
+						/>
+						<Typography>Please enter a valid email</Typography>
+					</div>
+				</Responsive.Col>
+			);
+		}
+		return (
+			<Responsive.Col xlg={100} lg={100} md={100} sm={100} xsm={100}>
+				<div className={classes("-placeholder")}>
+					<Typography>
+						Seems like{" "}
+						<span style={{ color: "var(--accent-color)" }}>
+							{searchStr}
+						</span>{" "}
+						has not joined us yet.
+					</Typography>
+					<Typography>Want to invite them?</Typography>
+					<Button
+						className={classes("-button")}
+						type="button"
+						onClick={inviteMember}
+						loading={inviting}
+					>
+						Invite
+					</Button>
+				</div>
+			</Responsive.Col>
+		);
+	}
+};
 
 const CreateGroupMembers: React.FC<ICreateGroupMembersProps> = ({
 	onSave,
@@ -23,6 +113,10 @@ const CreateGroupMembers: React.FC<ICreateGroupMembersProps> = ({
 }) => {
 	const [searching, setSearching] = useState(false);
 	const [searchResults, setSearchResults] = useState<Array<IUser>>([]);
+	const [searchStr, debouncedSearchStr, setSearchStr] = useDebounce<string>(
+		"",
+		1000
+	);
 
 	const handleSearch = async (searchStr: any) => {
 		try {
@@ -34,12 +128,6 @@ const CreateGroupMembers: React.FC<ICreateGroupMembersProps> = ({
 		} finally {
 			setSearching(false);
 		}
-	};
-
-	const handleChange = (e: any) => {
-		if (e.target.value.length >= 3)
-			debounce(handleSearch, 1000)(e.target.value);
-		else setSearchResults([]);
 	};
 
 	const handleSelectUser = (user: IUser) => {
@@ -56,6 +144,16 @@ const CreateGroupMembers: React.FC<ICreateGroupMembersProps> = ({
 		}
 	};
 
+	useEffect(() => {
+		if (
+			debouncedSearchStr &&
+			debouncedSearchStr.length >= 3 &&
+			regex.email.test(debouncedSearchStr)
+		) {
+			handleSearch(debouncedSearchStr);
+		}
+	}, [debouncedSearchStr]);
+
 	return (
 		<Responsive.Row className={classes("")}>
 			<Responsive.Col xlg={100} lg={100} md={100} sm={100} xsm={100}>
@@ -63,7 +161,8 @@ const CreateGroupMembers: React.FC<ICreateGroupMembersProps> = ({
 					name="username"
 					placeholder="Username"
 					size="small"
-					onChange={handleChange}
+					value={searchStr}
+					onChange={(e: any) => setSearchStr(e.target.value)}
 				/>
 			</Responsive.Col>
 			<Responsive.Col xlg={100} lg={100} md={100} sm={100} xsm={100}>
@@ -72,30 +171,22 @@ const CreateGroupMembers: React.FC<ICreateGroupMembersProps> = ({
 						<Avatars stack={false} size={32}>
 							{selectedMembers.map((user) => ({
 								src: user.avatar || fallbackAssets.avatar,
-								alt: user.name || "User",
+								alt: user.name || user.email,
 							}))}
 						</Avatars>
 					</div>
 				) : null}
 			</Responsive.Col>
-			{searching ? (
-				<Responsive.Col xlg={100} lg={100} md={100} sm={100} xsm={100}>
-					<p className={classes("-loading")}>Searching...</p>
-				</Responsive.Col>
-			) : searchResults.length === 0 ? (
-				<Responsive.Col xlg={100} lg={100} md={100} sm={100} xsm={100}>
-					<div className={classes("-placeholder")}>
-						<Image
-							src="/vectors/empty-records.svg"
-							alt="empty-records"
-							width={1920}
-							height={1080}
-						/>
-						<Typography>
-							Please type at least 3 characters of user email
-						</Typography>
-					</div>
-				</Responsive.Col>
+			{searchResults.length === 0 ? (
+				<MembersPlaceholder
+					searchStr={searchStr}
+					loading={searching}
+					onInvited={(newUser) => {
+						handleSelectUser(newUser);
+						setSearchResults([newUser]);
+						setSearchStr("");
+					}}
+				/>
 			) : (
 				searchResults.map((user) => (
 					<Responsive.Col

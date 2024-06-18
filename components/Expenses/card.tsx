@@ -33,7 +33,7 @@ const Expense: React.FC<IExpenseProps> = ({
 					</Typography>
 				</div>
 				<div className={classes("-paid")}>
-					{paidBy.name}
+					{paidBy.name || paidBy.email.slice(0, 7) + "..."}
 					<Typography size="sm">paid {amount}</Typography>
 				</div>
 			</div>

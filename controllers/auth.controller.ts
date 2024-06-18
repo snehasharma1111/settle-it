@@ -142,6 +142,13 @@ export const login = async (req: ApiRequest, res: ApiResponse) => {
 				data: user,
 			});
 		} else {
+			// if the user is only invited yet, update him to joined
+			if (foundUser.status === USER_STATUS.INVITED) {
+				await userService.update(
+					{ id: foundUser.id },
+					{ status: USER_STATUS.JOINED }
+				);
+			}
 			// return user
 			const token = authService.generateToken(`${foundUser.id}`);
 			res.setHeader(

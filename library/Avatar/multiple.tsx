@@ -20,36 +20,37 @@ const Avatars: React.FC<IAvatarsProps> = ({
 			className={classes("")}
 			title={children.map((c) => c.alt).join(", ")}
 		>
-			{/* if there are more than 3, show only the first 3 and one more cell showing the count */}
-			{children
-				.slice(0, stack ? 3 : children.length)
-				.map((child, index) => (
-					<Avatar
-						key={`avatars-${index}`}
-						src={child.src}
-						alt={child.alt}
-						{...props}
-						style={{
-							marginLeft: stack
-								? index === 0
-									? 0
-									: -(props.size || 50) / 3
-								: index === 0
-									? 0
-									: 8,
-							...props.style,
-						}}
-					/>
-				))}
-			{children.length > 3 ? (
+			{/* if there are more than 4, show only the first 4 and one more cell showing the count */}
+			{(children.length > 4
+				? [children[0], children[1], children[2], children[3]]
+				: children
+			).map((child, index) => (
+				<Avatar
+					key={`avatars-${index}`}
+					src={child.src}
+					alt={child.alt}
+					{...props}
+					style={{
+						marginLeft: stack
+							? index === 0
+								? 0
+								: -(props.size || 50) / 3
+							: index === 0
+								? 0
+								: 8,
+						...props.style,
+					}}
+				/>
+			))}
+			{children.length > 4 ? (
 				<Avatar
 					src=""
-					alt={`+${children.length - 3}`}
+					alt={`+${children.length - 4}`}
 					size={props.size}
 					style={{
 						backgroundColor: "var(--theme-green)",
 						color: "var(--theme-white)",
-						marginLeft: stack ? -(props.size || 50) / 3 : 0,
+						marginLeft: stack ? -(props.size || 50) / 3 : 8,
 						...props.style,
 					}}
 				/>

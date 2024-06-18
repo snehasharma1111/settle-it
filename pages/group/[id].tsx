@@ -14,8 +14,9 @@ import { IUser } from "@/types/user";
 import { stylesConfig } from "@/utils/functions";
 import { getNonEmptyString } from "@/utils/safety";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { FiPlus, FiSettings } from "react-icons/fi";
+import { FiArrowLeft, FiPlus, FiSettings } from "react-icons/fi";
 
 const classes = stylesConfig(styles, "group");
 
@@ -26,6 +27,7 @@ type GroupPageProps = {
 };
 
 const GroupPage: React.FC<GroupPageProps> = (props) => {
+	const router = useRouter();
 	const { setUser, dispatch, updateGroup, createExpense, groups, expenses } =
 		useStore();
 	const [openManageGroupPopup, setOpenManageGroupPopup] = useState(false);
@@ -88,6 +90,9 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 						backgroundImage: `url(${groupDetails.banner || fallbackAssets.banner})`,
 					}}
 				>
+					<button onClick={() => router.back()}>
+						<FiArrowLeft />
+					</button>
 					<button onClick={() => setOpenManageGroupPopup(true)}>
 						<FiSettings />
 					</button>
@@ -107,7 +112,7 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 					<Avatars size={32}>
 						{groupDetails.members.map((member) => ({
 							src: member.avatar || fallbackAssets.avatar,
-							alt: member.name || "avatar",
+							alt: member.name || member.email,
 						}))}
 					</Avatars>
 				</div>

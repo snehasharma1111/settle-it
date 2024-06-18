@@ -50,7 +50,7 @@ const ExpenseMember: React.FC<ExpenseMemberProps> = ({
 		<div className={classes("-member")}>
 			<Avatar
 				src={user.avatar || fallbackAssets.avatar}
-				alt={user.name || ""}
+				alt={user.name || user.email}
 				size={36}
 			/>
 			{(() => {
@@ -58,7 +58,8 @@ const ExpenseMember: React.FC<ExpenseMemberProps> = ({
 					return (
 						<>
 							<Typography size="sm">
-								{expense.paidBy.name}
+								{expense.paidBy.name ||
+									expense.paidBy.email.slice(0, 7) + "..."}
 							</Typography>{" "}
 							<Typography
 								size="sm"
@@ -76,7 +77,9 @@ const ExpenseMember: React.FC<ExpenseMemberProps> = ({
 						return (
 							<>
 								<Typography size="sm">
-									{user.name} has
+									{user.name ||
+										user.email.slice(0, 7) + "..."}{" "}
+									has
 								</Typography>{" "}
 								<Typography
 									size="sm"
@@ -87,14 +90,19 @@ const ExpenseMember: React.FC<ExpenseMemberProps> = ({
 									paid {paid}
 								</Typography>{" "}
 								<Typography size="sm">
-									{expense.paidBy.name}
+									{expense.paidBy.name ||
+										expense.paidBy.email.slice(0, 7) +
+											"..."}
 								</Typography>
 							</>
 						);
 					} else {
 						return (
 							<>
-								<Typography size="sm">{user.name}</Typography>{" "}
+								<Typography size="sm">
+									{user.name ||
+										user.email.slice(0, 7) + "..."}
+								</Typography>{" "}
 								<Typography
 									size="sm"
 									style={{
@@ -104,7 +112,10 @@ const ExpenseMember: React.FC<ExpenseMemberProps> = ({
 									owes {owed}
 								</Typography>{" "}
 								<Typography size="sm">
-									to {expense.paidBy.name}
+									to{" "}
+									{expense.paidBy.name ||
+										expense.paidBy.email.slice(0, 7) +
+											"..."}
 								</Typography>
 							</>
 						);
@@ -178,7 +189,8 @@ const ViewExpense: React.FC<IViewExpenseProps> = ({ id, onClose }) => {
 						</Typography>
 					</div>
 					<div className={classes("-card-paid")}>
-						{expense.paidBy.name}
+						{expense.paidBy.name ||
+							expense.paidBy.email.slice(0, 7) + "..."}
 						<Typography size="sm">paid {expense.amount}</Typography>
 					</div>
 				</div>

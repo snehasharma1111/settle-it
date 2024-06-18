@@ -26,3 +26,13 @@ export const searchForUsers = async (
 		return Promise.reject(error?.response?.data);
 	}
 };
+
+export const inviteUser = async (email: string): Promise<ApiRes<IUser>> => {
+	try {
+		const response = await http.post("/users/invite", { email });
+		return Promise.resolve(response.data);
+	} catch (error: any) {
+		console.error(error);
+		return Promise.reject(error?.response?.data);
+	}
+};

@@ -63,10 +63,10 @@ const ExpenseMembers: React.FC<IExpenseMembersProps> = ({
 					/>
 					<Avatar
 						src={member.avatar || fallbackAssets.avatar}
-						alt={member.name || "avatar"}
+						alt={member.name || member.email}
 						size={32}
 					/>
-					<Typography>{member.name}</Typography>
+					<Typography>{member.name || member.email}</Typography>
 					<Input
 						name="amount"
 						type="number"

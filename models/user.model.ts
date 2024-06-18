@@ -30,6 +30,11 @@ const UserSchema = new mongoose.Schema(
 			enum: Object.values(USER_STATUS),
 			default: USER_STATUS.JOINED,
 		},
+		invitedBy: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "User",
+			sparse: true,
+		},
 	},
 	{
 		timestamps: true,
@@ -51,6 +56,7 @@ export type User = {
 	phone?: string;
 	avatar?: string;
 	status: T_USER_STATUS;
+	invitedBy?: string;
 	createdAt: string;
 	updatedAt: string;
 };
