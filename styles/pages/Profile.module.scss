@@ -1,0 +1,18 @@
+@import "@/styles/config/mixins";
+
+.profile-page {
+	width: 100%;
+	min-height: 100vh;
+	display: flex;
+	justify-content: flex-start;
+	align-items: flex-start;
+	flex-direction: column;
+	margin-top: -60px;
+	position: relative;
+	z-index: 1;
+
+	&-banner {
+		@include banner;
+		background-image: url("https://c0.wallpaperflare.com/preview/231/247/682/5be98e06c77ea.jpg");
+	}
+}

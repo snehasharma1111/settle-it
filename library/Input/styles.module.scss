@@ -13,10 +13,17 @@
 	&__label {
 		width: 100%;
 		display: flex;
-		justify-content: space-between;
+		justify-content: flex-start;
 		align-items: center;
-		gap: 24px;
 		color: var(--theme-black);
+	}
+
+	label:has(~ div > input:required) {
+		&::after {
+			content: "*";
+			color: var(--theme-red);
+			margin-left: 5px;
+		}
 	}
 
 	&__input {
@@ -68,6 +75,7 @@
 
 		&__option {
 			@include dropdown-option;
+			@include typography($size: s);
 		}
 	}
 
@@ -83,6 +91,7 @@
 		align-items: center;
 		right: 0;
 		transform: translate(-50%, -50%);
+		background-color: var(--theme-white);
 
 		&--dropdown svg path {
 			&:first-child {

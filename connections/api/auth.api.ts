@@ -71,7 +71,7 @@ export const logout = async (
 	message: string;
 }> => {
 	try {
-		const response = await http.post("/auth/logout", null, {
+		const response = await http.get("/auth/logout", {
 			headers,
 		});
 		return Promise.resolve(response.data);

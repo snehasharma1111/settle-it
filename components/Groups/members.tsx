@@ -76,7 +76,10 @@ const MembersPlaceholder: React.FC<MembersPlaceholderProps> = ({
 							width={1920}
 							height={1080}
 						/>
-						<Typography>Please enter a valid email</Typography>
+						<Typography>Couldn&apos;t find any user</Typography>
+						<Typography size="sm">
+							Tip: Enter the email of the user to invite them
+						</Typography>
 					</div>
 				</Responsive.Col>
 			);
@@ -145,11 +148,7 @@ const CreateGroupMembers: React.FC<ICreateGroupMembersProps> = ({
 	};
 
 	useEffect(() => {
-		if (
-			debouncedSearchStr &&
-			debouncedSearchStr.length >= 3 &&
-			regex.email.test(debouncedSearchStr)
-		) {
+		if (debouncedSearchStr && debouncedSearchStr.length >= 3) {
 			handleSearch(debouncedSearchStr);
 		}
 	}, [debouncedSearchStr]);

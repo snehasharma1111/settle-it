@@ -14,6 +14,7 @@ import { stylesConfig } from "@/utils/functions";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import { FiPlus } from "react-icons/fi";
 
 const classes = stylesConfig(styles, "home-page");
 
@@ -119,6 +120,14 @@ const HomePage: React.FC<HomePageProps> = (props) => {
 						</Button>
 					</div>
 				)}
+				{groups.length > 0 ? (
+					<Button
+						onClick={() => setOpenCreateGroupPopup(true)}
+						className={classes("-add-fab")}
+					>
+						<FiPlus /> Create Group
+					</Button>
+				) : null}
 			</main>
 			{openCreateGroupPopup ? (
 				<CreateGroup

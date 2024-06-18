@@ -92,6 +92,7 @@ const CreateExpense: React.FC<ICreateExpenseProps> = ({
 							placeholder="Title e.g. Food"
 							type="text"
 							size="small"
+							required
 							value={fields.title}
 							onChange={handleChange}
 						/>
@@ -103,6 +104,7 @@ const CreateExpense: React.FC<ICreateExpenseProps> = ({
 							placeholder="Amount e.g. 100"
 							type="number"
 							size="small"
+							required
 							value={fields.amount}
 							onChange={handleChange}
 						/>
@@ -113,6 +115,7 @@ const CreateExpense: React.FC<ICreateExpenseProps> = ({
 							name="paidBy"
 							placeholder={loggedInuser.name}
 							size="small"
+							required
 							value={(() => {
 								const foundMember = group.members.find(
 									(user) => user.id === fields.paidBy

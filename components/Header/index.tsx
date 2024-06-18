@@ -4,6 +4,7 @@ import { Avatar, Typography } from "@/library";
 import { stylesConfig } from "@/utils/functions";
 import React from "react";
 import styles from "./styles.module.scss";
+import { useRouter } from "next/router";
 
 interface IHeaderProps {}
 
@@ -11,6 +12,7 @@ const classes = stylesConfig(styles, "header");
 
 const Header: React.FC<IHeaderProps> = () => {
 	const { user } = useStore();
+	const router = useRouter();
 	if (!user.id) return null;
 	return (
 		<header className={classes("")}>
@@ -30,6 +32,7 @@ const Header: React.FC<IHeaderProps> = () => {
 					src={user.avatar || fallbackAssets.avatar}
 					alt={user.name || "User"}
 					size={48}
+					onClick={() => router.push("/me")}
 				/>
 			</button>
 		</header>

@@ -40,6 +40,11 @@ export const userSlice = createSlice({
 				return state;
 			}
 		);
+		// Logout User
+		builder.addCase(authHelpers.logoutUser.fulfilled, (state) => {
+			state = initialState;
+			return state;
+		});
 		// Update User
 		builder.addCase(userHelpers.updateUser.fulfilled, (state, action) => {
 			state = { ...state, ...action.payload };
