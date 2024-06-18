@@ -3,6 +3,7 @@ import { IExpense } from "@/types/expense";
 import { IGroup } from "@/types/group";
 import { IMember } from "@/types/member";
 import { IUser } from "@/types/user";
+import { omitKeys } from "@/utils/functions";
 import { getObjectFromMongoResponse } from "@/utils/parser";
 import { getNonNullValue } from "@/utils/safety";
 import { FilterQuery, UpdateQuery } from "mongoose";
@@ -12,7 +13,7 @@ export const parsePopulatedMember = (member: Member): IMember | null => {
 	const res = getObjectFromMongoResponse<Member>(member);
 	if (!res) return null;
 	return {
-		...res,
+		...omitKeys(res, ["userId", "groupId", "expenseId"]),
 		user: getObjectFromMongoResponse<IUser>(res.userId) as IUser,
 		group: getObjectFromMongoResponse<IGroup>(res.groupId) as IGroup,
 		expense: getObjectFromMongoResponse<IExpense>(
@@ -43,7 +44,9 @@ export const findById = async (id: string): Promise<IMember | null> => {
 export const find = async (
 	query: Partial<Member>
 ): Promise<IMember | Array<IMember> | null> => {
-	const res = await MemberModel.find(query);
+	const res = await MemberModel.find(query).populate(
+		"userId groupId expenseId"
+	);
 	if (res.length > 1) {
 		const parsedRes = res
 			.map((obj) => parsePopulatedMember(obj))
@@ -91,13 +94,29 @@ export const update = async (
 export const settleOne = async (
 	query: Partial<Member>
 ): Promise<IMember | null> => {
-	const res = await MemberModel.findOneAndUpdate(query, {
-		$set: {
-			owed: 0,
-			paid: "$owed",
+	const updateRequest = [
+		{
+			$set: {
+				paid: { $add: ["$paid", "$owed"] },
+				owed: 0,
+			},
 		},
-	}).populate("userId groupId expenseId");
-	return parsePopulatedMember(res);
+	];
+	if (query.id) {
+		const res = await MemberModel.findByIdAndUpdate(
+			query.id,
+			updateRequest,
+			{
+				new: true,
+			}
+		).populate("userId groupId expenseId");
+		return parsePopulatedMember(res);
+	} else {
+		const res = await MemberModel.findOneAndUpdate(query, updateRequest, {
+			new: true,
+		}).populate("userId groupId expenseId");
+		return parsePopulatedMember(res);
+	}
 };
 
 export const settleMany = async (query: Partial<Member>): Promise<number> => {

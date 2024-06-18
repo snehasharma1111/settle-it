@@ -2,7 +2,6 @@ import { EXPENSE_STATUS, HTTP } from "@/constants";
 import { Expense, Member } from "@/models";
 import { expenseService, groupService, memberService } from "@/services/api";
 import { ApiRequest, ApiResponse } from "@/types/api";
-import { IMember } from "@/types/member";
 import { T_EXPENSE_STATUS } from "@/types/user";
 import {
 	genericParse,
@@ -92,12 +91,10 @@ export const createNewExpense = async (req: ApiRequest, res: ApiResponse) => {
 			owed: member.userId === paidBy ? 0 : member.amount,
 			paid: member.userId === paidBy ? member.amount : 0,
 		}));
-		const createdMembers: Array<IMember> = await memberService.bulkCreate(
-			membersForCurrentExpense
-		);
+		await memberService.bulkCreate(membersForCurrentExpense);
 		return res.status(HTTP.status.CREATED).json({
 			message: "Expense created successfully",
-			data: createdMembers,
+			data: createdExpense,
 		});
 	} catch (error: any) {
 		console.error(error);
@@ -469,5 +466,49 @@ export const memberPaid = async (req: ApiRequest, res: ApiResponse) => {
 				message: HTTP.message.INTERNAL_SERVER_ERROR,
 			});
 		}
+	}
+};
+
+export const getMembersForExpense = async (
+	req: ApiRequest,
+	res: ApiResponse
+) => {
+	try {
+		const loggedInUserId = getNonEmptyString(req.user?.id);
+		const id = getNonEmptyString(req.query.id);
+		const foundExpense = await expenseService.findById(id);
+		if (!foundExpense)
+			return res
+				.status(HTTP.status.NOT_FOUND)
+				.json({ message: HTTP.message.NOT_FOUND });
+		const foundMembers = await memberService.find({ expenseId: id });
+		if (!foundMembers)
+			return res
+				.status(HTTP.status.SUCCESS)
+				.json({ message: HTTP.message.SUCCESS, data: [] });
+		if (Array.isArray(foundMembers)) {
+			if (foundMembers.map((m) => m.user.id).includes(loggedInUserId)) {
+				return res
+					.status(HTTP.status.SUCCESS)
+					.json({ data: foundMembers });
+			}
+			return res
+				.status(HTTP.status.FORBIDDEN)
+				.json({ message: "Forbidden" });
+		} else {
+			if (foundMembers.user.id === loggedInUserId) {
+				return res
+					.status(HTTP.status.SUCCESS)
+					.json({ data: foundMembers });
+			}
+			return res
+				.status(HTTP.status.FORBIDDEN)
+				.json({ message: "Forbidden" });
+		}
+	} catch (error: any) {
+		console.error(error);
+		return res.status(HTTP.status.INTERNAL_SERVER_ERROR).json({
+			message: HTTP.message.INTERNAL_SERVER_ERROR,
+		});
 	}
 };

@@ -1,4 +1,4 @@
-import { CreateExpense, UpdateGroup } from "@/components";
+import { CreateExpense, ExpenseCard, UpdateGroup } from "@/components";
 import { api } from "@/connections";
 import { fallbackAssets, routes } from "@/constants";
 import { useStore } from "@/hooks";
@@ -13,7 +13,6 @@ import { IGroup, UpdateGroupData } from "@/types/group";
 import { IUser } from "@/types/user";
 import { stylesConfig } from "@/utils/functions";
 import { getNonEmptyString } from "@/utils/safety";
-import moment from "moment";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { FiPlus, FiSettings } from "react-icons/fi";
@@ -134,22 +133,22 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 						</div>
 					) : (
 						<Responsive.Row>
-							{props.expenses.map((expense) => (
-								<Responsive.Col key={`expense-${expense.id}`}>
-									<div className={classes("-expense")}>
-										<Typography>
-											{moment(expense.createdAt).format(
-												"MMM DD, YYYY"
-											)}
-										</Typography>
-										<Typography>{expense.title}</Typography>
-										<Typography>
-											{expense.paidBy.name} paid{" "}
-											{expense.amount}
-										</Typography>
-									</div>
-								</Responsive.Col>
-							))}
+							{expenses
+								.filter(
+									(exp) => exp.group.id === groupDetails.id
+								)
+								.map((expense) => (
+									<Responsive.Col
+										key={`expense-${expense.id}`}
+										xlg={33}
+										lg={33}
+										md={50}
+										sm={100}
+										xsm={100}
+									>
+										<ExpenseCard {...expense} />
+									</Responsive.Col>
+								))}
 						</Responsive.Row>
 					)}
 				</section>

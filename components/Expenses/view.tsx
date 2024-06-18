@@ -1,0 +1,211 @@
+import { api } from "@/connections";
+import { fallbackAssets } from "@/constants";
+import { useStore } from "@/hooks";
+import { Avatar, Popup, Typography } from "@/library";
+import { notify } from "@/messages";
+import { IExpense } from "@/types/expense";
+import { IMember } from "@/types/member";
+import { stylesConfig } from "@/utils/functions";
+import moment from "moment";
+import React, { useEffect, useState } from "react";
+import styles from "./styles.module.scss";
+
+interface IViewExpenseProps {
+	id: string;
+	onClose: () => void;
+}
+
+interface ExpenseMemberProps extends IMember {
+	expense: IExpense;
+	onUpdateMembers: (_: Array<IMember>) => void;
+}
+
+const classes = stylesConfig(styles, "view-expense");
+
+const ExpenseMember: React.FC<ExpenseMemberProps> = ({
+	id,
+	expense,
+	user,
+	owed,
+	paid,
+	onUpdateMembers,
+}) => {
+	const { user: loggedInUser } = useStore();
+	const [settling, setSettling] = useState(false);
+	const settleMember = async () => {
+		try {
+			setSettling(true);
+			const updatedMembersRes = await api.members.settleMemberInExpense(
+				expense.id,
+				id
+			);
+			onUpdateMembers(updatedMembersRes.data);
+		} catch (error) {
+			notify.error(error);
+		} finally {
+			setSettling(false);
+		}
+	};
+	return (
+		<div className={classes("-member")}>
+			<Avatar
+				src={user.avatar || fallbackAssets.avatar}
+				alt={user.name || ""}
+				size={36}
+			/>
+			{(() => {
+				if (expense.paidBy.id === user.id) {
+					return (
+						<>
+							<Typography size="sm">
+								{expense.paidBy.name}
+							</Typography>{" "}
+							<Typography
+								size="sm"
+								style={{
+									color: owed === 0 ? "green" : "red",
+								}}
+							>
+								paid {paid}
+							</Typography>{" "}
+							<Typography size="sm">for this expense</Typography>
+						</>
+					);
+				} else {
+					if (owed === 0) {
+						return (
+							<>
+								<Typography size="sm">
+									{user.name} has
+								</Typography>{" "}
+								<Typography
+									size="sm"
+									style={{
+										color: owed === 0 ? "green" : "red",
+									}}
+								>
+									paid {paid}
+								</Typography>{" "}
+								<Typography size="sm">
+									{expense.paidBy.name}
+								</Typography>
+							</>
+						);
+					} else {
+						return (
+							<>
+								<Typography size="sm">{user.name}</Typography>{" "}
+								<Typography
+									size="sm"
+									style={{
+										color: owed === 0 ? "green" : "red",
+									}}
+								>
+									owes {owed}
+								</Typography>{" "}
+								<Typography size="sm">
+									to {expense.paidBy.name}
+								</Typography>
+							</>
+						);
+					}
+				}
+			})()}
+			{expense.paidBy.id === loggedInUser.id ? (
+				<button
+					disabled={owed === 0 || settling}
+					className={classes("-btn", {
+						"-ben--settled": owed === 0,
+					})}
+					onClick={settleMember}
+				>
+					{owed === 0 ? (
+						"Settled"
+					) : settling ? (
+						<span className={classes("-btn--loader")} />
+					) : (
+						"Settle"
+					)}
+				</button>
+			) : owed === 0 ? (
+				<Typography
+					size="sm"
+					style={{
+						color: owed === 0 ? "green" : "red",
+					}}
+					className={classes("-btn", "-btn--disabled")}
+				>
+					Settled
+				</Typography>
+			) : null}
+		</div>
+	);
+};
+
+const ViewExpense: React.FC<IViewExpenseProps> = ({ id, onClose }) => {
+	const { expenses } = useStore();
+	const [members, setMembers] = useState<Array<IMember>>([]);
+	const [gettingMembers, setGettingMembers] = useState(false);
+	const expense = expenses.find((exp) => exp.id === id);
+
+	useEffect(() => {
+		const getMembersForExpense = async () => {
+			setGettingMembers(true);
+			try {
+				const res = await api.expense.getMembersOfExpense(id);
+				setMembers(res.data);
+			} catch (error) {
+				notify.error(error);
+			} finally {
+				setGettingMembers(false);
+			}
+		};
+		getMembersForExpense();
+	}, [id]);
+
+	if (!expense) return null;
+
+	return (
+		<Popup onClose={onClose} title={expense.title} width="500px">
+			<div className={classes("")}>
+				<div className={classes("-card")}>
+					<div className={classes("-card-details")}>
+						<Typography className={classes("-card-title")}>
+							{expense.title}
+						</Typography>
+						<Typography size="sm">
+							{moment(expense.createdAt).format("MMM DD, YYYY")}
+						</Typography>
+					</div>
+					<div className={classes("-card-paid")}>
+						{expense.paidBy.name}
+						<Typography size="sm">paid {expense.amount}</Typography>
+					</div>
+				</div>
+				<div className={classes("-members")}>
+					{gettingMembers
+						? Array(6)
+								.fill(0)
+								.map((_, index) => (
+									<span
+										key={`expense-${id}-member-${index}`}
+										className={classes("-skeleton")}
+									/>
+								))
+						: members.map((member, index) => (
+								<ExpenseMember
+									key={`expense-${id}-member-${index}`}
+									{...member}
+									expense={expense}
+									onUpdateMembers={(newMembers) => {
+										setMembers(newMembers);
+									}}
+								/>
+							))}
+				</div>
+			</div>
+		</Popup>
+	);
+};
+
+export default ViewExpense;

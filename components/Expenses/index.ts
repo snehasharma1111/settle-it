@@ -1,3 +1,5 @@
+import ExpenseCard from "./card";
 import CreateExpense from "./create";
+import ViewExpense from "./view";
 
-export { CreateExpense };
+export { CreateExpense, ExpenseCard, ViewExpense };

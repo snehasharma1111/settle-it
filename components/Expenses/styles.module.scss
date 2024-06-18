@@ -1,4 +1,5 @@
 @import "@/styles/config/mixins";
+@import "@/styles/config/animations";
 
 .create-expense {
 	width: 100%;
@@ -71,5 +72,100 @@
 		width: calc(100% - 16px);
 		margin: 0 auto;
 		margin: 12px 0 6px 0;
+	}
+}
+
+.view-expense-card,
+.expense {
+	width: calc(100% - 12px);
+	margin: 6px 0;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 8px;
+	border-radius: 8px;
+	padding: 16px 12px;
+	border: 1px solid var(--theme-light-grey);
+	cursor: pointer;
+
+	&:hover {
+		background-color: rgba(0, 0, 0, 0.025);
+	}
+
+	&-details,
+	&-paid {
+		display: flex;
+		justify-content: center;
+		align-items: flex-start;
+		flex-direction: column;
+		gap: 2px;
+	}
+
+	&-paid {
+		align-items: flex-end;
+	}
+}
+
+.view-expense {
+	width: 100%;
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	flex-direction: column;
+	gap: 8px;
+	margin: 0 auto;
+
+	&-card {
+		border: none;
+
+		&:hover {
+			background-color: transparent;
+			cursor: default;
+		}
+	}
+
+	&-members {
+		width: 100%;
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
+		flex-direction: column;
+		gap: 4px;
+	}
+
+	&-member {
+		width: 100%;
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
+		gap: 8px;
+		padding: 6px 8px;
+
+		&-name {
+			margin-right: auto;
+		}
+	}
+
+	&-btn {
+		@include init-button;
+		font-size: 14px;
+		margin-left: auto;
+		color: var(--theme-green);
+
+		&--loader {
+			width: 16px;
+			height: 16px;
+			border-radius: 50%;
+			border: 1px solid var(--theme-green);
+			border-right-color: transparent;
+			margin: 0 16px;
+			animation: spin 1s linear infinite;
+		}
+
+		&:disabled,
+		&--disabled {
+			opacity: 0.5;
+			cursor: not-allowed;
+		}
 	}
 }
