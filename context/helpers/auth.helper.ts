@@ -17,7 +17,6 @@ export const fetchAuthenticatedUser = createAsyncThunk(
 
 export const logoutUser = createAsyncThunk("auth/logoutUser", async () => {
 	try {
-		console.log("helper for logout");
 		await api.auth.logout();
 		return Promise.resolve();
 	} catch (error: any) {

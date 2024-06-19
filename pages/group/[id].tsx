@@ -54,7 +54,7 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 			setUpdatingGroup(true);
 			const res = await dispatch(
 				updateGroup({ id, data: updatedGroupData })
-			);
+			).unwrap();
 			if (res) {
 				setOpenManageGroupPopup(false);
 			}

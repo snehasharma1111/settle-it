@@ -46,6 +46,7 @@ const Avatar: React.FC<IAvatarProps> = ({
 		<div
 			className={classes("avatar") + ` ${className ?? ""}`}
 			onClick={onClick}
+			title={alt}
 			{...props}
 			style={{
 				width: getAvatarSize(),

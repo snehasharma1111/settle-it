@@ -1,6 +1,6 @@
 import { http } from "@/connections";
 import { ApiRes } from "@/types/api";
-import { CreateExpenseData } from "@/types/expense";
+import { CreateExpenseData, UpdateExpenseData } from "@/types/expense";
 import { IExpense } from "@/types/expense";
 import { IMember } from "@/types/member";
 
@@ -41,6 +41,20 @@ export const createExpense = async (
 			data,
 			{ headers }
 		);
+		return Promise.resolve(response.data);
+	} catch (error: any) {
+		console.error(error);
+		return Promise.reject(error?.response?.data);
+	}
+};
+
+export const updateExpense = async (
+	id: string,
+	data: UpdateExpenseData,
+	headers?: any
+): Promise<ApiRes<IExpense>> => {
+	try {
+		const response = await http.patch(`/expenses/${id}`, data, { headers });
 		return Promise.resolve(response.data);
 	} catch (error: any) {
 		console.error(error);

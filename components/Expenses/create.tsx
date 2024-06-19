@@ -52,7 +52,7 @@ const CreateExpense: React.FC<ICreateExpenseProps> = ({
 
 	const handleSubmit = (e: any) => {
 		e.preventDefault();
-		if (selectedMembers.map((user) => user.id).includes(loggedInuser.id)) {
+		/* if (selectedMembers.map((user) => user.id).includes(loggedInuser.id)) {
 			onSave({
 				...fields,
 				members: selectedMembers.map((user) => ({
@@ -76,13 +76,25 @@ const CreateExpense: React.FC<ICreateExpenseProps> = ({
 					},
 				],
 			});
-		}
+		} */
+		onSave({
+			...fields,
+			members: selectedMembers.map((user) => ({
+				userId: user.id,
+				amount: user.amount,
+			})),
+		});
 	};
 
 	if (!group) return null;
 
 	return (
-		<Popup onClose={onClose} title="Create Expense" className={classes("")}>
+		<Popup
+			onClose={onClose}
+			title="Add Expense"
+			className={classes("")}
+			height="auto"
+		>
 			<form className={classes("-form")} onSubmit={handleSubmit}>
 				<Responsive.Row>
 					<Responsive.Col xlg={33} lg={33} md={50} sm={100} xsm={100}>

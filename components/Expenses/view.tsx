@@ -1,6 +1,7 @@
 import { api } from "@/connections";
 import { fallbackAssets } from "@/constants";
 import { useStore } from "@/hooks";
+import { Responsive } from "@/layouts";
 import { Avatar, Popup, Typography } from "@/library";
 import { notify } from "@/messages";
 import { IExpense } from "@/types/expense";
@@ -13,6 +14,7 @@ import styles from "./styles.module.scss";
 interface IViewExpenseProps {
 	id: string;
 	onClose: () => void;
+	onSwitchToEdit: () => void;
 }
 
 interface ExpenseMemberProps extends IMember {
@@ -153,8 +155,12 @@ const ExpenseMember: React.FC<ExpenseMemberProps> = ({
 	);
 };
 
-const ViewExpense: React.FC<IViewExpenseProps> = ({ id, onClose }) => {
-	const { expenses } = useStore();
+const ViewExpense: React.FC<IViewExpenseProps> = ({
+	id,
+	onClose,
+	onSwitchToEdit,
+}) => {
+	const { expenses, user: loggedInUser } = useStore();
 	const [members, setMembers] = useState<Array<IMember>>([]);
 	const [gettingMembers, setGettingMembers] = useState(false);
 	const expense = expenses.find((exp) => exp.id === id);
@@ -177,7 +183,17 @@ const ViewExpense: React.FC<IViewExpenseProps> = ({ id, onClose }) => {
 	if (!expense) return null;
 
 	return (
-		<Popup onClose={onClose} title={expense.title} width="500px">
+		<Popup
+			onClose={onClose}
+			onEdit={
+				expense.createdBy.id === loggedInUser.id ||
+				expense.paidBy.id === loggedInUser.id
+					? onSwitchToEdit
+					: undefined
+			}
+			title={expense.title}
+			width="500px"
+		>
 			<div className={classes("")}>
 				<div className={classes("-card")}>
 					<div className={classes("-card-details")}>
@@ -195,25 +211,37 @@ const ViewExpense: React.FC<IViewExpenseProps> = ({ id, onClose }) => {
 					</div>
 				</div>
 				<div className={classes("-members")}>
-					{gettingMembers
-						? Array(6)
+					{gettingMembers ? (
+						<Responsive.Row>
+							{Array(6)
 								.fill(0)
 								.map((_, index) => (
-									<span
+									<Responsive.Col
 										key={`expense-${id}-member-${index}`}
-										className={classes("-skeleton")}
-									/>
-								))
-						: members.map((member, index) => (
-								<ExpenseMember
-									key={`expense-${id}-member-${index}`}
-									{...member}
-									expense={expense}
-									onUpdateMembers={(newMembers) => {
-										setMembers(newMembers);
-									}}
-								/>
-							))}
+										xlg={50}
+										lg={50}
+										md={100}
+										sm={100}
+										xsm={100}
+									>
+										<span
+											className={classes("-skeleton")}
+										/>
+									</Responsive.Col>
+								))}
+						</Responsive.Row>
+					) : (
+						members.map((member, index) => (
+							<ExpenseMember
+								key={`expense-${id}-member-${index}`}
+								{...member}
+								expense={expense}
+								onUpdateMembers={(newMembers) => {
+									setMembers(newMembers);
+								}}
+							/>
+						))
+					)}
 				</div>
 			</div>
 		</Popup>

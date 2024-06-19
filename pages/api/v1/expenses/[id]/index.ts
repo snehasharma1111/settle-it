@@ -1,5 +1,5 @@
 import { HTTP } from "@/constants";
-import { memberControllers } from "@/controllers";
+import { expenseControllers } from "@/controllers";
 import { db } from "@/db";
 import { authMiddleware } from "@/middlewares";
 import { ApiRequest, ApiResponse } from "@/types/api";
@@ -11,12 +11,12 @@ const handler: NextApiHandler = async (req: ApiRequest, res: ApiResponse) => {
 		const { method } = req;
 
 		switch (method) {
-			case "GET":
+			case "PATCH":
 				return authMiddleware.apiRoute(
-					memberControllers.getMembersForExpense
+					expenseControllers.updateExpense
 				)(req, res);
 			default:
-				res.setHeader("Allow", ["GET"]);
+				res.setHeader("Allow", ["PATCH"]);
 				return res
 					.status(HTTP.status.METHOD_NOT_ALLOWED)
 					.json({ message: `Method ${method} Not Allowed` });

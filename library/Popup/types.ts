@@ -4,6 +4,7 @@ export interface PopupProps extends React.HTMLAttributes<HTMLDivElement> {
 	children: React.ReactNode;
 	title?: string;
 	onClose: () => void;
+	onEdit?: () => void;
 	footer?: React.ReactNode;
 	primaryAction?: any;
 	secondaryAction?: any;

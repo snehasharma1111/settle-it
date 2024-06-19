@@ -1,10 +1,12 @@
-import { ViewExpense } from "@/components";
+import { UpdateExpense, ViewExpense } from "@/components";
 import { Typography } from "@/library";
-import { IExpense } from "@/types/expense";
+import { IExpense, UpdateExpenseData } from "@/types/expense";
 import { stylesConfig } from "@/utils/functions";
 import moment from "moment";
 import React, { useState } from "react";
 import styles from "./styles.module.scss";
+import { useStore } from "@/hooks";
+import { notify } from "@/messages";
 
 interface IExpenseProps extends IExpense {}
 
@@ -16,8 +18,26 @@ const Expense: React.FC<IExpenseProps> = ({
 	createdAt,
 	paidBy,
 	amount,
+	group,
 }) => {
+	const { dispatch, updateExpense } = useStore();
 	const [openViewExpensePopup, setOpenViewExpensePopup] = useState(false);
+	const [openEditExpensePopup, setOpenEditExpensePopup] = useState(false);
+	const [updating, setUpdating] = useState(false);
+
+	const updateExpenseHelper = async (data: UpdateExpenseData) => {
+		setUpdating(true);
+		try {
+			await dispatch(updateExpense({ id, data })).unwrap();
+			setOpenEditExpensePopup(false);
+			setOpenViewExpensePopup(true);
+		} catch (error) {
+			notify.error(error);
+		} finally {
+			setUpdating(false);
+		}
+	};
+
 	return (
 		<>
 			<div
@@ -41,6 +61,19 @@ const Expense: React.FC<IExpenseProps> = ({
 				<ViewExpense
 					id={id}
 					onClose={() => setOpenViewExpensePopup(false)}
+					onSwitchToEdit={() => {
+						setOpenViewExpensePopup(false);
+						setOpenEditExpensePopup(true);
+					}}
+				/>
+			) : null}
+			{openEditExpensePopup ? (
+				<UpdateExpense
+					id={id}
+					loading={updating}
+					groupId={group.id}
+					onClose={() => setOpenEditExpensePopup(false)}
+					onSave={updateExpenseHelper}
 				/>
 			) : null}
 		</>

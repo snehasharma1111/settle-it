@@ -31,6 +31,18 @@ export const expenseSlice = createSlice({
 				return state;
 			}
 		);
+		builder.addCase(
+			expenseHelpers.updateExpense.fulfilled,
+			(state, action) => {
+				state = state.map((expense) => {
+					if (expense.id === action.payload.id) {
+						return action.payload;
+					}
+					return expense;
+				});
+				return state;
+			}
+		);
 	},
 });
 export const { setExpenses } = expenseSlice.actions;

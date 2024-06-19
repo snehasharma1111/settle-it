@@ -151,14 +151,23 @@ export const updateExpense = async (req: ApiRequest, res: ApiResponse) => {
 			return res
 				.status(HTTP.status.NOT_FOUND)
 				.json({ message: HTTP.message.NOT_FOUND });
-		if (foundExpense.createdBy.id !== loggedInUserId)
+		// the user can only edit expense if
+		// - it is created by the user
+		// - or it is paid by the user
+		if (
+			foundExpense.createdBy.id !== loggedInUserId &&
+			foundExpense.paidBy.id !== loggedInUserId
+		) {
 			return res
 				.status(HTTP.status.FORBIDDEN)
 				.json({ message: HTTP.message.FORBIDDEN });
-		const foundGroup = await groupService.findOne({
-			id: foundExpense.group.id,
-		});
-		if (!foundGroup) return res.status(HTTP.status.NOT_FOUND);
+		}
+		const foundGroup = await groupService.findById(foundExpense.group.id);
+		if (!foundGroup) {
+			return res
+				.status(HTTP.status.NOT_FOUND)
+				.json({ message: HTTP.message.NOT_FOUND });
+		}
 		if (amount !== null && members !== null) {
 			// check if all sent members are in the group
 			if (
@@ -233,19 +242,21 @@ export const updateExpense = async (req: ApiRequest, res: ApiResponse) => {
 						expenseId: id,
 						amount: member.amount,
 						owed:
-							member.userId === foundExpense.paidBy.id
+							member.userId === (paidBy ?? foundExpense.paidBy.id)
 								? 0
 								: member.amount,
 						paid:
-							member.userId === foundExpense.paidBy.id
+							member.userId === (paidBy ?? foundExpense.paidBy.id)
 								? member.amount
 								: 0,
 					}));
 				if (membersToCreateForCurrentExpense.length > 0) {
-					memberService.bulkCreate(membersToCreateForCurrentExpense);
+					await memberService.bulkCreate(
+						membersToCreateForCurrentExpense
+					);
 				}
 				if (membersToRemoveForCurrentExpense.length > 0) {
-					memberService.bulkRemove({
+					await memberService.bulkRemove({
 						_id: {
 							$in: membersToRemoveForCurrentExpense.map(
 								(m) => m.id
@@ -254,15 +265,15 @@ export const updateExpense = async (req: ApiRequest, res: ApiResponse) => {
 					});
 				}
 				if (membersToUpdateForCurrentExpense.length > 0) {
-					memberService.bulkUpdate(
+					await memberService.bulkUpdate(
 						membersToUpdateForCurrentExpense.map((m) => ({
-							_id: m.id,
-						})),
-						membersToUpdateForCurrentExpense.map((m) => ({
-							$set: {
-								amount: m.amount,
-								owed: m.amount,
-								paid: 0,
+							filter: { _id: m.id },
+							update: {
+								$set: {
+									amount: m.amount,
+									owed: m.amount,
+									paid: 0,
+								},
 							},
 						}))
 					);
@@ -466,49 +477,5 @@ export const memberPaid = async (req: ApiRequest, res: ApiResponse) => {
 				message: HTTP.message.INTERNAL_SERVER_ERROR,
 			});
 		}
-	}
-};
-
-export const getMembersForExpense = async (
-	req: ApiRequest,
-	res: ApiResponse
-) => {
-	try {
-		const loggedInUserId = getNonEmptyString(req.user?.id);
-		const id = getNonEmptyString(req.query.id);
-		const foundExpense = await expenseService.findById(id);
-		if (!foundExpense)
-			return res
-				.status(HTTP.status.NOT_FOUND)
-				.json({ message: HTTP.message.NOT_FOUND });
-		const foundMembers = await memberService.find({ expenseId: id });
-		if (!foundMembers)
-			return res
-				.status(HTTP.status.SUCCESS)
-				.json({ message: HTTP.message.SUCCESS, data: [] });
-		if (Array.isArray(foundMembers)) {
-			if (foundMembers.map((m) => m.user.id).includes(loggedInUserId)) {
-				return res
-					.status(HTTP.status.SUCCESS)
-					.json({ data: foundMembers });
-			}
-			return res
-				.status(HTTP.status.FORBIDDEN)
-				.json({ message: "Forbidden" });
-		} else {
-			if (foundMembers.user.id === loggedInUserId) {
-				return res
-					.status(HTTP.status.SUCCESS)
-					.json({ data: foundMembers });
-			}
-			return res
-				.status(HTTP.status.FORBIDDEN)
-				.json({ message: "Forbidden" });
-		}
-	} catch (error: any) {
-		console.error(error);
-		return res.status(HTTP.status.INTERNAL_SERVER_ERROR).json({
-			message: HTTP.message.INTERNAL_SERVER_ERROR,
-		});
 	}
 };

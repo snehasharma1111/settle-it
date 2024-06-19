@@ -1,9 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
-import { PopupProps } from "./types";
-import { CloseIcon } from "./assets";
 import { Typography } from "@/library";
 import { stylesConfig } from "@/utils/functions";
+import React, { useEffect, useRef, useState } from "react";
+import { CloseIcon, EditIcon } from "./assets";
 import styles from "./styles.module.scss";
+import { PopupProps } from "./types";
 
 const classes = stylesConfig(styles, "modal-popup");
 
@@ -11,6 +11,7 @@ const Popup: React.FC<PopupProps> = ({
 	children,
 	title,
 	onClose,
+	onEdit,
 	footer,
 	primaryAction,
 	secondaryAction,
@@ -63,15 +64,25 @@ const Popup: React.FC<PopupProps> = ({
 			>
 				{showHeader ? (
 					<div className={classes("-header")} style={styles?.header}>
-						<Typography type="body" variant="extra-large">
+						<Typography size="xl" weight="medium">
 							{title}
 						</Typography>
-						<button
-							className={classes("-header-close")}
-							onClick={handleClose}
-						>
-							<CloseIcon />
-						</button>
+						<div className={classes("-header-actions")}>
+							{onEdit ? (
+								<button
+									className={classes("-header-edit")}
+									onClick={onEdit}
+								>
+									<EditIcon />
+								</button>
+							) : null}
+							<button
+								className={classes("-header-close")}
+								onClick={handleClose}
+							>
+								<CloseIcon />
+							</button>
+						</div>
 					</div>
 				) : null}
 				{children ? (

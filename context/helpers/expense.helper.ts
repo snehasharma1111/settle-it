@@ -1,5 +1,5 @@
 import { api } from "@/connections";
-import { CreateExpenseData } from "@/types/expense";
+import { CreateExpenseData, UpdateExpenseData } from "@/types/expense";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 export const getAllExpensesForUser = createAsyncThunk(
@@ -20,6 +20,19 @@ export const createExpense = createAsyncThunk(
 	async (data: CreateExpenseData, thunkApi) => {
 		try {
 			const res = await api.expense.createExpense(data);
+			return Promise.resolve(res.data);
+		} catch (error: any) {
+			console.error(error);
+			return thunkApi.rejectWithValue(error.response.data);
+		}
+	}
+);
+
+export const updateExpense = createAsyncThunk(
+	"expense/update",
+	async ({ id, data }: { id: string; data: UpdateExpenseData }, thunkApi) => {
+		try {
+			const res = await api.expense.updateExpense(id, data);
 			return Promise.resolve(res.data);
 		} catch (error: any) {
 			console.error(error);

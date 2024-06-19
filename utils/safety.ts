@@ -100,7 +100,7 @@ export const getSingletonValue = <T>(input: T[]): T => {
 	return input[0];
 };
 
-export const getNonNullValue = <T>(input: T | null): T => {
+export const getNonNullValue = <T>(input: T | undefined | null): T => {
 	if (input === null || input === undefined) {
 		throw new Error(`${input} is null!`);
 	}

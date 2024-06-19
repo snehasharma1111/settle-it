@@ -162,11 +162,17 @@ export const bulkCreate = async (
 };
 
 export const bulkUpdate = async (
-	query: FilterQuery<Member>,
-	update: UpdateQuery<Omit<Member, "id" | "createdAt" | "updatedAt">>
-): Promise<number> => {
-	const res = await MemberModel.updateMany(query, update);
-	return res.modifiedCount;
+	body: Array<FilterQuery<Member> & UpdateQuery<Member>>
+): Promise<any> => {
+	const res = await MemberModel.bulkWrite(
+		body.map((obj) => ({
+			updateOne: {
+				filter: obj.filter,
+				update: obj.update,
+			},
+		}))
+	);
+	return res;
 };
 
 export const bulkRemove = async (
