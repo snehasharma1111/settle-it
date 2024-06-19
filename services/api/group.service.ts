@@ -1,11 +1,19 @@
-import { ExpenseModel, Group, GroupModel, User } from "@/models";
+import {
+	ExpenseModel,
+	Group,
+	GroupModel,
+	MemberModel,
+	User,
+	UserModel,
+} from "@/models";
 import { expenseService, memberService } from "@/services/api";
 import { IExpense } from "@/types/expense";
 import { IGroup } from "@/types/group";
 import { getObjectFromMongoResponse } from "@/utils/parser";
 import { getNonNullValue } from "@/utils/safety";
-import { FilterQuery } from "mongoose";
+import mongoose, { FilterQuery } from "mongoose";
 import { parsePopulatedExpense } from "./expense.service";
+import { IUser } from "@/types/user";
 
 export const parsePopulatedGroup = (group: Group): IGroup | null => {
 	if (!group) return null;
@@ -78,6 +86,345 @@ export const getExpensesForGroup = async (
 		"groupId paidBy createdBy"
 	);
 	return res.map((obj) => parsePopulatedExpense(obj) as IExpense);
+};
+
+export const getExpenditure = async (groupId: string): Promise<number> => {
+	const result = await ExpenseModel.aggregate([
+		{
+			$match: {
+				groupId: new mongoose.Types.ObjectId(groupId),
+			},
+		},
+		{
+			$group: {
+				_id: "$groupId",
+				totalAmountSpent: { $sum: "$amount" },
+			},
+		},
+		{
+			$project: {
+				_id: 0,
+				groupId: "$_id",
+				totalAmountSpent: 1,
+			},
+		},
+	]);
+	if (result.length === 0) {
+		return 0;
+	}
+	return result[0].totalAmountSpent;
+};
+
+export const getBalances = async (groupId: string): Promise<any> => {
+	/* const res = await MemberModel.aggregate([
+		{
+			$match: {
+				groupId: new mongoose.Types.ObjectId(groupId),
+			},
+		},
+		{
+			$group: {
+				_id: "$userId",
+				owes: { $sum: "$owed" },
+				paid: { $sum: "$paid" },
+			},
+		},
+		{
+			$project: {
+				_id: 0,
+				userId: "$_id",
+				owes: 1,
+				paid: 1,
+			},
+		},
+	]); */
+	/* const result = await MemberModel.aggregate([
+		// get all members of the group
+		{
+			$match: {
+				groupId: new mongoose.Types.ObjectId(groupId),
+			},
+		},
+		// group by userId and expenseId
+		{
+			$group: {
+				_id: { userId: "$userId", expenseId: "$expenseId" },
+				totalOwed: { $sum: "$owed" },
+				totalPaid: { $sum: "$paid" },
+			},
+		},
+		{
+			$lookup: {
+				from: "expenses",
+				localField: "_id.expenseId",
+				foreignField: "_id",
+				as: "expense",
+			},
+		},
+		{
+			$unwind: "$expense",
+		},
+		{
+			$project: {
+				_id: 0,
+				userId: "$_id.userId",
+				expenseId: "$_id.expenseId",
+				totalOwed: 1,
+				totalPaid: 1,
+				paidBy: "$expense.paidBy",
+			},
+		},
+		{
+			$group: {
+				_id: { userId: "$userId", paidBy: "$paidBy" },
+				totalOwed: { $sum: "$totalOwed" },
+				totalPaid: { $sum: "$totalPaid" },
+			},
+		},
+		{
+			$project: {
+				_id: 0,
+				userId: "$_id.userId",
+				paidBy: "$_id.paidBy",
+				netOwed: { $subtract: ["$totalOwed", "$totalPaid"] },
+			},
+		},
+		{
+			$match: {
+				netOwed: { $ne: 0 },
+			},
+		},
+		{
+			$group: {
+				_id: null,
+				relations: {
+					$push: {
+						from: "$userId",
+						to: "$paidBy",
+						amount: "$netOwed",
+					},
+				},
+			},
+		},
+		{
+			$unwind: "$relations",
+		},
+		{
+			$replaceRoot: { newRoot: "$relations" },
+		},
+		// populate users from their id
+		{
+			$lookup: {
+				from: "users",
+				localField: "from",
+				foreignField: "_id",
+				as: "from",
+			},
+		},
+		{
+			$unwind: "$from",
+		},
+		{
+			$lookup: {
+				from: "users",
+				localField: "to",
+				foreignField: "_id",
+				as: "to",
+			},
+		},
+		{
+			$unwind: "$to",
+		},
+		{
+			$project: {
+				_id: 0,
+				from: "$from",
+				to: "$to",
+				amount: 1,
+			},
+		},
+		{
+			$group: {
+				_id: null,
+				relations: {
+					$push: {
+						from: "$from",
+						to: "$to",
+						amount: "$amount",
+					},
+				},
+			},
+		},
+		{
+			$unwind: "$relations",
+		},
+		{
+			$replaceRoot: { newRoot: "$relations" },
+		},
+	]); */
+	/* const result = MemberModel.aggregate([
+		{
+			$match: {
+				groupId: new mongoose.Types.ObjectId(groupId),
+			},
+		},
+		{
+			$group: {
+				_id: "$userId",
+				totalOwed: { $sum: "$owed" },
+				totalPaid: { $sum: "$paid" },
+			},
+		},
+		{
+			$lookup: {
+				from: "users",
+				localField: "_id",
+				foreignField: "_id",
+				as: "user",
+			},
+		},
+		{
+			$unwind: "$user",
+		},
+		{
+			$project: {
+				_id: 0,
+				userId: "$_id",
+				user: 1,
+				totalOwed: 1,
+				totalPaid: 1,
+				netOwed: { $subtract: ["$totalOwed", "$totalPaid"] },
+			},
+		},
+	]); */
+	/* const result = MemberModel.aggregate([
+		// get members involved in this group
+		{
+			$match: {
+				groupId: new mongoose.Types.ObjectId(groupId),
+			},
+		},
+		// populate expenses in every member
+		{
+			$lookup: {
+				from: "expenses",
+				localField: "userId",
+				foreignField: "paidBy",
+				as: "expenses",
+			},
+		},
+		// group by userId
+		{
+			$group: {
+				_id: "$userId",
+				totalOwed: { $sum: "$owed" },
+				totalPaid: { $sum: "$paid" },
+			},
+		},
+	]); */
+	/* const result = MemberModel.aggregate([
+		// get members involved in this group
+		{
+			$match: {
+				groupId: new mongoose.Types.ObjectId(groupId),
+			},
+		},
+		// populate expenses in every member
+		{
+			$lookup: {
+				from: "expenses",
+				localField: "expenseId",
+				foreignField: "_id",
+				as: "expense",
+			},
+		},
+		// only get first expense from the array
+		{
+			$unwind: "$expense",
+		},
+	]); */
+	const result = await MemberModel.aggregate([
+		// get members involved in this group
+		{
+			$match: {
+				groupId: new mongoose.Types.ObjectId(groupId),
+			},
+		},
+		// populate expenses in every member
+		{
+			$lookup: {
+				from: "expenses",
+				localField: "expenseId",
+				foreignField: "_id",
+				as: "expense",
+			},
+		},
+		// only get first expense from the array
+		{
+			$unwind: "$expense",
+		},
+		// group by member.userId and member.expense.paidBy
+		{
+			$group: {
+				_id: {
+					userId: "$userId",
+					expensePaidBy: "$expense.paidBy",
+				},
+				totalOwed: { $sum: "$owed" },
+				totalPaid: { $sum: "$paid" },
+			},
+		},
+	]);
+	const userTransaction = new Map();
+
+	// Hashmap to group transactions for each user
+	result.forEach((result) => {
+		const fromUser = result._id.userId.toString();
+		const toUser = result._id.expensePaidBy.toString();
+		const owed = result.totalOwed;
+		const paid = result.totalPaid;
+		if (!userTransaction.has(fromUser)) {
+			userTransaction.set(fromUser, {
+				user: fromUser,
+				transactions: [],
+			});
+		}
+		userTransaction.get(fromUser).transactions.push({
+			user: toUser,
+			owed: owed,
+			paid: paid,
+		});
+	});
+
+	// Convert to array format
+	const userTransactionsArray = Array.from(userTransaction.values());
+	console.log(JSON.stringify(userTransactionsArray, null, 2));
+
+	// Get all user details
+	const userIds = new Set();
+	userTransactionsArray.forEach((userTrans) => {
+		userIds.add(userTrans.user);
+		userTrans.transactions.forEach((trans: any) => {
+			userIds.add(trans.user);
+		});
+	});
+	const users = await UserModel.find({
+		_id: { $in: Array.from(userIds) },
+	});
+
+	// Populate user details
+	const userMap = users.reduce((acc, user) => {
+		acc[user._id] = getObjectFromMongoResponse<IUser>(user);
+		return acc;
+	}, {});
+	userTransactionsArray.forEach((userTrans) => {
+		userTrans.user = userMap[userTrans.user];
+		userTrans.transactions.forEach((trans: any) => {
+			trans.user = userMap[trans.user];
+		});
+	});
+
+	return userTransactionsArray;
 };
 
 export const create = async (
