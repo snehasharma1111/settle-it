@@ -169,6 +169,29 @@
 			cursor: not-allowed;
 		}
 	}
+
+	&-status {
+		width: 100%;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		margin-top: auto;
+
+		span {
+			color: var(--accent-color);
+			display: inline-flex;
+			justify-content: center;
+			align-items: center;
+			gap: 4px;
+			opacity: 0.5;
+			cursor: not-allowed;
+
+			svg {
+				width: 20px;
+				height: 20px;
+			}
+		}
+	}
 }
 
 .create-expense,

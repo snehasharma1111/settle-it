@@ -151,10 +151,10 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 								.map((expense) => (
 									<Responsive.Col
 										key={`expense-${expense.id}`}
-										xlg={33}
+										xlg={25}
 										lg={33}
 										md={50}
-										sm={100}
+										sm={50}
 										xsm={100}
 									>
 										<ExpenseCard {...expense} />

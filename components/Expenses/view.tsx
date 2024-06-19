@@ -2,13 +2,14 @@ import { api } from "@/connections";
 import { fallbackAssets } from "@/constants";
 import { useStore } from "@/hooks";
 import { Responsive } from "@/layouts";
-import { Avatar, Popup, Typography } from "@/library";
+import { Avatar, Button, Popup, Typography } from "@/library";
 import { notify } from "@/messages";
 import { IExpense } from "@/types/expense";
 import { IMember } from "@/types/member";
 import { stylesConfig } from "@/utils/functions";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
+import { IoCheckmarkOutline } from "react-icons/io5";
 import styles from "./styles.module.scss";
 
 interface IViewExpenseProps {
@@ -92,6 +93,7 @@ const ExpenseMember: React.FC<ExpenseMemberProps> = ({
 									paid {paid}
 								</Typography>{" "}
 								<Typography size="sm">
+									to{" "}
 									{expense.paidBy.name ||
 										expense.paidBy.email.slice(0, 7) +
 											"..."}
@@ -161,9 +163,23 @@ const ViewExpense: React.FC<IViewExpenseProps> = ({
 	onSwitchToEdit,
 }) => {
 	const { expenses, user: loggedInUser } = useStore();
+	const [settlingExpense, setSettlingExpense] = useState(false);
 	const [members, setMembers] = useState<Array<IMember>>([]);
 	const [gettingMembers, setGettingMembers] = useState(false);
 	const expense = expenses.find((exp) => exp.id === id);
+
+	const settleExpense = async () => {
+		try {
+			setSettlingExpense(true);
+			const updatedMembersRes = await api.expense.settleExpense(id);
+			setMembers(updatedMembersRes.data);
+			notify.success("This expense has been settled");
+		} catch (error) {
+			notify.error(error);
+		} finally {
+			setSettlingExpense(false);
+		}
+	};
 
 	useEffect(() => {
 		const getMembersForExpense = async () => {
@@ -243,6 +259,26 @@ const ViewExpense: React.FC<IViewExpenseProps> = ({
 						))
 					)}
 				</div>
+				{gettingMembers ? null : (
+					<div className={classes("-status")}>
+						{members
+							.map((mem) => mem.owed)
+							.every((val) => val === 0) ? (
+							<Typography>
+								<IoCheckmarkOutline />
+								Settled
+							</Typography>
+						) : expense.paidBy.id === loggedInUser.id ? (
+							<Button
+								onClick={settleExpense}
+								size="small"
+								loading={settlingExpense}
+							>
+								Settle
+							</Button>
+						) : null}
+					</div>
+				)}
 			</div>
 		</Popup>
 	);

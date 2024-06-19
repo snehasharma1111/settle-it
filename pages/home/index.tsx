@@ -62,7 +62,7 @@ const HomePage: React.FC<HomePageProps> = (props) => {
 								xlg={25}
 								lg={33}
 								md={50}
-								sm={100}
+								sm={50}
 								xsm={100}
 								style={{
 									padding: "8px",

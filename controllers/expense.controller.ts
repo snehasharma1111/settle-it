@@ -1,4 +1,5 @@
 import { EXPENSE_STATUS, HTTP } from "@/constants";
+import { memberControllers } from "@/controllers";
 import { Expense, Member } from "@/models";
 import { expenseService, groupService, memberService } from "@/services/api";
 import { ApiRequest, ApiResponse } from "@/types/api";
@@ -411,9 +412,7 @@ export const settleExpense = async (req: ApiRequest, res: ApiResponse) => {
 				.status(HTTP.status.FORBIDDEN)
 				.json({ message: "Only the person who paid can settle" });
 		await memberService.settleMany({ expenseId: id });
-		return res.status(HTTP.status.SUCCESS).json({
-			message: HTTP.message.SUCCESS,
-		});
+		return memberControllers.getMembersForExpense(req, res);
 	} catch (error: any) {
 		console.error(error);
 		if (error.message && error.message.startsWith("Invalid input:")) {

@@ -61,3 +61,20 @@ export const updateExpense = async (
 		return Promise.reject(error?.response?.data);
 	}
 };
+
+export const settleExpense = async (
+	id: string,
+	headers?: any
+): Promise<ApiRes<Array<IMember>>> => {
+	try {
+		const response = await http.patch(
+			`/expenses/${id}/settle`,
+			{},
+			{ headers }
+		);
+		return Promise.resolve(response.data);
+	} catch (error: any) {
+		console.error(error);
+		return Promise.reject(error?.response?.data);
+	}
+};

@@ -120,12 +120,18 @@ export const settleOne = async (
 };
 
 export const settleMany = async (query: Partial<Member>): Promise<number> => {
-	const members = await MemberModel.find(query);
+	const membersRes = await find(query);
+	let members: Array<IMember> = [];
+	if (Array.isArray(membersRes)) {
+		members = membersRes;
+	} else if (membersRes) {
+		members = [membersRes];
+	}
 	if (members.length === 0) return 0;
 	const res = await MemberModel.bulkWrite(
 		members.map((member) => ({
 			updateOne: {
-				filter: { id: member.id },
+				filter: { _id: member.id },
 				update: {
 					$set: {
 						owed: 0,
