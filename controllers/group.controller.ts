@@ -93,6 +93,46 @@ export const getGroupBalances = async (req: ApiRequest, res: ApiResponse) => {
 	}
 };
 
+export const getGroupTransacions = async (
+	req: ApiRequest,
+	res: ApiResponse
+) => {
+	try {
+		const loggedInUserId = getNonEmptyString(req.user?.id);
+		const groupId = getNonEmptyString(req.query.id);
+		const group = await groupService.findById(groupId);
+		if (!group)
+			return res
+				.status(HTTP.status.NOT_FOUND)
+				.json({ message: HTTP.message.NOT_FOUND });
+		// if logged in user is not in the members list of the group, then return forbidden
+		if (!group.members.map((u) => u.id).includes(loggedInUserId))
+			return res
+				.status(HTTP.status.FORBIDDEN)
+				.json({ message: HTTP.message.FORBIDDEN });
+		const expenditure = await groupService.getExpenditure(groupId);
+		const transactions = await groupService.getAllTransactions(groupId);
+		return res.status(HTTP.status.SUCCESS).json({
+			message: HTTP.message.SUCCESS,
+			data: {
+				expenditure,
+				transactions,
+			},
+		});
+	} catch (error: any) {
+		console.error(error);
+		if (error.message && error.message.startsWith("Invalid input:")) {
+			return res
+				.status(HTTP.status.BAD_REQUEST)
+				.json({ message: HTTP.message.BAD_REQUEST });
+		} else {
+			return res.status(HTTP.status.INTERNAL_SERVER_ERROR).json({
+				message: HTTP.message.INTERNAL_SERVER_ERROR,
+			});
+		}
+	}
+};
+
 export const createGroup = async (req: ApiRequest, res: ApiResponse) => {
 	try {
 		const name = genericParse(getNonEmptyString, req.body.name);

@@ -9,11 +9,12 @@ import {
 import { expenseService, memberService } from "@/services/api";
 import { IExpense } from "@/types/expense";
 import { IGroup } from "@/types/group";
+import { IBalance, ITransaction } from "@/types/member";
+import { IUser } from "@/types/user";
 import { getObjectFromMongoResponse } from "@/utils/parser";
-import { getNonNullValue } from "@/utils/safety";
+import { getNonNullValue, getNumber } from "@/utils/safety";
 import mongoose, { FilterQuery } from "mongoose";
 import { parsePopulatedExpense } from "./expense.service";
-import { IUser } from "@/types/user";
 
 export const parsePopulatedGroup = (group: Group): IGroup | null => {
 	if (!group) return null;
@@ -115,7 +116,78 @@ export const getExpenditure = async (groupId: string): Promise<number> => {
 	return result[0].totalAmountSpent;
 };
 
-export const getBalances = async (groupId: string): Promise<any> => {
+export const getAllTransactions = async (
+	groupId: string
+): Promise<Array<ITransaction>> => {
+	const result = await MemberModel.aggregate([
+		// get members involved in this group
+		{
+			$match: {
+				groupId: new mongoose.Types.ObjectId(groupId),
+			},
+		},
+		// populate expenses in every member
+		{
+			$lookup: {
+				from: "expenses",
+				localField: "expenseId",
+				foreignField: "_id",
+				as: "expense",
+			},
+		},
+		// only get first expense from the array
+		{
+			$unwind: "$expense",
+		},
+		// populate user
+		{
+			$lookup: {
+				from: "users",
+				localField: "userId",
+				foreignField: "_id",
+				as: "user",
+			},
+		},
+		// only get first user from the array
+		{
+			$unwind: "$user",
+		},
+		// populate expense.paidBy
+		{
+			$lookup: {
+				from: "users",
+				localField: "expense.paidBy",
+				foreignField: "_id",
+				as: "expense.paidBy",
+			},
+		},
+		// only get first user from the array
+		{
+			$unwind: "$expense.paidBy",
+		},
+		{
+			$project: {
+				_id: 0,
+				title: "$expense.title",
+				from: "$user",
+				to: "$expense.paidBy",
+				owed: "$owed",
+				paid: "$paid",
+			},
+		},
+	]);
+	return result.map((obj: any) => ({
+		...obj,
+		from: getObjectFromMongoResponse<IUser>(obj.from),
+		to: getObjectFromMongoResponse<IUser>(obj.to),
+		owed: getNumber(obj.owed),
+		paid: getNumber(obj.paid),
+	}));
+};
+
+export const getBalances = async (
+	groupId: string
+): Promise<Array<IBalance>> => {
 	/* const res = await MemberModel.aggregate([
 		{
 			$match: {
@@ -322,27 +394,6 @@ export const getBalances = async (groupId: string): Promise<any> => {
 			},
 		},
 	]); */
-	/* const result = MemberModel.aggregate([
-		// get members involved in this group
-		{
-			$match: {
-				groupId: new mongoose.Types.ObjectId(groupId),
-			},
-		},
-		// populate expenses in every member
-		{
-			$lookup: {
-				from: "expenses",
-				localField: "expenseId",
-				foreignField: "_id",
-				as: "expense",
-			},
-		},
-		// only get first expense from the array
-		{
-			$unwind: "$expense",
-		},
-	]); */
 	const result = await MemberModel.aggregate([
 		// get members involved in this group
 		{
@@ -386,9 +437,13 @@ export const getBalances = async (groupId: string): Promise<any> => {
 		if (!userTransaction.has(fromUser)) {
 			userTransaction.set(fromUser, {
 				user: fromUser,
+				owed: 0,
+				paid: 0,
 				transactions: [],
 			});
 		}
+		userTransaction.get(fromUser).owed += owed;
+		userTransaction.get(fromUser).paid += paid;
 		userTransaction.get(fromUser).transactions.push({
 			user: toUser,
 			owed: owed,
@@ -398,7 +453,6 @@ export const getBalances = async (groupId: string): Promise<any> => {
 
 	// Convert to array format
 	const userTransactionsArray = Array.from(userTransaction.values());
-	console.log(JSON.stringify(userTransactionsArray, null, 2));
 
 	// Get all user details
 	const userIds = new Set();
