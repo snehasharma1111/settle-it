@@ -1,9 +1,14 @@
-import { CreateExpense, ExpenseCard, UpdateGroup } from "@/components";
+import {
+	CreateExpense,
+	ExpenseCard,
+	GroupMetaData,
+	UpdateGroup,
+} from "@/components";
 import { api } from "@/connections";
-import { fallbackAssets, routes } from "@/constants";
+import { routes } from "@/constants";
 import { useStore } from "@/hooks";
 import { Responsive } from "@/layouts";
-import { Avatars, Button, Typography } from "@/library";
+import { Button, Typography } from "@/library";
 import { notify } from "@/messages";
 import { authMiddleware } from "@/middlewares";
 import PageNotFound from "@/pages/404";
@@ -14,9 +19,8 @@ import { IUser } from "@/types/user";
 import { stylesConfig } from "@/utils/functions";
 import { getNonEmptyString } from "@/utils/safety";
 import Image from "next/image";
-import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { FiArrowLeft, FiPlus, FiSettings } from "react-icons/fi";
+import { FiPlus } from "react-icons/fi";
 
 const classes = stylesConfig(styles, "group");
 
@@ -27,7 +31,6 @@ type GroupPageProps = {
 };
 
 const GroupPage: React.FC<GroupPageProps> = (props) => {
-	const router = useRouter();
 	const { setUser, dispatch, updateGroup, createExpense, groups, expenses } =
 		useStore();
 	const [openManageGroupPopup, setOpenManageGroupPopup] = useState(false);
@@ -84,44 +87,10 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 	return (
 		<>
 			<main className={classes("")}>
-				<div
-					className={classes("-banner")}
-					style={{
-						backgroundImage: `url(${groupDetails.banner || fallbackAssets.banner})`,
-					}}
-				>
-					<button
-						onClick={() => router.back()}
-						className={classes("-banner-btn")}
-					>
-						<FiArrowLeft />
-					</button>
-					<button
-						onClick={() => setOpenManageGroupPopup(true)}
-						className={classes("-banner-btn")}
-					>
-						<FiSettings />
-					</button>
-				</div>
-				<div className={classes("-meta")}>
-					<div className={classes("-meta-icon")}>
-						<Image
-							src={groupDetails.icon || fallbackAssets.groupIcon}
-							alt={groupDetails.name}
-							width={1920}
-							height={1080}
-						/>
-					</div>
-					<Typography size="xxl" as="h2" weight="medium">
-						{groupDetails.name}
-					</Typography>
-					<Avatars size={32}>
-						{groupDetails.members.map((member) => ({
-							src: member.avatar || fallbackAssets.avatar,
-							alt: member.name || member.email,
-						}))}
-					</Avatars>
-				</div>
+				<GroupMetaData
+					group={groupDetails}
+					onUpdate={() => setOpenManageGroupPopup(true)}
+				/>
 				<section className={classes("-body")}>
 					{expenses.filter((exp) => exp.group.id === groupDetails.id)
 						.length === 0 ? (

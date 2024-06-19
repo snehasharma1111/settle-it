@@ -6,7 +6,7 @@ import {
 	UpdateExpense,
 	ViewExpense,
 } from "./Expenses";
-import { CreateGroup, UpdateGroup } from "./Groups";
+import { CreateGroup, GroupMetaData, UpdateGroup } from "./Groups";
 import Header from "./Header";
 
 export {
@@ -15,6 +15,7 @@ export {
 	CreateGroup,
 	Error,
 	ExpenseCard,
+	GroupMetaData,
 	Header,
 	UpdateExpense,
 	UpdateGroup,

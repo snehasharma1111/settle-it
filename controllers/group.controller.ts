@@ -75,6 +75,7 @@ export const getGroupBalances = async (req: ApiRequest, res: ApiResponse) => {
 		return res.status(HTTP.status.SUCCESS).json({
 			message: HTTP.message.SUCCESS,
 			data: {
+				group,
 				expenditure,
 				balances,
 			},
@@ -115,6 +116,7 @@ export const getGroupTransacions = async (
 		return res.status(HTTP.status.SUCCESS).json({
 			message: HTTP.message.SUCCESS,
 			data: {
+				group,
 				expenditure,
 				transactions,
 			},
