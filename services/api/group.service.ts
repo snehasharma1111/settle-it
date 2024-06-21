@@ -9,7 +9,7 @@ import {
 import { expenseService, memberService } from "@/services/api";
 import { IExpense } from "@/types/expense";
 import { IGroup } from "@/types/group";
-import { IBalance, ITransaction } from "@/types/member";
+import { ITransaction } from "@/types/member";
 import { IUser } from "@/types/user";
 import { getObjectFromMongoResponse } from "@/utils/parser";
 import { getNonNullValue, getNumber } from "@/utils/safety";
@@ -185,9 +185,7 @@ export const getAllTransactions = async (
 	}));
 };
 
-export const getBalances = async (
-	groupId: string
-): Promise<Array<IBalance>> => {
+export const getBalances = async (groupId: string): Promise<any> => {
 	const result = await MemberModel.aggregate([
 		// get members involved in this group
 		{
@@ -220,59 +218,254 @@ export const getBalances = async (
 			},
 		},
 	]);
-	const userTransaction = new Map();
-
-	// Hashmap to group transactions for each user
-	result.forEach((result) => {
-		const fromUser = result._id.userId.toString();
-		const toUser = result._id.expensePaidBy.toString();
-		const owed = result.totalOwed;
-		const paid = result.totalPaid;
-		if (!userTransaction.has(fromUser)) {
-			userTransaction.set(fromUser, {
-				user: fromUser,
-				owed: 0,
-				paid: 0,
-				transactions: [],
+	// buld the summary array of 'from-to-stillOwes-hasPaid'
+	const transactions = result
+		.map((a) => ({
+			from: a._id.userId.toString(),
+			to: a._id.expensePaidBy.toString(),
+			stillOwes: a.totalOwed,
+			hasPaid: a.totalPaid,
+		}))
+		.filter((a) => a.from !== a.to)
+		.filter((a) => a.stillOwes > 0 || a.hasPaid > 0);
+	// get all users in this group
+	const membersIds = Array.from(
+		new Set(
+			transactions
+				.map((t) => t.from)
+				.concat(transactions.map((t) => t.to))
+		)
+	);
+	const users = (await UserModel.find({ _id: { $in: membersIds } }))
+		.map(getObjectFromMongoResponse<IUser>)
+		.map(getNonNullValue);
+	const usersMap = new Map<string, IUser>(
+		users.map((user) => [user.id, user])
+	);
+	// build the map for all the amount that is still owed by every user
+	const owesMap = new Map<
+		string,
+		{ transactions: { user: string; amount: number }[] }
+	>();
+	transactions.forEach((transaction) => {
+		const from = transaction.from;
+		const to = transaction.to;
+		const fromInOwesMap = owesMap.get(from);
+		const toInOwesMap = owesMap.get(to);
+		if (transaction.stillOwes !== 0) {
+			if (fromInOwesMap) {
+				fromInOwesMap.transactions.push({
+					user: to,
+					amount: transaction.stillOwes,
+				});
+			} else if (toInOwesMap) {
+				const fromInToBucketOfOwesMap = toInOwesMap.transactions.find(
+					(t: any) => t.user === from
+				);
+				if (fromInToBucketOfOwesMap) {
+					const prevAmount = fromInToBucketOfOwesMap.amount;
+					const newAmount = transaction.stillOwes;
+					if (prevAmount === newAmount) {
+						// remove 'from' from 'to' bucket
+						toInOwesMap.transactions =
+							toInOwesMap.transactions.filter(
+								(t: any) => t.user !== from
+							);
+					} else if (prevAmount > newAmount) {
+						fromInToBucketOfOwesMap.amount = prevAmount - newAmount;
+					} else {
+						// kick 'from' from the bucket
+						toInOwesMap.transactions =
+							toInOwesMap.transactions.filter(
+								(t: any) => t.user !== from
+							);
+						// add 'to' to the map
+						owesMap.set(from, {
+							transactions: [
+								{
+									user: to,
+									amount: newAmount - prevAmount,
+								},
+							],
+						});
+					}
+				} else {
+					owesMap.set(from, {
+						transactions: [
+							{
+								user: to,
+								amount: transaction.stillOwes,
+							},
+						],
+					});
+				}
+			} else {
+				owesMap.set(from, {
+					transactions: [
+						{
+							user: to,
+							amount: transaction.stillOwes,
+						},
+					],
+				});
+			}
+		}
+	});
+	// build the map for the summary for every user
+	const summayMap = new Map<
+		string,
+		{ transactions: { user: string; gives: number; gets: number }[] }
+	>();
+	transactions.forEach((transaction) => {
+		const from = transaction.from;
+		const to = transaction.to;
+		const fromInSummayMap = summayMap.get(from);
+		const toInSummayMap = summayMap.get(to);
+		if (fromInSummayMap && toInSummayMap) {
+			const fromInToBucketOfSummayMap = toInSummayMap.transactions.find(
+				(t: any) => t.user === from
+			);
+			const toInFromBucketOfSummayMap = fromInSummayMap.transactions.find(
+				(t: any) => t.user === to
+			);
+			if (fromInToBucketOfSummayMap && toInFromBucketOfSummayMap) {
+				const prevAmount = fromInToBucketOfSummayMap.gives;
+				const newAmount = transaction.hasPaid + transaction.stillOwes;
+				if (prevAmount === newAmount) {
+					// kick both from each others bucket
+					toInSummayMap.transactions =
+						toInSummayMap.transactions.filter(
+							(t: any) => t.user !== from
+						);
+					fromInSummayMap.transactions =
+						fromInSummayMap.transactions.filter(
+							(t: any) => t.user !== to
+						);
+				} else if (prevAmount > newAmount) {
+					fromInToBucketOfSummayMap.gives = prevAmount - newAmount;
+					toInFromBucketOfSummayMap.gets = prevAmount - newAmount;
+				} else {
+					fromInToBucketOfSummayMap.gives = 0;
+					fromInToBucketOfSummayMap.gets = newAmount - prevAmount;
+					toInFromBucketOfSummayMap.gives = newAmount - prevAmount;
+					toInFromBucketOfSummayMap.gets = 0;
+				}
+			} else {
+				fromInSummayMap.transactions.push({
+					user: to,
+					gives: transaction.hasPaid + transaction.stillOwes,
+					gets: 0,
+				});
+				toInSummayMap.transactions.push({
+					user: from,
+					gives: 0,
+					gets: transaction.hasPaid + transaction.stillOwes,
+				});
+			}
+		} else if (fromInSummayMap) {
+			fromInSummayMap.transactions.push({
+				user: to,
+				gives: transaction.hasPaid + transaction.stillOwes,
+				gets: 0,
+			});
+			summayMap.set(to, {
+				transactions: [
+					{
+						user: from,
+						gives: 0,
+						gets: transaction.hasPaid + transaction.stillOwes,
+					},
+				],
+			});
+		} else if (toInSummayMap) {
+			toInSummayMap.transactions.push({
+				user: from,
+				gives: 0,
+				gets: transaction.hasPaid + transaction.stillOwes,
+			});
+			summayMap.set(from, {
+				transactions: [
+					{
+						user: to,
+						gives: transaction.hasPaid + transaction.stillOwes,
+						gets: 0,
+					},
+				],
+			});
+		} else {
+			summayMap.set(from, {
+				transactions: [
+					{
+						user: to,
+						gives: transaction.hasPaid + transaction.stillOwes,
+						gets: 0,
+					},
+				],
+			});
+			summayMap.set(to, {
+				transactions: [
+					{
+						user: from,
+						gives: 0,
+						gets: transaction.hasPaid + transaction.stillOwes,
+					},
+				],
 			});
 		}
-		userTransaction.get(fromUser).owed += owed;
-		userTransaction.get(fromUser).paid += paid;
-		userTransaction.get(fromUser).transactions.push({
-			user: toUser,
-			owed: owed,
-			paid: paid,
-		});
 	});
 
-	// Convert to array format
-	const userTransactionsArray = Array.from(userTransaction.values());
-
-	// Get all user details
-	const userIds = new Set();
-	userTransactionsArray.forEach((userTrans) => {
-		userIds.add(userTrans.user);
-		userTrans.transactions.forEach((trans: any) => {
-			userIds.add(trans.user);
-		});
-	});
-	const users = await UserModel.find({
-		_id: { $in: Array.from(userIds) },
-	});
-
-	// Populate user details
-	const userMap = users.reduce((acc, user) => {
-		acc[user._id] = getObjectFromMongoResponse<IUser>(user);
-		return acc;
-	}, {});
-	userTransactionsArray.forEach((userTrans) => {
-		userTrans.user = userMap[userTrans.user];
-		userTrans.transactions.forEach((trans: any) => {
-			trans.user = userMap[trans.user];
-		});
+	// populate the owes array with all the users
+	const owesArray = Array.from(owesMap, ([fromUser, fromUserObject]) => ({
+		user: fromUser,
+		...fromUserObject,
+	})).map((obj) => {
+		return {
+			user: getNonNullValue(usersMap.get(obj.user)),
+			amount: obj.transactions
+				.map((t) => t.amount)
+				.reduce((a, b) => a + b, 0)
+				.toFixed(2),
+			transactions: obj.transactions.map((t) => {
+				return {
+					user: getNonNullValue(usersMap.get(t.user)),
+					amount: t.amount.toFixed(2),
+				};
+			}),
+		};
 	});
 
-	return userTransactionsArray;
+	// populate the summary array with all the users
+	const summaryArray = Array.from(summayMap, ([fromUser, fromUserObject]) => {
+		const gives = fromUserObject.transactions
+			.map((t: any) => t.gives)
+			.reduce((a: number, b: number) => a + b, 0);
+		const gets = fromUserObject.transactions
+			.map((t: any) => t.gets)
+			.reduce((a: number, b: number) => a + b, 0);
+		const givesInTotal = gives > gets ? gives - gets : 0;
+		const getsInTotal = gets > gives ? gets - gives : 0;
+		return {
+			user: fromUser,
+			gives: givesInTotal,
+			gets: getsInTotal,
+			...fromUserObject,
+		};
+	}).map((obj) => {
+		return {
+			user: getNonNullValue(usersMap.get(obj.user)),
+			gives: obj.gives.toFixed(2),
+			gets: obj.gets.toFixed(2),
+			transactions: obj.transactions.map((t) => {
+				return {
+					user: getNonNullValue(usersMap.get(t.user)),
+					gives: t.gives.toFixed(2),
+					gets: t.gets.toFixed(2),
+				};
+			}),
+		};
+	});
+
+	return { owes: owesArray, summary: summaryArray };
 };
 
 export const create = async (
