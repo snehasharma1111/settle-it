@@ -260,7 +260,40 @@ export const getBalancesSummary = async (
 		const fromInOwesMap = owesMap.get(from);
 		const toInOwesMap = owesMap.get(to);
 		if (transaction.stillOwes !== 0) {
-			if (fromInOwesMap) {
+			if (fromInOwesMap && toInOwesMap) {
+				const fromInToBucketOfOwesMap = toInOwesMap.transactions.find(
+					(t: any) => t.user === from
+				);
+				if (fromInToBucketOfOwesMap) {
+					const prevAmount = fromInToBucketOfOwesMap.amount;
+					const newAmount = transaction.stillOwes;
+					if (prevAmount === newAmount) {
+						// remove 'from' from 'to' bucket
+						toInOwesMap.transactions =
+							toInOwesMap.transactions.filter(
+								(t: any) => t.user !== from
+							);
+					} else if (prevAmount > newAmount) {
+						// reduce amount of 'from' in 'to' bucket
+						fromInToBucketOfOwesMap.amount = prevAmount - newAmount;
+					} else if (prevAmount < newAmount) {
+						// remove 'from' from 'to' bucket and add reduced amount to 'from' bucket
+						toInOwesMap.transactions =
+							toInOwesMap.transactions.filter(
+								(t: any) => t.user !== from
+							);
+						fromInOwesMap.transactions.push({
+							user: to,
+							amount: newAmount - prevAmount,
+						});
+					}
+				} else {
+					fromInOwesMap.transactions.push({
+						user: to,
+						amount: transaction.stillOwes,
+					});
+				}
+			} else if (fromInOwesMap) {
 				fromInOwesMap.transactions.push({
 					user: to,
 					amount: transaction.stillOwes,
@@ -330,9 +363,9 @@ export const getBalancesSummary = async (
 		const toInBalancesMap = balancesMap.get(to);
 		if (fromInBalancesMap && toInBalancesMap) {
 			const fromInToBucketOfBalancesMap =
-				toInBalancesMap.transactions.find((t: any) => t.user === from);
+				toInBalancesMap.transactions.find((t) => t.user === from);
 			const toInFromBucketOfBalancesMap =
-				fromInBalancesMap.transactions.find((t: any) => t.user === to);
+				fromInBalancesMap.transactions.find((t) => t.user === to);
 			if (fromInToBucketOfBalancesMap && toInFromBucketOfBalancesMap) {
 				const prevAmount = fromInToBucketOfBalancesMap.gives;
 				const newAmount = transaction.hasPaid + transaction.stillOwes;
@@ -340,11 +373,11 @@ export const getBalancesSummary = async (
 					// kick both from each others bucket
 					toInBalancesMap.transactions =
 						toInBalancesMap.transactions.filter(
-							(t: any) => t.user !== from
+							(t) => t.user !== from
 						);
 					fromInBalancesMap.transactions =
 						fromInBalancesMap.transactions.filter(
-							(t: any) => t.user !== to
+							(t) => t.user !== to
 						);
 				} else if (prevAmount > newAmount) {
 					fromInToBucketOfBalancesMap.gives = prevAmount - newAmount;
