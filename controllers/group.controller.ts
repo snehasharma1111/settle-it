@@ -56,7 +56,7 @@ export const getGroupDetailsAndExpenses = async (
 	}
 };
 
-export const getGroupBalances = async (req: ApiRequest, res: ApiResponse) => {
+export const getBalancesSummary = async (req: ApiRequest, res: ApiResponse) => {
 	try {
 		const loggedInUserId = getNonEmptyString(req.user?.id);
 		const groupId = getNonEmptyString(req.query.id);
@@ -71,7 +71,7 @@ export const getGroupBalances = async (req: ApiRequest, res: ApiResponse) => {
 				.status(HTTP.status.FORBIDDEN)
 				.json({ message: HTTP.message.FORBIDDEN });
 		const expenditure = await groupService.getExpenditure(groupId);
-		const balances = await groupService.getBalances(groupId);
+		const balances = await groupService.getBalancesSummary(groupId);
 		return res.status(HTTP.status.SUCCESS).json({
 			message: HTTP.message.SUCCESS,
 			data: {

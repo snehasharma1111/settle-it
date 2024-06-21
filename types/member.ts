@@ -19,7 +19,18 @@ export type ITransaction = {
 
 export type IBalance = {
 	user: IUser;
-	owed: number;
-	paid: number;
+	gives: number;
+	gets: number;
 	transactions: Array<Omit<IBalance, "transactions">>;
+};
+
+export type IOwedRecord = {
+	user: IUser;
+	amount: number;
+	transactions: Array<Omit<IOwedRecord, "transactions">>;
+};
+
+export type IBalancesSummary = {
+	owes: Array<IOwedRecord>;
+	balances: Array<IBalance>;
 };

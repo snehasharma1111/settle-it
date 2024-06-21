@@ -9,7 +9,7 @@ import {
 import { expenseService, memberService } from "@/services/api";
 import { IExpense } from "@/types/expense";
 import { IGroup } from "@/types/group";
-import { ITransaction } from "@/types/member";
+import { IBalancesSummary, ITransaction } from "@/types/member";
 import { IUser } from "@/types/user";
 import { getObjectFromMongoResponse } from "@/utils/parser";
 import { getNonNullValue, getNumber } from "@/utils/safety";
@@ -185,7 +185,9 @@ export const getAllTransactions = async (
 	}));
 };
 
-export const getBalances = async (groupId: string): Promise<any> => {
+export const getBalancesSummary = async (
+	groupId: string
+): Promise<IBalancesSummary> => {
 	const result = await MemberModel.aggregate([
 		// get members involved in this group
 		{
@@ -219,7 +221,12 @@ export const getBalances = async (groupId: string): Promise<any> => {
 		},
 	]);
 	// buld the summary array of 'from-to-stillOwes-hasPaid'
-	const transactions = result
+	const transactions: Array<{
+		from: string;
+		to: string;
+		stillOwes: number;
+		hasPaid: number;
+	}> = result
 		.map((a) => ({
 			from: a._id.userId.toString(),
 			to: a._id.expensePaidBy.toString(),
@@ -312,63 +319,61 @@ export const getBalances = async (groupId: string): Promise<any> => {
 		}
 	});
 	// build the map for the summary for every user
-	const summayMap = new Map<
+	const balancesMap = new Map<
 		string,
 		{ transactions: { user: string; gives: number; gets: number }[] }
 	>();
 	transactions.forEach((transaction) => {
 		const from = transaction.from;
 		const to = transaction.to;
-		const fromInSummayMap = summayMap.get(from);
-		const toInSummayMap = summayMap.get(to);
-		if (fromInSummayMap && toInSummayMap) {
-			const fromInToBucketOfSummayMap = toInSummayMap.transactions.find(
-				(t: any) => t.user === from
-			);
-			const toInFromBucketOfSummayMap = fromInSummayMap.transactions.find(
-				(t: any) => t.user === to
-			);
-			if (fromInToBucketOfSummayMap && toInFromBucketOfSummayMap) {
-				const prevAmount = fromInToBucketOfSummayMap.gives;
+		const fromInBalancesMap = balancesMap.get(from);
+		const toInBalancesMap = balancesMap.get(to);
+		if (fromInBalancesMap && toInBalancesMap) {
+			const fromInToBucketOfBalancesMap =
+				toInBalancesMap.transactions.find((t: any) => t.user === from);
+			const toInFromBucketOfBalancesMap =
+				fromInBalancesMap.transactions.find((t: any) => t.user === to);
+			if (fromInToBucketOfBalancesMap && toInFromBucketOfBalancesMap) {
+				const prevAmount = fromInToBucketOfBalancesMap.gives;
 				const newAmount = transaction.hasPaid + transaction.stillOwes;
 				if (prevAmount === newAmount) {
 					// kick both from each others bucket
-					toInSummayMap.transactions =
-						toInSummayMap.transactions.filter(
+					toInBalancesMap.transactions =
+						toInBalancesMap.transactions.filter(
 							(t: any) => t.user !== from
 						);
-					fromInSummayMap.transactions =
-						fromInSummayMap.transactions.filter(
+					fromInBalancesMap.transactions =
+						fromInBalancesMap.transactions.filter(
 							(t: any) => t.user !== to
 						);
 				} else if (prevAmount > newAmount) {
-					fromInToBucketOfSummayMap.gives = prevAmount - newAmount;
-					toInFromBucketOfSummayMap.gets = prevAmount - newAmount;
+					fromInToBucketOfBalancesMap.gives = prevAmount - newAmount;
+					toInFromBucketOfBalancesMap.gets = prevAmount - newAmount;
 				} else {
-					fromInToBucketOfSummayMap.gives = 0;
-					fromInToBucketOfSummayMap.gets = newAmount - prevAmount;
-					toInFromBucketOfSummayMap.gives = newAmount - prevAmount;
-					toInFromBucketOfSummayMap.gets = 0;
+					fromInToBucketOfBalancesMap.gives = 0;
+					fromInToBucketOfBalancesMap.gets = newAmount - prevAmount;
+					toInFromBucketOfBalancesMap.gives = newAmount - prevAmount;
+					toInFromBucketOfBalancesMap.gets = 0;
 				}
 			} else {
-				fromInSummayMap.transactions.push({
+				fromInBalancesMap.transactions.push({
 					user: to,
 					gives: transaction.hasPaid + transaction.stillOwes,
 					gets: 0,
 				});
-				toInSummayMap.transactions.push({
+				toInBalancesMap.transactions.push({
 					user: from,
 					gives: 0,
 					gets: transaction.hasPaid + transaction.stillOwes,
 				});
 			}
-		} else if (fromInSummayMap) {
-			fromInSummayMap.transactions.push({
+		} else if (fromInBalancesMap) {
+			fromInBalancesMap.transactions.push({
 				user: to,
 				gives: transaction.hasPaid + transaction.stillOwes,
 				gets: 0,
 			});
-			summayMap.set(to, {
+			balancesMap.set(to, {
 				transactions: [
 					{
 						user: from,
@@ -377,13 +382,13 @@ export const getBalances = async (groupId: string): Promise<any> => {
 					},
 				],
 			});
-		} else if (toInSummayMap) {
-			toInSummayMap.transactions.push({
+		} else if (toInBalancesMap) {
+			toInBalancesMap.transactions.push({
 				user: from,
 				gives: 0,
 				gets: transaction.hasPaid + transaction.stillOwes,
 			});
-			summayMap.set(from, {
+			balancesMap.set(from, {
 				transactions: [
 					{
 						user: to,
@@ -393,7 +398,7 @@ export const getBalances = async (groupId: string): Promise<any> => {
 				],
 			});
 		} else {
-			summayMap.set(from, {
+			balancesMap.set(from, {
 				transactions: [
 					{
 						user: to,
@@ -402,7 +407,7 @@ export const getBalances = async (groupId: string): Promise<any> => {
 					},
 				],
 			});
-			summayMap.set(to, {
+			balancesMap.set(to, {
 				transactions: [
 					{
 						user: from,
@@ -418,54 +423,59 @@ export const getBalances = async (groupId: string): Promise<any> => {
 	const owesArray = Array.from(owesMap, ([fromUser, fromUserObject]) => ({
 		user: fromUser,
 		...fromUserObject,
-	})).map((obj) => {
-		return {
-			user: getNonNullValue(usersMap.get(obj.user)),
-			amount: obj.transactions
-				.map((t) => t.amount)
-				.reduce((a, b) => a + b, 0)
-				.toFixed(2),
-			transactions: obj.transactions.map((t) => {
-				return {
-					user: getNonNullValue(usersMap.get(t.user)),
-					amount: t.amount.toFixed(2),
-				};
-			}),
-		};
-	});
-
+	}))
+		.map((obj) => {
+			return {
+				user: getNonNullValue(usersMap.get(obj.user)),
+				amount: obj.transactions
+					.map((t) => t.amount)
+					.reduce((a, b) => a + b, 0),
+				transactions: obj.transactions.map((t) => {
+					return {
+						user: getNonNullValue(usersMap.get(t.user)),
+						amount: t.amount,
+					};
+				}),
+			};
+		})
+		.filter((obj) => obj.amount > 0 && obj.transactions.length > 0);
 	// populate the summary array with all the users
-	const summaryArray = Array.from(summayMap, ([fromUser, fromUserObject]) => {
-		const gives = fromUserObject.transactions
-			.map((t: any) => t.gives)
-			.reduce((a: number, b: number) => a + b, 0);
-		const gets = fromUserObject.transactions
-			.map((t: any) => t.gets)
-			.reduce((a: number, b: number) => a + b, 0);
-		const givesInTotal = gives > gets ? gives - gets : 0;
-		const getsInTotal = gets > gives ? gets - gives : 0;
-		return {
-			user: fromUser,
-			gives: givesInTotal,
-			gets: getsInTotal,
-			...fromUserObject,
-		};
-	}).map((obj) => {
-		return {
-			user: getNonNullValue(usersMap.get(obj.user)),
-			gives: obj.gives.toFixed(2),
-			gets: obj.gets.toFixed(2),
-			transactions: obj.transactions.map((t) => {
-				return {
-					user: getNonNullValue(usersMap.get(t.user)),
-					gives: t.gives.toFixed(2),
-					gets: t.gets.toFixed(2),
-				};
-			}),
-		};
-	});
+	const balancesArray = Array.from(
+		balancesMap,
+		([fromUser, fromUserObject]) => {
+			const gives = fromUserObject.transactions
+				.map((t: any) => t.gives)
+				.reduce((a: number, b: number) => a + b, 0);
+			const gets = fromUserObject.transactions
+				.map((t: any) => t.gets)
+				.reduce((a: number, b: number) => a + b, 0);
+			const givesInTotal = gives > gets ? gives - gets : 0;
+			const getsInTotal = gets > gives ? gets - gives : 0;
+			return {
+				user: fromUser,
+				gives: givesInTotal,
+				gets: getsInTotal,
+				...fromUserObject,
+			};
+		}
+	)
+		.filter((obj) => obj.gives > 0 || obj.gets > 0)
+		.map((obj) => {
+			return {
+				user: getNonNullValue(usersMap.get(obj.user)),
+				gives: obj.gives,
+				gets: obj.gets,
+				transactions: obj.transactions.map((t) => {
+					return {
+						user: getNonNullValue(usersMap.get(t.user)),
+						gives: t.gives,
+						gets: t.gets,
+					};
+				}),
+			};
+		});
 
-	return { owes: owesArray, summary: summaryArray };
+	return { owes: owesArray, balances: balancesArray };
 };
 
 export const create = async (

@@ -2,7 +2,7 @@ import { http } from "@/connections";
 import { ApiRes } from "@/types/api";
 import { IExpense } from "@/types/expense";
 import { CreateGroupData, IGroup, UpdateGroupData } from "@/types/group";
-import { IBalance, ITransaction } from "@/types/member";
+import { IBalancesSummary, ITransaction } from "@/types/member";
 
 export const getAllGroups = async (
 	headers?: any
@@ -34,18 +34,18 @@ export const getGroupDetails = async (
 	}
 };
 
-export const getBalances = async (
+export const getBalancesSummary = async (
 	id: string,
 	headers?: any
 ): Promise<
 	ApiRes<{
 		group: IGroup;
 		expenditure: number;
-		balances: Array<IBalance>;
+		balances: IBalancesSummary;
 	}>
 > => {
 	try {
-		const response = await http.get(`/groups/${id}/balances`, { headers });
+		const response = await http.get(`/groups/${id}/summary`, { headers });
 		return Promise.resolve(response.data);
 	} catch (error: any) {
 		console.error(error);

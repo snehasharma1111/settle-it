@@ -42,7 +42,7 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 			<main className={classes("")}>
 				<GroupMetaData group={groupDetails} />
 				<section className={classes("-body")}>
-					<table>
+					<table border={1}>
 						<thead>
 							<tr>
 								<th>S. No.</th>

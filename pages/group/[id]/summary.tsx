@@ -1,16 +1,18 @@
-import { GroupMetaData } from "@/components";
+import { GroupMetaData, GroupSummary, OwedRecords } from "@/components";
 import { api } from "@/connections";
 import { routes } from "@/constants";
 import { useStore } from "@/hooks";
+import { Typography } from "@/library";
 import { authMiddleware } from "@/middlewares";
 import PageNotFound from "@/pages/404";
 import styles from "@/styles/pages/Group.module.scss";
 import { IGroup } from "@/types/group";
-import { IBalance } from "@/types/member";
+import { IBalancesSummary } from "@/types/member";
 import { IUser } from "@/types/user";
 import { stylesConfig } from "@/utils/functions";
 import { getNonEmptyString } from "@/utils/safety";
 import React, { useEffect, useState } from "react";
+import { FiChevronDown } from "react-icons/fi";
 
 const classes = stylesConfig(styles, "group");
 
@@ -18,12 +20,20 @@ type GroupPageProps = {
 	user: IUser;
 	group: IGroup;
 	expenditure: number;
-	balances: Array<IBalance>;
+	balances: IBalancesSummary;
 };
 
 const GroupPage: React.FC<GroupPageProps> = (props) => {
 	const { setUser, dispatch, groups } = useStore();
 	const [groupDetails, setGroupDetails] = useState<IGroup>(props.group);
+	const [uncollapsedGroup, setUncollapsedGroup] = useState<
+		"owed" | "summary" | null
+	>("summary");
+
+	const handleGroupCollapse = (group: "owed" | "summary") => {
+		if (uncollapsedGroup === group) setUncollapsedGroup(null);
+		else setUncollapsedGroup(group);
+	};
 
 	useEffect(() => {
 		dispatch(setUser(props.user));
@@ -42,29 +52,38 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 			<main className={classes("")}>
 				<GroupMetaData group={groupDetails} />
 				<section className={classes("-body")}>
-					{props.balances.map((balance, index) => (
-						<div key={index} className={classes("-body-row")}>
-							<div className={classes("-body-row-label")}>
-								{balance.user.name || balance.user.email}
-							</div>
-							<div className={classes("-body-row-value")}>
-								{balance.owed > 0
-									? `${balance.user.name || balance.user.email} owes ${balance.owed.toFixed(2)}`
-									: null}
-								{balance.paid > 0
-									? `${balance.user.name || balance.user.email} paid ${balance.paid.toFixed(2)}`
-									: null}
-							</div>
-							{balance.transactions.map((transaction, index) => (
-								<div
-									key={index}
-									className={classes("-body-row-value")}
-								>
-									{transaction.owed > 0}
-								</div>
-							))}
-						</div>
-					))}
+					<Typography size="xl" weight="medium">
+						Total Expenditure: {props.expenditure.toFixed(2)}
+					</Typography>
+					<div
+						className={classes("-head", {
+							"-head--uncollapsed": uncollapsedGroup === "owed",
+						})}
+					>
+						<Typography size="lg">Owed Amount</Typography>
+						<hr />
+						<button onClick={() => handleGroupCollapse("owed")}>
+							<FiChevronDown />
+						</button>
+					</div>
+					{uncollapsedGroup === "owed" ? (
+						<OwedRecords data={props.balances.owes} />
+					) : null}
+					<div
+						className={classes("-head", {
+							"-head--uncollapsed":
+								uncollapsedGroup === "summary",
+						})}
+					>
+						<Typography size="lg">Summary</Typography>
+						<hr />
+						<button onClick={() => handleGroupCollapse("summary")}>
+							<FiChevronDown />
+						</button>
+					</div>
+					{uncollapsedGroup === "summary" ? (
+						<GroupSummary data={props.balances.balances} />
+					) : null}
 				</section>
 			</main>
 		</>
@@ -78,7 +97,7 @@ export const getServerSideProps = async (context: any) => {
 		return await authMiddleware.page(context, {
 			async onLoggedInAndOnboarded(user, headers) {
 				const id = getNonEmptyString(context.query.id);
-				const groupDetailsRes = await api.group.getBalances(
+				const groupDetailsRes = await api.group.getBalancesSummary(
 					id,
 					headers
 				);

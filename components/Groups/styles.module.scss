@@ -171,3 +171,28 @@
 		}
 	}
 }
+
+.group-owed-data,
+.group-summary {
+	width: 100%;
+	display: flex;
+	justify-content: flex-start;
+	align-items: flex-start;
+	flex-direction: column;
+	gap: 24px;
+	padding: 0 24px;
+
+	&-person {
+		width: 100%;
+		display: flex;
+		justify-content: flex-start;
+		align-items: flex-start;
+		flex-direction: column;
+		gap: 8px;
+
+		&--sub {
+			margin-left: 20px;
+			flex-direction: row;
+		}
+	}
+}
