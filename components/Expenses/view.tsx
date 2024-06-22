@@ -16,6 +16,7 @@ interface IViewExpenseProps {
 	id: string;
 	onClose: () => void;
 	onSwitchToEdit: () => void;
+	onDelete: () => void;
 }
 
 interface ExpenseMemberProps extends IMember {
@@ -161,6 +162,7 @@ const ViewExpense: React.FC<IViewExpenseProps> = ({
 	id,
 	onClose,
 	onSwitchToEdit,
+	onDelete,
 }) => {
 	const { expenses, user: loggedInUser } = useStore();
 	const [settlingExpense, setSettlingExpense] = useState(false);
@@ -205,6 +207,12 @@ const ViewExpense: React.FC<IViewExpenseProps> = ({
 				expense.createdBy.id === loggedInUser.id ||
 				expense.paidBy.id === loggedInUser.id
 					? onSwitchToEdit
+					: undefined
+			}
+			onDelete={
+				expense.createdBy.id === loggedInUser.id ||
+				expense.paidBy.id === loggedInUser.id
+					? onDelete
 					: undefined
 			}
 			title={expense.title}

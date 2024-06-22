@@ -15,8 +15,12 @@ const handler: NextApiHandler = async (req: ApiRequest, res: ApiResponse) => {
 				return authMiddleware.apiRoute(
 					expenseControllers.updateExpense
 				)(req, res);
+			case "DELETE":
+				return authMiddleware.apiRoute(
+					expenseControllers.removeExpense
+				)(req, res);
 			default:
-				res.setHeader("Allow", ["PATCH"]);
+				res.setHeader("Allow", ["PATCH", "DELETE"]);
 				return res
 					.status(HTTP.status.METHOD_NOT_ALLOWED)
 					.json({ message: `Method ${method} Not Allowed` });

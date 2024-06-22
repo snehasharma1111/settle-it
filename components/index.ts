@@ -1,4 +1,5 @@
 import * as Auth from "./Auth";
+import { useConfirmationModal } from "./Confirmation";
 import Error from "./Error";
 import {
 	CreateExpense,
@@ -28,4 +29,5 @@ export {
 	UpdateExpense,
 	UpdateGroup,
 	ViewExpense,
+	useConfirmationModal,
 };

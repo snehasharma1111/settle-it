@@ -1,7 +1,7 @@
 import { Typography } from "@/library";
 import { stylesConfig } from "@/utils/functions";
 import React, { useEffect, useRef, useState } from "react";
-import { CloseIcon, EditIcon } from "./assets";
+import { CloseIcon, EditIcon, TrashIcon } from "./assets";
 import styles from "./styles.module.scss";
 import { PopupProps } from "./types";
 
@@ -12,6 +12,7 @@ const Popup: React.FC<PopupProps> = ({
 	title,
 	onClose,
 	onEdit,
+	onDelete,
 	footer,
 	primaryAction,
 	secondaryAction,
@@ -74,6 +75,14 @@ const Popup: React.FC<PopupProps> = ({
 									onClick={onEdit}
 								>
 									<EditIcon />
+								</button>
+							) : null}
+							{onDelete ? (
+								<button
+									className={classes("-header-delete")}
+									onClick={onDelete}
+								>
+									<TrashIcon />
 								</button>
 							) : null}
 							<button

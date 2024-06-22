@@ -374,15 +374,19 @@ export const removeExpense = async (req: ApiRequest, res: ApiResponse) => {
 			return res
 				.status(HTTP.status.NOT_FOUND)
 				.json({ message: HTTP.message.NOT_FOUND });
-		if (foundExpense.createdBy.id !== loggedInUserId)
+		if (
+			foundExpense.createdBy.id !== loggedInUserId &&
+			foundExpense.paidBy.id !== loggedInUserId
+		)
 			return res
 				.status(HTTP.status.FORBIDDEN)
 				.json({ message: HTTP.message.FORBIDDEN });
 		// remove all members for the current expense
 		await memberService.bulkRemove({ expenseId: id });
-		await expenseService.remove({ id });
+		const removedExpense = await expenseService.remove({ id });
 		return res.status(HTTP.status.SUCCESS).json({
 			message: HTTP.message.SUCCESS,
+			data: removedExpense,
 		});
 	} catch (error: any) {
 		console.error(error);

@@ -1,12 +1,12 @@
-import { UpdateExpense, ViewExpense } from "@/components";
+import { UpdateExpense, ViewExpense, useConfirmationModal } from "@/components";
+import { useStore } from "@/hooks";
 import { Typography } from "@/library";
+import { notify } from "@/messages";
 import { IExpense, UpdateExpenseData } from "@/types/expense";
 import { stylesConfig } from "@/utils/functions";
 import moment from "moment";
 import React, { useState } from "react";
 import styles from "./styles.module.scss";
-import { useStore } from "@/hooks";
-import { notify } from "@/messages";
 
 interface IExpenseProps extends IExpense {}
 
@@ -20,10 +20,11 @@ const Expense: React.FC<IExpenseProps> = ({
 	amount,
 	group,
 }) => {
-	const { dispatch, updateExpense } = useStore();
+	const { dispatch, updateExpense, removeExpense } = useStore();
 	const [openViewExpensePopup, setOpenViewExpensePopup] = useState(false);
 	const [openEditExpensePopup, setOpenEditExpensePopup] = useState(false);
 	const [updating, setUpdating] = useState(false);
+	const [deleting, setDeleting] = useState(false);
 
 	const updateExpenseHelper = async (data: UpdateExpenseData) => {
 		setUpdating(true);
@@ -37,6 +38,36 @@ const Expense: React.FC<IExpenseProps> = ({
 			setUpdating(false);
 		}
 	};
+
+	const deleteExpenseHelper = async () => {
+		setDeleting(true);
+		try {
+			await dispatch(removeExpense(id)).unwrap();
+			setOpenEditExpensePopup(false);
+			setOpenViewExpensePopup(false);
+		} catch (error) {
+			notify.error(error);
+		} finally {
+			setDeleting(false);
+		}
+	};
+
+	const deleteExpenseConfirmation = useConfirmationModal(
+		`Delete Expense ${title}`,
+		<>
+			Are you sure you want to delete this expense?
+			<br />
+			This action cannot be undone
+		</>,
+		async () => {
+			await deleteExpenseHelper();
+		},
+		() => {
+			setOpenEditExpensePopup(false);
+			setOpenViewExpensePopup(false);
+		},
+		deleting
+	);
 
 	return (
 		<>
@@ -65,6 +96,10 @@ const Expense: React.FC<IExpenseProps> = ({
 						setOpenViewExpensePopup(false);
 						setOpenEditExpensePopup(true);
 					}}
+					onDelete={() => {
+						setOpenViewExpensePopup(false);
+						deleteExpenseConfirmation.openPopup();
+					}}
 				/>
 			) : null}
 			{openEditExpensePopup ? (
@@ -76,6 +111,9 @@ const Expense: React.FC<IExpenseProps> = ({
 					onSave={updateExpenseHelper}
 				/>
 			) : null}
+			{deleteExpenseConfirmation.showPopup
+				? deleteExpenseConfirmation.Modal
+				: null}
 		</>
 	);
 };

@@ -1,7 +1,10 @@
 import { http } from "@/connections";
 import { ApiRes } from "@/types/api";
-import { CreateExpenseData, UpdateExpenseData } from "@/types/expense";
-import { IExpense } from "@/types/expense";
+import {
+	CreateExpenseData,
+	IExpense,
+	UpdateExpenseData,
+} from "@/types/expense";
 import { IMember } from "@/types/member";
 
 export const getAllExpensesForUser = async (
@@ -72,6 +75,19 @@ export const settleExpense = async (
 			{},
 			{ headers }
 		);
+		return Promise.resolve(response.data);
+	} catch (error: any) {
+		console.error(error);
+		return Promise.reject(error?.response?.data);
+	}
+};
+
+export const deleteExpense = async (
+	id: string,
+	headers?: any
+): Promise<ApiRes<IExpense>> => {
+	try {
+		const response = await http.delete(`/expenses/${id}`, { headers });
 		return Promise.resolve(response.data);
 	} catch (error: any) {
 		console.error(error);
