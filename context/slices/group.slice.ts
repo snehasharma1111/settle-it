@@ -37,6 +37,10 @@ export const groupSlice = createSlice({
 			});
 			return state;
 		});
+		builder.addCase(groupHelpers.deleteGroup.fulfilled, (state, action) => {
+			state = state.filter((group) => group.id !== action.payload.id);
+			return state;
+		});
 	},
 });
 

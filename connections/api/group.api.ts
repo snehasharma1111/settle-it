@@ -100,3 +100,16 @@ export const updateGroup = async (
 		return Promise.reject(error?.response?.data);
 	}
 };
+
+export const deleteGroup = async (
+	id: string,
+	headers?: any
+): Promise<ApiRes<IGroup>> => {
+	try {
+		const response = await http.delete(`/groups/${id}`, { headers });
+		return Promise.resolve(response.data);
+	} catch (error: any) {
+		console.error(error);
+		return Promise.reject(error?.response?.data);
+	}
+};

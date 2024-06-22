@@ -39,7 +39,7 @@ const HomePage: React.FC<HomePageProps> = (props) => {
 	const createGroupHelper = async (newGroupData: CreateGroupData) => {
 		try {
 			setCreatingGroup(true);
-			const res = await dispatch(createGroup(newGroupData));
+			const res = await dispatch(createGroup(newGroupData)).unwrap();
 			if (res) {
 				setOpenCreateGroupPopup(false);
 			}
@@ -124,6 +124,7 @@ const HomePage: React.FC<HomePageProps> = (props) => {
 					<Button
 						onClick={() => setOpenCreateGroupPopup(true)}
 						className={classes("-add-fab")}
+						size="large"
 					>
 						<FiPlus /> Create Group
 					</Button>

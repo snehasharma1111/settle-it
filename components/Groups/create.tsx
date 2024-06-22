@@ -1,5 +1,8 @@
+import { fallbackAssets } from "@/constants";
+import { useStore } from "@/hooks";
 import { Responsive } from "@/layouts";
 import { Avatars, Button, Input, Popup, Typography } from "@/library";
+import { notify } from "@/messages";
 import { CreateGroupData } from "@/types/group";
 import { IUser } from "@/types/user";
 import { stylesConfig } from "@/utils/functions";
@@ -7,8 +10,6 @@ import React, { useState } from "react";
 import { FiExternalLink } from "react-icons/fi";
 import Members from "./members";
 import styles from "./styles.module.scss";
-import { fallbackAssets } from "@/constants";
-import { useStore } from "@/hooks";
 
 interface ICreateGroupProps {
 	onClose: () => void;
@@ -39,6 +40,13 @@ const CreateGroup: React.FC<ICreateGroupProps> = ({
 
 	const handleSubmit = (e: any) => {
 		e.preventDefault();
+		if (
+			selectedMembers.length === 0 ||
+			(selectedMembers.length === 1 &&
+				selectedMembers[0].id === loggedInuser.id)
+		) {
+			return notify.error("Please select at least 1 member");
+		}
 		if (selectedMembers.map((user) => user.id).includes(loggedInuser.id)) {
 			onSave(fields);
 		} else {

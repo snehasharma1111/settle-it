@@ -17,6 +17,13 @@ const BUTTON_VARIANTS: { [key: string]: string } = {
 	text: "btn--variant--text",
 };
 
+const BUTTON_THEMES: { [key: string]: string } = {
+	success: "btn--theme--success",
+	error: "btn--theme--error",
+	warning: "btn--theme--warning",
+	info: "btn--theme--info",
+};
+
 const Button: React.ForwardRefRenderFunction<
 	HTMLButtonElement,
 	IButtonProps
@@ -25,6 +32,7 @@ const Button: React.ForwardRefRenderFunction<
 		children,
 		className,
 		variant = "filled",
+		theme = "success",
 		size = "medium",
 		loading = false,
 		icon,
@@ -40,6 +48,7 @@ const Button: React.ForwardRefRenderFunction<
 					"btn",
 					BUTON_SIZES[size],
 					BUTTON_VARIANTS[variant],
+					BUTTON_THEMES[theme],
 					{ "btn--loading": loading },
 					{ "btn--disabled": props.disabled || loading }
 				),

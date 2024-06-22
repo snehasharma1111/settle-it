@@ -10,7 +10,7 @@ export const fetchAuthenticatedUser = createAsyncThunk(
 			return Promise.resolve(res.data);
 		} catch (error: any) {
 			console.error(error);
-			return thunkApi.rejectWithValue(error.response.data);
+			return thunkApi.rejectWithValue(error.message);
 		}
 	}
 );
@@ -21,6 +21,6 @@ export const logoutUser = createAsyncThunk("auth/logoutUser", async () => {
 		return Promise.resolve();
 	} catch (error: any) {
 		console.error(error);
-		return Promise.reject(error.response.data);
+		return Promise.reject(error.message);
 	}
 });

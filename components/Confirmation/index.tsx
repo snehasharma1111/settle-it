@@ -27,17 +27,12 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 			width="600px"
 			height="250px"
 			secondaryAction={
-				<Button variant="outlined" onClick={onCancel} size="small">
+				<Button variant="outlined" onClick={onCancel}>
 					Cancel
 				</Button>
 			}
 			primaryAction={
-				<Button
-					loading={loading}
-					variant="filled"
-					onClick={onConfirm}
-					size="small"
-				>
+				<Button loading={loading} variant="filled" onClick={onConfirm}>
 					Confirm
 				</Button>
 			}

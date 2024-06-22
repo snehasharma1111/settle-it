@@ -18,38 +18,60 @@
 	color: var(--theme-white);
 	border: 1px solid transparent;
 
+	&--theme {
+		&--success {
+			--button-theme: var(--theme-green);
+		}
+
+		&--error {
+			--button-theme: var(--theme-red);
+		}
+
+		&--warning {
+			--button-theme: var(--theme-yellow);
+		}
+
+		&--info {
+			--button-theme: var(--theme-blue);
+		}
+	}
+
 	&--variant {
 		&--filled {
-			background-color: var(--accent-color);
+			background-color: var(--button-theme);
 			color: var(--theme-white);
 		}
 
 		&--outlined {
 			background-color: transparent;
-			color: var(--accent-color);
-			border-color: var(--accent-color);
+			color: var(--button-theme);
+			border-color: var(--button-theme);
+
+			svg path {
+				stroke: var(--button-theme);
+			}
 		}
 
 		&--text {
 			background-color: transparent;
-			color: var(--accent-color);
+			color: var(--button-theme);
 		}
 	}
 
 	&--size {
 		&--small {
-			padding: 12px 24px;
-			@include typography(s, bold);
+			padding: 4px 8px;
+			@include typography($size: sm, $weight: bold);
 		}
 
 		&--medium {
-			padding: 14px 28px;
-			@include typography(md, regular);
+			padding: 8px 16px;
+			@include typography($size: s, $weight: regular);
 		}
 
 		&--large {
-			padding: 16px 30px;
-			@include typography(xl, regular);
+			padding: 12px 24px;
+			@include typography($size: md, $weight: regular);
 		}
 	}
 
@@ -64,8 +86,8 @@
 			.btn__icon {
 				svg,
 				img {
-					width: 20px;
-					height: 20px;
+					width: 18px;
+					height: 18px;
 				}
 			}
 		}

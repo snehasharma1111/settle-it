@@ -10,7 +10,7 @@ export const getAllGroups = createAsyncThunk(
 			return Promise.resolve(res.data);
 		} catch (error: any) {
 			console.error(error);
-			return thunkApi.rejectWithValue(error.response.data);
+			return thunkApi.rejectWithValue(error.message);
 		}
 	}
 );
@@ -23,7 +23,7 @@ export const getGroupDetails = createAsyncThunk(
 			return Promise.resolve(res.data);
 		} catch (error: any) {
 			console.error(error);
-			return thunkApi.rejectWithValue(error.response.data);
+			return thunkApi.rejectWithValue(error.message);
 		}
 	}
 );
@@ -36,7 +36,7 @@ export const createGroup = createAsyncThunk(
 			return Promise.resolve(res.data);
 		} catch (error: any) {
 			console.error(error);
-			return thunkApi.rejectWithValue(error.response.data);
+			return thunkApi.rejectWithValue(error.message);
 		}
 	}
 );
@@ -49,7 +49,20 @@ export const updateGroup = createAsyncThunk(
 			return Promise.resolve(res.data);
 		} catch (error: any) {
 			console.error(error);
-			return thunkApi.rejectWithValue(error.response.data);
+			return thunkApi.rejectWithValue(error.message);
+		}
+	}
+);
+
+export const deleteGroup = createAsyncThunk(
+	"group/delete",
+	async (id: string, thunkApi) => {
+		try {
+			const res = await api.group.deleteGroup(id);
+			return Promise.resolve(res.data);
+		} catch (error: any) {
+			console.error(error);
+			return thunkApi.rejectWithValue(error.message);
 		}
 	}
 );

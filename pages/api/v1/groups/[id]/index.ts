@@ -20,6 +20,11 @@ const handler: NextApiHandler = async (req: ApiRequest, res: ApiResponse) => {
 					req,
 					res
 				);
+			case "DELETE":
+				return authMiddleware.apiRoute(groupControlllers.deleteGroup)(
+					req,
+					res
+				);
 			default:
 				res.setHeader("Allow", ["GET"]);
 				return res

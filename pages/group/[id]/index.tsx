@@ -3,6 +3,7 @@ import {
 	ExpenseCard,
 	GroupMetaData,
 	UpdateGroup,
+	useConfirmationModal,
 } from "@/components";
 import { api } from "@/connections";
 import { routes } from "@/constants";
@@ -19,6 +20,7 @@ import { IUser } from "@/types/user";
 import { stylesConfig } from "@/utils/functions";
 import { getNonEmptyString } from "@/utils/safety";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { FiPlus } from "react-icons/fi";
 
@@ -31,12 +33,21 @@ type GroupPageProps = {
 };
 
 const GroupPage: React.FC<GroupPageProps> = (props) => {
-	const { setUser, dispatch, updateGroup, createExpense, groups, expenses } =
-		useStore();
+	const {
+		setUser,
+		dispatch,
+		updateGroup,
+		deleteGroup,
+		createExpense,
+		groups,
+		expenses,
+	} = useStore();
+	const router = useRouter();
 	const [openManageGroupPopup, setOpenManageGroupPopup] = useState(false);
 	const [openAddExpensePopup, setOpenAddExpensePopup] = useState(false);
 	const [updatingGroup, setUpdatingGroup] = useState(false);
 	const [creatingExpense, setCreatingExpense] = useState(false);
+	const [deletingExpense, setDeletingExpense] = useState(false);
 	const [groupDetails, setGroupDetails] = useState<IGroup>(props.group);
 
 	useEffect(() => {
@@ -45,9 +56,10 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 	}, []);
 
 	useEffect(() => {
-		const group = groups.find((group) => group.id === props.group.id);
+		const group = groups.find((group) => group.id === props.group?.id);
 		if (group) setGroupDetails(group);
-	}, [groups, props.group.id]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	const updateGroupHelper = async (
 		id: string,
@@ -68,6 +80,20 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 		}
 	};
 
+	const deleteGroupHelper = async () => {
+		try {
+			setDeletingExpense(true);
+			const res = await dispatch(deleteGroup(groupDetails?.id)).unwrap();
+			if (res) {
+				router.push(routes.HOME);
+			}
+		} catch (error) {
+			notify.error(error);
+		} finally {
+			setDeletingExpense(false);
+		}
+	};
+
 	const createExpenseHelper = async (data: CreateExpenseData) => {
 		try {
 			setCreatingExpense(true);
@@ -81,6 +107,22 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 			setCreatingExpense(false);
 		}
 	};
+
+	const deleteGroupConfirmation = useConfirmationModal(
+		`Delete ${groupDetails?.name}?`,
+		<>
+			Are you sure you want to delete <b>{groupDetails?.name}</b> group?
+			<br />
+			This action cannot be undone
+		</>,
+		async () => {
+			await deleteGroupHelper();
+		},
+		() => {
+			deleteGroupConfirmation.closePopup();
+		},
+		deletingExpense
+	);
 
 	if (!props.group) return <PageNotFound />;
 
@@ -106,6 +148,7 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 								Add one to get this party started
 							</Typography>
 							<Button
+								size="large"
 								onClick={() => setOpenAddExpensePopup(true)}
 							>
 								Add expense
@@ -137,6 +180,7 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 					<Button
 						onClick={() => setOpenAddExpensePopup(true)}
 						className={classes("-add-fab")}
+						size="large"
 					>
 						<FiPlus /> Add expense
 					</Button>
@@ -149,6 +193,10 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 					onSave={(updatedGroupData) => {
 						updateGroupHelper(groupDetails.id, updatedGroupData);
 					}}
+					onDelete={() => {
+						setOpenManageGroupPopup(false);
+						deleteGroupConfirmation.openPopup();
+					}}
 					loading={updatingGroup}
 				/>
 			) : null}
@@ -160,6 +208,9 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 					loading={creatingExpense}
 				/>
 			) : null}
+			{deleteGroupConfirmation.showPopup
+				? deleteGroupConfirmation.Modal
+				: null}
 		</>
 	);
 };

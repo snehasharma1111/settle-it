@@ -10,7 +10,7 @@ export const getAllExpensesForUser = createAsyncThunk(
 			return Promise.resolve(res.data);
 		} catch (error: any) {
 			console.error(error);
-			return thunkApi.rejectWithValue(error.response.data);
+			return thunkApi.rejectWithValue(error.message);
 		}
 	}
 );
@@ -23,7 +23,7 @@ export const createExpense = createAsyncThunk(
 			return Promise.resolve(res.data);
 		} catch (error: any) {
 			console.error(error);
-			return thunkApi.rejectWithValue(error.response.data);
+			return thunkApi.rejectWithValue(error.message);
 		}
 	}
 );
@@ -36,7 +36,7 @@ export const updateExpense = createAsyncThunk(
 			return Promise.resolve(res.data);
 		} catch (error: any) {
 			console.error(error);
-			return thunkApi.rejectWithValue(error.response.data);
+			return thunkApi.rejectWithValue(error.message);
 		}
 	}
 );
@@ -49,7 +49,7 @@ export const removeExpense = createAsyncThunk(
 			return Promise.resolve(res.data);
 		} catch (error: any) {
 			console.error(error);
-			return thunkApi.rejectWithValue(error.response.data);
+			return thunkApi.rejectWithValue(error.message);
 		}
 	}
 );

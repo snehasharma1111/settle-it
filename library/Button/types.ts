@@ -8,6 +8,7 @@ export interface IButtonProps
 	children: React.ReactNode;
 	className?: string;
 	variant?: "filled" | "outlined" | "text";
+	theme?: "success" | "error" | "warning" | "info";
 	size?: "small" | "medium" | "large";
 	loading?: boolean;
 	icon?: React.ReactNode;

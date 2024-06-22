@@ -150,6 +150,8 @@ const CreateGroupMembers: React.FC<ICreateGroupMembersProps> = ({
 	useEffect(() => {
 		if (debouncedSearchStr && debouncedSearchStr.length >= 3) {
 			handleSearch(debouncedSearchStr);
+		} else {
+			setSearchResults([]);
 		}
 	}, [debouncedSearchStr]);
 
@@ -157,8 +159,8 @@ const CreateGroupMembers: React.FC<ICreateGroupMembersProps> = ({
 		<Responsive.Row className={classes("")}>
 			<Responsive.Col xlg={100} lg={100} md={100} sm={100} xsm={100}>
 				<Input
-					name="username"
-					placeholder="Username"
+					name="email"
+					placeholder="email"
 					size="small"
 					value={searchStr}
 					onChange={(e: any) => setSearchStr(e.target.value)}
@@ -219,7 +221,12 @@ const CreateGroupMembers: React.FC<ICreateGroupMembersProps> = ({
 				))
 			)}
 			<Responsive.Col xlg={100} lg={100} md={100} sm={100} xsm={100}>
-				<Button onClick={() => onSave()} size="small" type="button">
+				<Button
+					onClick={() => onSave()}
+					size="large"
+					type="button"
+					style={{ width: "fit-content" }}
+				>
 					Save
 				</Button>
 			</Responsive.Col>

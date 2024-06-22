@@ -13,7 +13,7 @@ const handler: NextApiHandler = async (req: ApiRequest, res: ApiResponse) => {
 		switch (method) {
 			case "GET":
 				return authMiddleware.apiRoute(
-					groupControlllers.getGroupTransacions
+					groupControlllers.getGroupTransactions
 				)(req, res);
 			default:
 				res.setHeader("Allow", ["GET"]);

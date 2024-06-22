@@ -94,7 +94,7 @@ export const getBalancesSummary = async (req: ApiRequest, res: ApiResponse) => {
 	}
 };
 
-export const getGroupTransacions = async (
+export const getGroupTransactions = async (
 	req: ApiRequest,
 	res: ApiResponse
 ) => {
@@ -147,6 +147,11 @@ export const createGroup = async (req: ApiRequest, res: ApiResponse) => {
 		];
 		if (!members.includes(loggedInUserId)) {
 			members.push(loggedInUserId);
+		}
+		if (members.length <= 1) {
+			return res
+				.status(HTTP.status.BAD_REQUEST)
+				.json({ message: "Group must have at least 2 members" });
 		}
 		const foundGroup = await groupService.findOne({ name });
 		if (foundGroup)
@@ -242,9 +247,9 @@ export const deleteGroup = async (req: ApiRequest, res: ApiResponse) => {
 				.status(HTTP.status.NOT_FOUND)
 				.json({ message: HTTP.message.NOT_FOUND });
 		if (foundGroup.createdBy.id !== loggedInUserId)
-			return res
-				.status(HTTP.status.FORBIDDEN)
-				.json({ message: HTTP.message.FORBIDDEN });
+			return res.status(HTTP.status.FORBIDDEN).json({
+				message: "Only the creator can destory it's creation",
+			});
 		await groupService.clear(id);
 		const deletedGroup = await groupService.remove({ id });
 		return res.status(HTTP.status.SUCCESS).json({

@@ -10,7 +10,7 @@ export const updateUser = createAsyncThunk(
 			return Promise.resolve(res.data);
 		} catch (error: any) {
 			console.error(error);
-			return thunkApi.rejectWithValue(error.response.data);
+			return thunkApi.rejectWithValue(error.message);
 		}
 	}
 );
