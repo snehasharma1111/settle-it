@@ -114,7 +114,9 @@ export const getServerSideProps = async (context: any) => {
 			onLoggedInAndNotOnboarded() {
 				return {
 					redirect: {
-						destination: routes.ONBOARDING,
+						destination:
+							routes.ONBOARDING +
+							`?redirect=/group/${context.query.id}/summary`,
 						permanent: false,
 					},
 				};
@@ -122,7 +124,9 @@ export const getServerSideProps = async (context: any) => {
 			onLoggedOut() {
 				return {
 					redirect: {
-						destination: routes.LOGIN,
+						destination:
+							routes.LOGIN +
+							`?redirect=/group/${context.query.id}/summary`,
 						permanent: false,
 					},
 				};

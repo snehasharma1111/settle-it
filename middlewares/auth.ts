@@ -33,7 +33,7 @@ export const page = async (
 				cookie: req.headers.cookie,
 			},
 		});
-		if (res.data.data.name) {
+		if (res.data.data.name && res.data.data.phone) {
 			return onLoggedInAndOnboarded(userDetailsRes.data.data, {
 				cookie: req.headers.cookie,
 			});

@@ -158,7 +158,7 @@ export const getServerSideProps = async (context: any) => {
 			onLoggedInAndNotOnboarded() {
 				return {
 					redirect: {
-						destination: routes.ONBOARDING,
+						destination: routes.ONBOARDING + "?redirect=/home",
 						permanent: false,
 					},
 				};
@@ -166,7 +166,7 @@ export const getServerSideProps = async (context: any) => {
 			onLoggedOut() {
 				return {
 					redirect: {
-						destination: routes.LOGIN,
+						destination: routes.LOGIN + "?redirect=/home",
 						permanent: false,
 					},
 				};
