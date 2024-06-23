@@ -484,7 +484,11 @@ ${
 	return template;
 };
 
-type EMAIL_TEMPLATE = "OTP" | "NEW_USER_ONBOARDED" | "USER_INVITED";
+type EMAIL_TEMPLATE =
+	| "OTP"
+	| "NEW_USER_ONBOARDED"
+	| "USER_INVITED"
+	| "USER_ADDED_TO_GROUP";
 
 export const getEmailTemplate = async (template: EMAIL_TEMPLATE, data: any) => {
 	switch (template) {
@@ -506,6 +510,13 @@ export const getEmailTemplate = async (template: EMAIL_TEMPLATE, data: any) => {
 				`<a href="mailto:${data.invitedBy.email}" style="color:inherit;text-decoration:none">${data.invitedBy.name}</a> has invited you to join Settle It. You can now login to your account.`,
 				"Login",
 				`${frontendBaseUrl}/login`
+			);
+		case "USER_ADDED_TO_GROUP":
+			return getEmailTemplateHTML(
+				`Added to ${data.group.name}`,
+				`<a href="mailto:${data.invitedBy.email}" style="color:inherit;text-decoration:none">${data.invitedBy.name}</a> has added you to ${data.group.name}.`,
+				"View Group",
+				`${frontendBaseUrl}/group/${data.group.id}`
 			);
 		default:
 			return "";

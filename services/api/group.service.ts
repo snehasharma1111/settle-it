@@ -1,5 +1,6 @@
 import { ExpenseModel, Group, GroupModel, MemberModel, User } from "@/models";
-import { expenseService, memberService } from "@/services/api";
+import { sendEmailTemplate } from "@/services";
+import { expenseService, memberService, userService } from "@/services/api";
 import { IExpense } from "@/types/expense";
 import { IGroup } from "@/types/group";
 import { IBalancesSummary, ITransaction, Transaction } from "@/types/member";
@@ -565,4 +566,38 @@ export const removeMembers = async (
 		$pull: { members: { $in: members } },
 	}).populate("members createdBy");
 	return parsePopulatedGroup(updatedGroup);
+};
+
+export const sendInvitationToUsers = async (
+	group: { name: string; id: string },
+	users: Array<string>,
+	invitedBy: string
+): Promise<void> => {
+	try {
+		const invitedByUser = await userService.findById(invitedBy);
+		const allUsers = await userService.find({ _id: { $in: users } });
+		if (!allUsers || !invitedByUser || !group)
+			return console.error("Could not send invitation to users");
+		await Promise.all(
+			allUsers.map(async (user) => {
+				await sendEmailTemplate(
+					user.email,
+					`${invitedByUser.name} has added you to ${group.name}`,
+					"USER_ADDED_TO_GROUP",
+					{
+						invitedBy: {
+							email: invitedByUser.email,
+							name: invitedByUser.name,
+						},
+						group: {
+							id: group.id,
+							name: group.name,
+						},
+					}
+				);
+			})
+		);
+	} catch (error) {
+		console.error(error);
+	}
 };

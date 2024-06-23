@@ -187,6 +187,11 @@ export const createGroup = async (req: ApiRequest, res: ApiResponse) => {
 		if (banner) newGroupBody.banner = banner;
 		if (type) newGroupBody.type = type;
 		const createdGroup = await groupService.create(newGroupBody);
+		await groupService.sendInvitationToUsers(
+			{ name: createdGroup.name, id: createdGroup.id },
+			members.filter((m) => m !== loggedInUserId),
+			loggedInUserId
+		);
 		return res.status(HTTP.status.CREATED).json({
 			message: "Group created successfully",
 			data: createdGroup,

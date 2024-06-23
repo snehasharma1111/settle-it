@@ -2,6 +2,7 @@ import { User, UserModel } from "@/models";
 import { IUser } from "@/types/user";
 import { getObjectFromMongoResponse } from "@/utils/parser";
 import { getNonNullValue } from "@/utils/safety";
+import { FilterQuery } from "mongoose";
 import { sendEmailTemplate } from "../email.service";
 
 export const findOne = async (query: Partial<User>): Promise<User | null> => {
@@ -17,7 +18,9 @@ export const findById = async (id: string): Promise<User | null> => {
 	return getObjectFromMongoResponse<User>(res);
 };
 
-export const find = async (query: Partial<User>): Promise<User[] | null> => {
+export const find = async (
+	query: FilterQuery<User>
+): Promise<User[] | null> => {
 	const res = await UserModel.find(query);
 	const parsedRes = res
 		.map((user) => getObjectFromMongoResponse<User>(user))

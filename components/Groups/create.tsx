@@ -218,7 +218,7 @@ const CreateGroup: React.FC<ICreateGroupProps> = ({
 						<Responsive.Col
 							xlg={100}
 							lg={100}
-							md={50}
+							md={100}
 							sm={100}
 							xsm={100}
 						>
