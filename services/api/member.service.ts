@@ -43,18 +43,14 @@ export const findById = async (id: string): Promise<IMember | null> => {
 
 export const find = async (
 	query: Partial<Member>
-): Promise<IMember | Array<IMember> | null> => {
+): Promise<Array<IMember> | null> => {
 	const res = await MemberModel.find(query).populate(
 		"userId groupId expenseId"
 	);
-	if (res.length > 1) {
-		const parsedRes = res
-			.map((obj) => parsePopulatedMember(obj))
-			.filter((obj) => obj !== null) as IMember[];
-		if (parsedRes.length > 0) return parsedRes;
-	} else if (res.length === 1) {
-		return parsePopulatedMember(res[0]);
-	}
+	const parsedRes = res
+		.map((obj) => parsePopulatedMember(obj))
+		.filter((obj) => obj !== null) as IMember[];
+	if (parsedRes.length > 0) return parsedRes;
 	return null;
 };
 

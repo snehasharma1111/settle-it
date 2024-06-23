@@ -1,5 +1,5 @@
 import { fallbackAssets, routes } from "@/constants";
-import { Avatars, Typography } from "@/library";
+import { Avatars, Button, Typography } from "@/library";
 import { IGroup } from "@/types/group";
 import { stylesConfig } from "@/utils/functions";
 import Image from "next/image";
@@ -69,29 +69,32 @@ const GroupPageMeta: React.FC<IGroupPageMetaProps> = ({ group, onUpdate }) => {
 				</div>
 				<div className={classes("-actions")}>
 					{router.pathname !== routes.GROUP("[id]") ? (
-						<button
+						<Button
 							onClick={() => router.push(routes.GROUP(group.id))}
+							theme="info"
 						>
 							View Group Home
-						</button>
+						</Button>
 					) : null}
 					{router.pathname !== routes.GROUP_SUMMARY("[id]") ? (
-						<button
+						<Button
 							onClick={() =>
 								router.push(routes.GROUP_SUMMARY(group.id))
 							}
+							theme="info"
 						>
 							View summary
-						</button>
+						</Button>
 					) : null}
 					{router.pathname !== routes.GROUP_TRANSACTIONS("[id]") ? (
-						<button
+						<Button
 							onClick={() =>
 								router.push(routes.GROUP_TRANSACTIONS(group.id))
 							}
+							theme="info"
 						>
 							View all Transactions
-						</button>
+						</Button>
 					) : null}
 				</div>
 			</section>

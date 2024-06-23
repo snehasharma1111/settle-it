@@ -16,18 +16,12 @@ export const findById = async (id: string): Promise<User | null> => {
 	return getObjectFromMongoResponse<User>(res);
 };
 
-export const find = async (
-	query: Partial<User>
-): Promise<User | User[] | null> => {
+export const find = async (query: Partial<User>): Promise<User[] | null> => {
 	const res = await UserModel.find(query);
-	if (res.length > 1) {
-		const parsedRes = res
-			.map((user) => getObjectFromMongoResponse<User>(user))
-			.filter((user) => user !== null) as User[];
-		if (parsedRes.length > 0) return parsedRes;
-	} else if (res.length === 1) {
-		return getObjectFromMongoResponse<User>(res[0]);
-	}
+	const parsedRes = res
+		.map((user) => getObjectFromMongoResponse<User>(user))
+		.filter((user) => user !== null) as User[];
+	if (parsedRes.length > 0) return parsedRes;
 	return null;
 };
 

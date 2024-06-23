@@ -152,24 +152,8 @@
 		display: flex;
 		justify-content: flex-end;
 		align-items: center;
-		gap: 4px;
+		gap: 12px;
 		padding-top: 52px;
-
-		button {
-			@include init-button;
-			padding: 8px 12px;
-			gap: 4px;
-			white-space: nowrap;
-			@include typography($size: s);
-			border: 1px solid var(--theme-secondary);
-			border-radius: 4px;
-			color: var(--theme-secondary);
-
-			&:hover {
-				background-color: var(--theme-secondary);
-				color: var(--theme-white);
-			}
-		}
 	}
 }
 

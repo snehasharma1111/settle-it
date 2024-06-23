@@ -48,15 +48,12 @@ export const findById = async (id: string): Promise<IGroup | null> => {
 
 export const find = async (
 	query: FilterQuery<Group>
-): Promise<IGroup | IGroup[] | null> => {
+): Promise<IGroup[] | null> => {
 	const res = await GroupModel.find(query).populate("members createdBy");
-	if (res.length > 1) {
-		return res
-			.map((obj) => parsePopulatedGroup(obj))
-			.filter((obj) => obj !== null) as IGroup[];
-	} else if (res.length === 1) {
-		return parsePopulatedGroup(res[0]);
-	}
+	const parsedRes = res
+		.map((obj) => parsePopulatedGroup(obj))
+		.filter((obj) => obj !== null) as IGroup[];
+	if (parsedRes.length > 0) return parsedRes;
 	return null;
 };
 

@@ -41,18 +41,14 @@ export const findById = async (id: string): Promise<IExpense | null> => {
 
 export const find = async (
 	query: FilterQuery<Expense>
-): Promise<IExpense | IExpense[] | null> => {
+): Promise<IExpense[] | null> => {
 	const res = await ExpenseModel.find(query).populate(
 		"groupId paidBy createdBy"
 	);
-	if (res.length > 1) {
-		const parsedRes = res
-			.map((obj) => parsePopulatedExpense(obj))
-			.filter((obj) => obj !== null) as IExpense[];
-		if (parsedRes.length > 0) return parsedRes;
-	} else if (res.length === 1) {
-		return parsePopulatedExpense(res[0]);
-	}
+	const parsedRes = res
+		.map((obj) => parsePopulatedExpense(obj))
+		.filter((obj) => obj !== null) as IExpense[];
+	if (parsedRes.length > 0) return parsedRes;
 	return null;
 };
 
@@ -113,11 +109,7 @@ export const getExpensesForUser = async (
 	userId: string
 ): Promise<Array<IExpense>> => {
 	const groups = await groupService.find({ members: { $in: [userId] } });
-	const groupIds = Array.isArray(groups)
-		? groups.map((group) => group.id)
-		: groups
-			? [groups.id]
-			: [];
+	const groupIds = groups ? groups.map((group) => group.id) : [];
 	const expenses = await expenseService.find({ groupId: { $in: groupIds } });
 	if (!expenses) return [];
 	if (!Array.isArray(expenses)) return [expenses];

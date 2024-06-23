@@ -202,7 +202,7 @@ export const updateExpense = async (req: ApiRequest, res: ApiResponse) => {
 						membersToCreateForCurrentExpense
 					);
 				}
-			} else if (Array.isArray(currentMembersOfExpense)) {
+			} else {
 				const membersToUpdateForCurrentExpense: Array<Member> = [];
 				const membersToRemoveForCurrentExpense: Array<Member> = [];
 				currentMembersOfExpense.forEach((member) => {
@@ -278,49 +278,6 @@ export const updateExpense = async (req: ApiRequest, res: ApiResponse) => {
 							},
 						}))
 					);
-				}
-			} else {
-				if (members.length === 1) {
-					if (members[0].userId === currentMembersOfExpense.user.id) {
-						await memberService.update(
-							{ id: currentMembersOfExpense.id },
-							{ amount: amount, owed: amount, paid: 0 }
-						);
-					} else {
-						await memberService.create({
-							userId: members[0].userId,
-							groupId: foundExpense.group.id,
-							expenseId: id,
-							amount: members[0].amount,
-							owed: members[0].amount,
-							paid: 0,
-						});
-						await memberService.remove({
-							id: currentMembersOfExpense.id,
-						});
-					}
-				} else if (members.length > 1) {
-					const membersToCreateForCurrentExpense: Array<
-						Omit<Member, "id" | "createdAt" | "updatedAt">
-					> = members
-						.filter(
-							(m) => m.userId !== currentMembersOfExpense.user.id
-						)
-						.map((member) => ({
-							userId: member.userId,
-							groupId: foundExpense.group.id,
-							expenseId: id,
-							amount: member.amount,
-							owed: member.amount,
-							paid: 0,
-						}));
-					await memberService.bulkCreate(
-						membersToCreateForCurrentExpense
-					);
-				} else if (members.length === 0) {
-					return res
-						.status(HTTP.status.BAD_REQUEST)
-						.json({ message: "No members found" });
 				}
 			}
 		}

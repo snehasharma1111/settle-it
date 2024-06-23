@@ -25,45 +25,20 @@ export const getMembersForExpense = async (
 			return res
 				.status(HTTP.status.SUCCESS)
 				.json({ message: HTTP.message.SUCCESS, data: [] });
-		if (Array.isArray(foundMembers)) {
-			// allow access only if
-			// - is the part of the group
-			// - the user created the expense,
-			// - or paid for the expense,
-			// - or is involved in the expense
-			if (
-				foundGroup.members.map((m) => m.id).includes(loggedInUserId) ||
-				foundMembers.map((m) => m.user.id).includes(loggedInUserId) ||
-				foundExpense.paidBy.id === loggedInUserId ||
-				foundExpense.createdBy.id === loggedInUserId
-			) {
-				return res
-					.status(HTTP.status.SUCCESS)
-					.json({ data: foundMembers });
-			}
-			return res
-				.status(HTTP.status.FORBIDDEN)
-				.json({ message: "Forbidden" });
-		} else {
-			// allow access only if
-			// - is the part of the group
-			// - the user created the expense,
-			// - or paid for the expense,
-			// - or is involved in the expense
-			if (
-				foundGroup.members.map((m) => m.id).includes(loggedInUserId) ||
-				foundMembers.user.id === loggedInUserId ||
-				foundExpense.paidBy.id === loggedInUserId ||
-				foundExpense.createdBy.id === loggedInUserId
-			) {
-				return res
-					.status(HTTP.status.SUCCESS)
-					.json({ data: foundMembers });
-			}
-			return res
-				.status(HTTP.status.FORBIDDEN)
-				.json({ message: "Forbidden" });
+		// allow access only if
+		// - is the part of the group
+		// - the user created the expense,
+		// - or paid for the expense,
+		// - or is involved in the expense
+		if (
+			foundGroup.members.map((m) => m.id).includes(loggedInUserId) ||
+			foundMembers.map((m) => m.user.id).includes(loggedInUserId) ||
+			foundExpense.paidBy.id === loggedInUserId ||
+			foundExpense.createdBy.id === loggedInUserId
+		) {
+			return res.status(HTTP.status.SUCCESS).json({ data: foundMembers });
 		}
+		return res.status(HTTP.status.FORBIDDEN).json({ message: "Forbidden" });
 	} catch (error: any) {
 		console.error(error);
 		return res.status(HTTP.status.INTERNAL_SERVER_ERROR).json({

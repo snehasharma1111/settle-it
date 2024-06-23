@@ -23,7 +23,7 @@ interface LoginPageProps {
 }
 
 const LoginPage: React.FC<LoginPageProps> = (props) => {
-	const { setUser, user, dispatch } = useStore();
+	const { setUser, dispatch } = useStore();
 	const router = useRouter();
 	const [authFrame, setAuthFrame] = useState<T_Auth_Frame>(props.frame);
 	const [email, setEmail] = useState("");
@@ -68,7 +68,7 @@ const LoginPage: React.FC<LoginPageProps> = (props) => {
 	const saveUserDetails = async (data: UserDetails) => {
 		try {
 			setUpdatingUserDetails(true);
-			const res = await api.user.updateUser(user.id, data);
+			const res = await api.user.updateUser(data);
 			setUser(res.data);
 			router.push(routes.HOME);
 		} catch (error: any) {

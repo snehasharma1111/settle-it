@@ -279,7 +279,6 @@ const ViewExpense: React.FC<IViewExpenseProps> = ({
 						) : expense.paidBy.id === loggedInUser.id ? (
 							<Button
 								onClick={settleExpense}
-								size="small"
 								loading={settlingExpense}
 							>
 								Settle

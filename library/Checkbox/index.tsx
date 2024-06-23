@@ -18,8 +18,8 @@ const FormCheckBox: React.FC<CheckboxProps> = ({
 		<label
 			className={[
 				classes("", {
-					"-checked": checked,
-					"-disabled": disabled,
+					"-checked": checked ? true : false,
+					"-disabled": disabled ? true : false,
 				}),
 				className,
 			].join(" ")}
