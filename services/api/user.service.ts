@@ -1,4 +1,5 @@
 import { User, UserModel } from "@/models";
+import { IUser } from "@/types/user";
 import { getObjectFromMongoResponse } from "@/utils/parser";
 import { getNonNullValue } from "@/utils/safety";
 import { sendEmailTemplate } from "../email.service";
@@ -86,4 +87,19 @@ export const searchByEmail = async (
 		.filter((user) => user !== null) as User[];
 	if (parsedRes.length > 0) return parsedRes;
 	return null;
+};
+
+export const getUsersMapForUserIds = async (
+	userIds: string[]
+): Promise<Map<string, IUser>> => {
+	const res = await UserModel.find({ _id: { $in: userIds } });
+	const parsedRes = res
+		.map(getObjectFromMongoResponse<IUser>)
+		.filter((user) => user !== null)
+		.map(getNonNullValue);
+	const usersMap = new Map<string, IUser>(
+		parsedRes.map((user) => [user.id, user])
+	);
+
+	return usersMap;
 };

@@ -1,6 +1,6 @@
 import { HTTP } from "@/constants";
 import { Group } from "@/models";
-import { groupService } from "@/services/api";
+import { groupService, userService } from "@/services/api";
 import { ApiRequest, ApiResponse } from "@/types/api";
 import {
 	genericParse,
@@ -71,7 +71,27 @@ export const getBalancesSummary = async (req: ApiRequest, res: ApiResponse) => {
 				.status(HTTP.status.FORBIDDEN)
 				.json({ message: HTTP.message.FORBIDDEN });
 		const expenditure = await groupService.getExpenditure(groupId);
-		const balances = await groupService.getBalancesSummary(groupId);
+		const allTransactionsForGroup =
+			await groupService.getAllTransactionsForGroup(groupId);
+		// get all users in this group
+		const membersIds = Array.from(
+			new Set(
+				allTransactionsForGroup
+					.map((t) => t.from)
+					.concat(allTransactionsForGroup.map((t) => t.to))
+			)
+		);
+		const usersMap = await userService.getUsersMapForUserIds(membersIds);
+		const balances = {
+			owes: groupService.getOwedBalances(
+				allTransactionsForGroup,
+				usersMap
+			),
+			balances: groupService.getSummaryBalances(
+				allTransactionsForGroup,
+				usersMap
+			),
+		};
 		return res.status(HTTP.status.SUCCESS).json({
 			message: HTTP.message.SUCCESS,
 			data: {

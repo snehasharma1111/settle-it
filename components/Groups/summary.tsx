@@ -38,7 +38,11 @@ const GroupSummary: React.FC<IGroupSummaryProps> = ({ data }) => {
 					</Typography>
 					{balance.transactions.map((transaction, trId) => (
 						<Typography
-							className={classes("-person", "-person--sub")}
+							className={classes(
+								"-person",
+								"-person--sub",
+								"-person--details"
+							)}
 							key={`group-summary-person-${trId}-transaction-${trId}`}
 							size="sm"
 						>

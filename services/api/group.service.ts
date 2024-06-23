@@ -1,15 +1,8 @@
-import {
-	ExpenseModel,
-	Group,
-	GroupModel,
-	MemberModel,
-	User,
-	UserModel,
-} from "@/models";
+import { ExpenseModel, Group, GroupModel, MemberModel, User } from "@/models";
 import { expenseService, memberService } from "@/services/api";
 import { IExpense } from "@/types/expense";
 import { IGroup } from "@/types/group";
-import { IBalancesSummary, ITransaction } from "@/types/member";
+import { IBalancesSummary, ITransaction, Transaction } from "@/types/member";
 import { IUser } from "@/types/user";
 import { getObjectFromMongoResponse } from "@/utils/parser";
 import { getNonNullValue, getNumber } from "@/utils/safety";
@@ -182,9 +175,9 @@ export const getAllTransactions = async (
 	}));
 };
 
-export const getBalancesSummary = async (
+export const getAllTransactionsForGroup = async (
 	groupId: string
-): Promise<IBalancesSummary> => {
+): Promise<Array<Transaction>> => {
 	const result = await MemberModel.aggregate([
 		// get members involved in this group
 		{
@@ -218,12 +211,7 @@ export const getBalancesSummary = async (
 		},
 	]);
 	// buld the summary array of 'from-to-stillOwes-hasPaid'
-	const transactions: Array<{
-		from: string;
-		to: string;
-		stillOwes: number;
-		hasPaid: number;
-	}> = result
+	const transactions: Array<Transaction> = result
 		.map((a) => ({
 			from: a._id.userId.toString(),
 			to: a._id.expensePaidBy.toString(),
@@ -231,21 +219,20 @@ export const getBalancesSummary = async (
 			hasPaid: a.totalPaid,
 		}))
 		.filter((a) => a.from !== a.to)
-		.filter((a) => a.stillOwes > 0 || a.hasPaid > 0);
-	// get all users in this group
-	const membersIds = Array.from(
-		new Set(
-			transactions
-				.map((t) => t.from)
-				.concat(transactions.map((t) => t.to))
-		)
-	);
-	const users = (await UserModel.find({ _id: { $in: membersIds } }))
-		.map(getObjectFromMongoResponse<IUser>)
-		.map(getNonNullValue);
-	const usersMap = new Map<string, IUser>(
-		users.map((user) => [user.id, user])
-	);
+		.filter((a) => a.stillOwes > 0 || a.hasPaid > 0)
+		.map((a) => ({
+			from: a.from,
+			to: a.to,
+			owed: a.stillOwes,
+			paid: a.hasPaid,
+		}));
+	return transactions;
+};
+
+export const getOwedBalances = (
+	transactions: Array<Transaction>,
+	usersMap: Map<string, IUser>
+): IBalancesSummary["owes"] => {
 	// build the map for all the amount that is still owed by every user
 	const owesMap = new Map<
 		string,
@@ -256,14 +243,14 @@ export const getBalancesSummary = async (
 		const to = transaction.to;
 		const fromInOwesMap = owesMap.get(from);
 		const toInOwesMap = owesMap.get(to);
-		if (transaction.stillOwes !== 0) {
+		if (transaction.owed !== 0) {
 			if (fromInOwesMap && toInOwesMap) {
 				const fromInToBucketOfOwesMap = toInOwesMap.transactions.find(
 					(t: any) => t.user === from
 				);
 				if (fromInToBucketOfOwesMap) {
 					const prevAmount = fromInToBucketOfOwesMap.amount;
-					const newAmount = transaction.stillOwes;
+					const newAmount = transaction.owed;
 					if (prevAmount === newAmount) {
 						// remove 'from' from 'to' bucket
 						toInOwesMap.transactions =
@@ -287,13 +274,13 @@ export const getBalancesSummary = async (
 				} else {
 					fromInOwesMap.transactions.push({
 						user: to,
-						amount: transaction.stillOwes,
+						amount: transaction.owed,
 					});
 				}
 			} else if (fromInOwesMap) {
 				fromInOwesMap.transactions.push({
 					user: to,
-					amount: transaction.stillOwes,
+					amount: transaction.owed,
 				});
 			} else if (toInOwesMap) {
 				const fromInToBucketOfOwesMap = toInOwesMap.transactions.find(
@@ -301,7 +288,7 @@ export const getBalancesSummary = async (
 				);
 				if (fromInToBucketOfOwesMap) {
 					const prevAmount = fromInToBucketOfOwesMap.amount;
-					const newAmount = transaction.stillOwes;
+					const newAmount = transaction.owed;
 					if (prevAmount === newAmount) {
 						// remove 'from' from 'to' bucket
 						toInOwesMap.transactions =
@@ -331,7 +318,7 @@ export const getBalancesSummary = async (
 						transactions: [
 							{
 								user: to,
-								amount: transaction.stillOwes,
+								amount: transaction.owed,
 							},
 						],
 					});
@@ -341,13 +328,41 @@ export const getBalancesSummary = async (
 					transactions: [
 						{
 							user: to,
-							amount: transaction.stillOwes,
+							amount: transaction.owed,
 						},
 					],
 				});
 			}
 		}
 	});
+	// populate the owes array with all the users
+	const owesArray = Array.from(owesMap, ([fromUser, fromUserObject]) => ({
+		user: fromUser,
+		...fromUserObject,
+	}))
+		.map((obj) => {
+			return {
+				user: getNonNullValue(usersMap.get(obj.user)),
+				amount: obj.transactions
+					.map((t) => t.amount)
+					.reduce((a, b) => a + b, 0),
+				transactions: obj.transactions.map((t) => {
+					return {
+						user: getNonNullValue(usersMap.get(t.user)),
+						amount: t.amount,
+					};
+				}),
+			};
+		})
+		.filter((obj) => obj.amount > 0 && obj.transactions.length > 0);
+
+	return owesArray;
+};
+
+export const getSummaryBalances = (
+	transactions: Array<Transaction>,
+	usersMap: Map<string, IUser>
+): IBalancesSummary["balances"] => {
 	// build the map for the summary for every user
 	const balancesMap = new Map<
 		string,
@@ -365,7 +380,7 @@ export const getBalancesSummary = async (
 				fromInBalancesMap.transactions.find((t) => t.user === to);
 			if (fromInToBucketOfBalancesMap && toInFromBucketOfBalancesMap) {
 				const prevAmount = fromInToBucketOfBalancesMap.gives;
-				const newAmount = transaction.hasPaid + transaction.stillOwes;
+				const newAmount = transaction.paid + transaction.owed;
 				if (prevAmount === newAmount) {
 					// kick both from each others bucket
 					toInBalancesMap.transactions =
@@ -388,19 +403,19 @@ export const getBalancesSummary = async (
 			} else {
 				fromInBalancesMap.transactions.push({
 					user: to,
-					gives: transaction.hasPaid + transaction.stillOwes,
+					gives: transaction.paid + transaction.owed,
 					gets: 0,
 				});
 				toInBalancesMap.transactions.push({
 					user: from,
 					gives: 0,
-					gets: transaction.hasPaid + transaction.stillOwes,
+					gets: transaction.paid + transaction.owed,
 				});
 			}
 		} else if (fromInBalancesMap) {
 			fromInBalancesMap.transactions.push({
 				user: to,
-				gives: transaction.hasPaid + transaction.stillOwes,
+				gives: transaction.paid + transaction.owed,
 				gets: 0,
 			});
 			balancesMap.set(to, {
@@ -408,7 +423,7 @@ export const getBalancesSummary = async (
 					{
 						user: from,
 						gives: 0,
-						gets: transaction.hasPaid + transaction.stillOwes,
+						gets: transaction.paid + transaction.owed,
 					},
 				],
 			});
@@ -416,13 +431,13 @@ export const getBalancesSummary = async (
 			toInBalancesMap.transactions.push({
 				user: from,
 				gives: 0,
-				gets: transaction.hasPaid + transaction.stillOwes,
+				gets: transaction.paid + transaction.owed,
 			});
 			balancesMap.set(from, {
 				transactions: [
 					{
 						user: to,
-						gives: transaction.hasPaid + transaction.stillOwes,
+						gives: transaction.paid + transaction.owed,
 						gets: 0,
 					},
 				],
@@ -432,7 +447,7 @@ export const getBalancesSummary = async (
 				transactions: [
 					{
 						user: to,
-						gives: transaction.hasPaid + transaction.stillOwes,
+						gives: transaction.paid + transaction.owed,
 						gets: 0,
 					},
 				],
@@ -442,33 +457,12 @@ export const getBalancesSummary = async (
 					{
 						user: from,
 						gives: 0,
-						gets: transaction.hasPaid + transaction.stillOwes,
+						gets: transaction.paid + transaction.owed,
 					},
 				],
 			});
 		}
 	});
-
-	// populate the owes array with all the users
-	const owesArray = Array.from(owesMap, ([fromUser, fromUserObject]) => ({
-		user: fromUser,
-		...fromUserObject,
-	}))
-		.map((obj) => {
-			return {
-				user: getNonNullValue(usersMap.get(obj.user)),
-				amount: obj.transactions
-					.map((t) => t.amount)
-					.reduce((a, b) => a + b, 0),
-				transactions: obj.transactions.map((t) => {
-					return {
-						user: getNonNullValue(usersMap.get(t.user)),
-						amount: t.amount,
-					};
-				}),
-			};
-		})
-		.filter((obj) => obj.amount > 0 && obj.transactions.length > 0);
 	// populate the summary array with all the users
 	const balancesArray = Array.from(
 		balancesMap,
@@ -505,7 +499,7 @@ export const getBalancesSummary = async (
 			};
 		});
 
-	return { owes: owesArray, balances: balancesArray };
+	return balancesArray;
 };
 
 export const create = async (

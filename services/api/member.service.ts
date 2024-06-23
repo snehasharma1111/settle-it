@@ -1,4 +1,5 @@
 import { Member, MemberModel } from "@/models";
+import { expenseService } from "@/services/api";
 import { IExpense } from "@/types/expense";
 import { IGroup } from "@/types/group";
 import { IMember } from "@/types/member";
@@ -42,7 +43,7 @@ export const findById = async (id: string): Promise<IMember | null> => {
 };
 
 export const find = async (
-	query: Partial<Member>
+	query: FilterQuery<Member>
 ): Promise<Array<IMember> | null> => {
 	const res = await MemberModel.find(query).populate(
 		"userId groupId expenseId"
@@ -115,7 +116,9 @@ export const settleOne = async (
 	}
 };
 
-export const settleMany = async (query: Partial<Member>): Promise<number> => {
+export const settleMany = async (
+	query: FilterQuery<Member>
+): Promise<number> => {
 	const membersRes = await find(query);
 	let members: Array<IMember> = [];
 	if (Array.isArray(membersRes)) {
@@ -182,4 +185,31 @@ export const bulkRemove = async (
 ): Promise<number> => {
 	const res = await MemberModel.deleteMany(query);
 	return res.deletedCount;
+};
+
+export const settleAllBetweenUsers = async (
+	group: string,
+	userA: string,
+	userB: string
+) => {
+	const expensesPaidByUserB = await expenseService.find({
+		paidBy: userB,
+		groupId: group,
+	});
+	if (!expensesPaidByUserB) return;
+	await settleMany({
+		userId: userA,
+		groupId: group,
+		expenseId: { $in: expensesPaidByUserB.map((e) => e.id) },
+	});
+	const expensesPaidByUserA = await expenseService.find({
+		paidBy: userA,
+		groupId: group,
+	});
+	if (!expensesPaidByUserA) return;
+	await settleMany({
+		userId: userB,
+		groupId: group,
+		expenseId: { $in: expensesPaidByUserA.map((e) => e.id) },
+	});
 };

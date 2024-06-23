@@ -1,7 +1,12 @@
 import { HTTP } from "@/constants";
-import { expenseService, groupService, memberService } from "@/services/api";
+import {
+	expenseService,
+	groupService,
+	memberService,
+	userService,
+} from "@/services/api";
 import { ApiRequest, ApiResponse } from "@/types/api";
-import { getNonEmptyString } from "@/utils/safety";
+import { genericParse, getNonEmptyString } from "@/utils/safety";
 
 export const getMembersForExpense = async (
 	req: ApiRequest,
@@ -73,6 +78,57 @@ export const settleMemberInExpense = async (
 				.status(HTTP.status.NOT_FOUND)
 				.json({ message: HTTP.message.NOT_FOUND });
 		return getMembersForExpense(req, res);
+	} catch (error: any) {
+		console.error(error);
+		if (error.message && error.message.startsWith("Invalid input:")) {
+			return res
+				.status(HTTP.status.BAD_REQUEST)
+				.json({ message: HTTP.message.BAD_REQUEST });
+		} else {
+			return res.status(HTTP.status.INTERNAL_SERVER_ERROR).json({
+				message: HTTP.message.INTERNAL_SERVER_ERROR,
+			});
+		}
+	}
+};
+
+export const settleOwedMembersInGroup = async (
+	req: ApiRequest,
+	res: ApiResponse
+) => {
+	try {
+		const loggedInUserId = getNonEmptyString(req.user?.id);
+		const userA = genericParse(getNonEmptyString, req.body.userA);
+		const userB = genericParse(getNonEmptyString, req.body.userB);
+		const groupId = getNonEmptyString(req.query.id);
+		if (loggedInUserId !== userA && loggedInUserId !== userB)
+			return res
+				.status(HTTP.status.FORBIDDEN)
+				.json({ message: HTTP.message.FORBIDDEN });
+		const foundGroup = await groupService.findById(groupId);
+		if (!foundGroup)
+			return res
+				.status(HTTP.status.NOT_FOUND)
+				.json({ message: HTTP.message.NOT_FOUND });
+		await memberService.settleAllBetweenUsers(foundGroup.id, userA, userB);
+		const allTransactionsForGroup =
+			await groupService.getAllTransactionsForGroup(groupId);
+		// get all users in this group
+		const membersIds = Array.from(
+			new Set(
+				allTransactionsForGroup
+					.map((t) => t.from)
+					.concat(allTransactionsForGroup.map((t) => t.to))
+			)
+		);
+		const usersMap = await userService.getUsersMapForUserIds(membersIds);
+		const owed = groupService.getOwedBalances(
+			allTransactionsForGroup,
+			usersMap
+		);
+		return res
+			.status(HTTP.status.SUCCESS)
+			.json({ data: owed, message: HTTP.message.SUCCESS });
 	} catch (error: any) {
 		console.error(error);
 		if (error.message && error.message.startsWith("Invalid input:")) {

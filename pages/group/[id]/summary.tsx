@@ -67,7 +67,10 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 						</button>
 					</div>
 					{uncollapsedGroup === "owed" ? (
-						<OwedRecords data={props.balances.owes} />
+						<OwedRecords
+							groupId={props.group?.id}
+							data={props.balances.owes}
+						/>
 					) : null}
 					<div
 						className={classes("-head", {

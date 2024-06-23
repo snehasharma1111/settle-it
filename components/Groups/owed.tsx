@@ -1,16 +1,78 @@
-import { Typography } from "@/library";
+import { api } from "@/connections";
+import { Button, Typography } from "@/library";
+import { notify } from "@/messages";
 import { IOwedRecord } from "@/types/member";
 import { stylesConfig } from "@/utils/functions";
-import React from "react";
+import React, { useState } from "react";
 import styles from "./styles.module.scss";
 
 interface IGroupOwedDataProps {
+	groupId: string;
 	data: Array<IOwedRecord>;
+}
+
+interface GroupOwedDataPersonProps {
+	groupId: string;
+	record: IOwedRecord;
+	transaction: Omit<IOwedRecord, "transactions">;
+	onUpdate: (_: Array<IOwedRecord>) => void;
 }
 
 const classes = stylesConfig(styles, "group-owed-data");
 
-const GroupOwedData: React.FC<IGroupOwedDataProps> = ({ data }) => {
+const GroupOwedDataPerson: React.FC<GroupOwedDataPersonProps> = ({
+	groupId,
+	record,
+	transaction,
+	onUpdate,
+}) => {
+	const [settling, setSettling] = useState(false);
+	const settleTwoUsers = async (userA: string, userB: string) => {
+		try {
+			setSettling(true);
+			const res = await api.members.settleOwedMembersInGroup(
+				groupId,
+				userA,
+				userB
+			);
+			onUpdate(res.data);
+		} catch (error) {
+			notify.error(error);
+		} finally {
+			setSettling(false);
+		}
+	};
+	return (
+		<div className={classes("-person", "-person--sub")}>
+			<Typography
+				size="sm"
+				className={classes("-person", "-person--details")}
+			>
+				{record.user.name || record.user.email}
+				<span style={{ color: "var(--theme-red)" }}>
+					owes {transaction.amount.toFixed(2)}
+				</span>
+				to {transaction.user.name || transaction.user.email}
+			</Typography>
+			<Button
+				size="small"
+				loading={settling}
+				onClick={() => {
+					settleTwoUsers(record.user.id, transaction.user.id);
+				}}
+			>
+				Settle
+			</Button>
+		</div>
+	);
+};
+
+const GroupOwedData: React.FC<IGroupOwedDataProps> = ({
+	groupId,
+	data: originalData,
+}) => {
+	const [data, setData] = useState<IOwedRecord[]>(originalData);
+
 	return (
 		<div className={classes("")}>
 			{data.map((record, recId) => (
@@ -26,17 +88,13 @@ const GroupOwedData: React.FC<IGroupOwedDataProps> = ({ data }) => {
 						in total
 					</Typography>
 					{record.transactions.map((tr, trId) => (
-						<Typography
-							className={classes("-person", "-person--sub")}
+						<GroupOwedDataPerson
 							key={`owed-record-person-${recId}-transaction-${trId}`}
-							size="sm"
-						>
-							{record.user.name || record.user.email}
-							<span style={{ color: "var(--theme-red)" }}>
-								owes {tr.amount.toFixed(2)}
-							</span>
-							to {tr.user.name || tr.user.email}
-						</Typography>
+							groupId={groupId}
+							record={record}
+							transaction={tr}
+							onUpdate={(updatedData) => setData(updatedData)}
+						/>
 					))}
 				</div>
 			))}

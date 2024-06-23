@@ -61,7 +61,7 @@
 	&--size {
 		&--small {
 			padding: 4px 8px;
-			@include typography($size: sm, $weight: bold);
+			@include typography($size: sm, $weight: regular);
 		}
 
 		&--medium {

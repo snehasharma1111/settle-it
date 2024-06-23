@@ -9,6 +9,13 @@ export type IMember = Omit<Member, "userId" | "groupId" | "expenseId"> & {
 	expense: IExpense;
 };
 
+export type Transaction = {
+	from: string;
+	to: string;
+	owed: number;
+	paid: number;
+};
+
 export type ITransaction = {
 	title: string;
 	from: IUser;
