@@ -35,12 +35,14 @@ const Wrapper: React.FC<any> = ({ children }) => {
 				description="Blend in the fun and let us handle your expenses."
 				image={`${frontendBaseUrl}/og-image.png`}
 				canonical={frontendBaseUrl}
+				author="Akshat Mittal"
+				siteName="Settle It!"
 				themeColor="#4AA63C"
 				icons={["icon", "shortcut icon", "apple-touch-icon"].map(
 					(item) => {
 						return {
 							rel: item,
-							href: "/favicon.ico",
+							href: `${frontendBaseUrl}/favicon.ico`,
 							type: "icon/ico",
 						};
 					}
@@ -61,7 +63,7 @@ const Wrapper: React.FC<any> = ({ children }) => {
 						"Blend in the fun and let us handle your expenses.",
 					images: [
 						{
-							url: "/images/og-image.png",
+							url: `${frontendBaseUrl}/og-image.png`,
 							secureUrl: `${frontendBaseUrl}/og-image.png`,
 							type: "image/png",
 							width: 1200,
