@@ -168,7 +168,7 @@ table, td { color: #000000; } #u_body a { color: #0000ee; text-decoration: under
   <tr>
     <td style="padding-right: 0px;padding-left: 0px;" align="center">
       <a href="${frontendBaseUrl}" target="_blank">
-      <img align="center" border="0" src="${frontendBaseUrl}/favicon-192.png" alt="Settle It Logo" title="Settle It Logo" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 29%;max-width: 168.2px;" width="168.2" class="v-src-width v-src-max-width"/>
+      <img align="center" border="0" src="${frontendBaseUrl}/logo-full.png" alt="Settle It Logo" title="Settle It Logo" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 29%;max-width: 168.2px;" width="168.2" class="v-src-width v-src-max-width"/>
       </a>
     </td>
   </tr>
@@ -375,7 +375,7 @@ ${
     <table align="center" border="0" cellspacing="0" cellpadding="0" width="24" height="24" style="width: 24px !important;height: 24px !important;display: inline-block;border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;margin-right: 12px">
       <tbody><tr style="vertical-align: top"><td align="center" valign="middle" style="word-break: break-word;border-collapse: collapse !important;vertical-align: top">
         <a href="https://linkedin.com/akshatmittal61" title="LinkedIn" target="_blank">
-          <img src="images/image-1.png" alt="LinkedIn" title="LinkedIn" width="24" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: block !important;border: none;height: auto;float: none;max-width: 24px !important">
+          <img src="${frontendBaseUrl}/icons/linkedin.png" alt="LinkedIn" title="LinkedIn" width="24" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: block !important;border: none;height: auto;float: none;max-width: 24px !important">
         </a>
       </td></tr>
     </tbody></table>
@@ -385,7 +385,7 @@ ${
     <table align="center" border="0" cellspacing="0" cellpadding="0" width="24" height="24" style="width: 24px !important;height: 24px !important;display: inline-block;border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;margin-right: 12px">
       <tbody><tr style="vertical-align: top"><td align="center" valign="middle" style="word-break: break-word;border-collapse: collapse !important;vertical-align: top">
         <a href="https://github.com/akshatmittal61" title="GitHub" target="_blank">
-          <img src="images/image-5.png" alt="GitHub" title="GitHub" width="24" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: block !important;border: none;height: auto;float: none;max-width: 24px !important">
+          <img src="${frontendBaseUrl}/icons/github.png" alt="GitHub" title="GitHub" width="24" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: block !important;border: none;height: auto;float: none;max-width: 24px !important">
         </a>
       </td></tr>
     </tbody></table>
@@ -395,7 +395,7 @@ ${
     <table align="center" border="0" cellspacing="0" cellpadding="0" width="24" height="24" style="width: 24px !important;height: 24px !important;display: inline-block;border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;margin-right: 12px">
       <tbody><tr style="vertical-align: top"><td align="center" valign="middle" style="word-break: break-word;border-collapse: collapse !important;vertical-align: top">
         <a href="https://instagram.com/akshatmittal61" title="Instagram" target="_blank">
-          <img src="images/image-3.png" alt="Instagram" title="Instagram" width="24" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: block !important;border: none;height: auto;float: none;max-width: 24px !important">
+          <img src="${frontendBaseUrl}/icons/instagram.png" alt="Instagram" title="Instagram" width="24" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: block !important;border: none;height: auto;float: none;max-width: 24px !important">
         </a>
       </td></tr>
     </tbody></table>
@@ -405,7 +405,7 @@ ${
     <table align="center" border="0" cellspacing="0" cellpadding="0" width="24" height="24" style="width: 24px !important;height: 24px !important;display: inline-block;border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;margin-right: 12px">
       <tbody><tr style="vertical-align: top"><td align="center" valign="middle" style="word-break: break-word;border-collapse: collapse !important;vertical-align: top">
         <a href="https://twitter.com/akshatmittal61" title="Twitter" target="_blank">
-          <img src="images/image-2.png" alt="Twitter" title="Twitter" width="24" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: block !important;border: none;height: auto;float: none;max-width: 24px !important">
+          <img src="${frontendBaseUrl}/icons/twitter.png" alt="Twitter" title="Twitter" width="24" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: block !important;border: none;height: auto;float: none;max-width: 24px !important">
         </a>
       </td></tr>
     </tbody></table>
@@ -415,7 +415,7 @@ ${
     <table align="center" border="0" cellspacing="0" cellpadding="0" width="24" height="24" style="width: 24px !important;height: 24px !important;display: inline-block;border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;margin-right: 0px">
       <tbody><tr style="vertical-align: top"><td align="center" valign="middle" style="word-break: break-word;border-collapse: collapse !important;vertical-align: top">
         <a href="https://wa.me/919456849466" title="WhatsApp" target="_blank">
-          <img src="images/image-4.png" alt="WhatsApp" title="WhatsApp" width="24" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: block !important;border: none;height: auto;float: none;max-width: 24px !important">
+          <img src="${frontendBaseUrl}/icons/whatsapp.png" alt="WhatsApp" title="WhatsApp" width="24" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: block !important;border: none;height: auto;float: none;max-width: 24px !important">
         </a>
       </td></tr>
     </tbody></table>
