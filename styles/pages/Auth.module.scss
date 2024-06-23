@@ -38,8 +38,6 @@
 	}
 
 	@include responsive(phone) {
-		max-width: 100%;
-		height: auto;
 		padding: 20px;
 	}
 }

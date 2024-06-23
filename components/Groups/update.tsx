@@ -237,8 +237,8 @@ const UpdateGroup: React.FC<IUpdateGroupProps> = ({
 								xlg={50}
 								lg={50}
 								md={50}
-								sm={100}
-								xsm={100}
+								sm={50}
+								xsm={50}
 							>
 								<Button
 									className={classes("-submit")}
@@ -257,8 +257,8 @@ const UpdateGroup: React.FC<IUpdateGroupProps> = ({
 								xlg={25}
 								lg={25}
 								md={25}
-								sm={100}
-								xsm={100}
+								sm={0}
+								xsm={0}
 							>
 								<span />
 							</Responsive.Col>
@@ -267,8 +267,8 @@ const UpdateGroup: React.FC<IUpdateGroupProps> = ({
 							xlg={50}
 							lg={50}
 							md={50}
-							sm={100}
-							xsm={100}
+							sm={50}
+							xsm={50}
 						>
 							<Button
 								className={classes("-submit")}
@@ -284,8 +284,8 @@ const UpdateGroup: React.FC<IUpdateGroupProps> = ({
 								xlg={25}
 								lg={25}
 								md={25}
-								sm={100}
-								xsm={100}
+								sm={0}
+								xsm={0}
 							>
 								<span />
 							</Responsive.Col>

@@ -14,6 +14,10 @@
 
 		& > div > div {
 			padding: 16px;
+
+			@include responsive(phone) {
+				padding: 8px;
+			}
 		}
 
 		button {
@@ -116,6 +120,12 @@
 	z-index: 2;
 	padding: 0 5%;
 
+	@include responsive(phone) {
+		justify-content: flex-start;
+		flex-direction: column;
+		gap: 12px;
+	}
+
 	&-banner {
 		@include banner;
 	}
@@ -154,6 +164,11 @@
 		align-items: center;
 		gap: 12px;
 		padding-top: 52px;
+
+		@include responsive(phone) {
+			padding-top: 12px;
+			justify-content: flex-start;
+		}
 	}
 }
 
@@ -166,6 +181,10 @@
 	flex-direction: column;
 	gap: 24px;
 	padding: 24px;
+
+	@include responsive(phone) {
+		padding: 16px;
+	}
 
 	&-person {
 		width: 100%;

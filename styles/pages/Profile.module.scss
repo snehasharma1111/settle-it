@@ -29,7 +29,7 @@
 		justify-content: flex-start;
 		align-items: flex-start;
 		flex-direction: column;
-		gap: 16px;
+		gap: 24px;
 
 		@include responsive(phone) {
 			width: 100%;

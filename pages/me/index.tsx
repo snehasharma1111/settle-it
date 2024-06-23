@@ -123,6 +123,7 @@ const ProfilePage: React.FC<IProfilePageProps> = (props) => {
 					type="submit"
 					loading={updating}
 					className={classes("-form-btn")}
+					size="large"
 				>
 					Save
 				</Button>
