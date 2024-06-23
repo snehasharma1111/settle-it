@@ -1,4 +1,4 @@
-import { GroupMetaData } from "@/components";
+import { GroupMetaData, GroupPlaceholder } from "@/components";
 import { api } from "@/connections";
 import { routes } from "@/constants";
 import { useStore } from "@/hooks";
@@ -10,6 +10,7 @@ import { ITransaction } from "@/types/member";
 import { IUser } from "@/types/user";
 import { stylesConfig } from "@/utils/functions";
 import { getNonEmptyString } from "@/utils/safety";
+import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 
 const classes = stylesConfig(styles, "group");
@@ -23,6 +24,7 @@ type GroupPageProps = {
 
 const GroupPage: React.FC<GroupPageProps> = (props) => {
 	const { setUser, dispatch, groups } = useStore();
+	const router = useRouter();
 	const [groupDetails, setGroupDetails] = useState<IGroup>(props.group);
 
 	useEffect(() => {
@@ -41,46 +43,56 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 		<>
 			<main className={classes("")}>
 				<GroupMetaData group={groupDetails} />
-				<section className={classes("-body", "-body--table")}>
-					<table border={1}>
-						<thead>
-							<tr>
-								<th>S. No.</th>
-								<th>Title</th>
-								<th>From</th>
-								<th>To</th>
-								<th>Amount</th>
-								<th>Settled</th>
-							</tr>
-						</thead>
-						<tbody>
-							{props.transactions.map((transaction, index) => (
-								<tr key={`transaction-${index}`}>
-									<td>{index + 1}</td>
-									<td>{transaction.title}</td>
-									<td>
-										{transaction.from.name ||
-											transaction.from.email}
-									</td>
-									<td>
-										{transaction.to.name ||
-											transaction.to.email}
-									</td>
-									<td>
-										{transaction.owed > 0
-											? transaction.owed
-											: transaction.paid}
-									</td>
-									<td>
-										{transaction.owed === 0
-											? "Yes ✅"
-											: "No ❌"}
-									</td>
+				{props.transactions.length === 0 ? (
+					<GroupPlaceholder
+						action={() =>
+							router.push(routes.GROUP(groupDetails.id))
+						}
+					/>
+				) : (
+					<section className={classes("-body", "-body--table")}>
+						<table border={1}>
+							<thead>
+								<tr>
+									<th>S. No.</th>
+									<th>Title</th>
+									<th>From</th>
+									<th>To</th>
+									<th>Amount</th>
+									<th>Settled</th>
 								</tr>
-							))}
-						</tbody>
-					</table>
-				</section>
+							</thead>
+							<tbody>
+								{props.transactions.map(
+									(transaction, index) => (
+										<tr key={`transaction-${index}`}>
+											<td>{index + 1}</td>
+											<td>{transaction.title}</td>
+											<td>
+												{transaction.from.name ||
+													transaction.from.email}
+											</td>
+											<td>
+												{transaction.to.name ||
+													transaction.to.email}
+											</td>
+											<td>
+												{transaction.owed > 0
+													? transaction.owed
+													: transaction.paid}
+											</td>
+											<td>
+												{transaction.owed === 0
+													? "Yes ✅"
+													: "No ❌"}
+											</td>
+										</tr>
+									)
+								)}
+							</tbody>
+						</table>
+					</section>
+				)}
 			</main>
 		</>
 	);

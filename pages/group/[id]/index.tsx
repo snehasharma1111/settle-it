@@ -2,6 +2,7 @@ import {
 	CreateExpense,
 	ExpenseCard,
 	GroupMetaData,
+	GroupPlaceholder,
 	UpdateGroup,
 	useConfirmationModal,
 } from "@/components";
@@ -9,7 +10,7 @@ import { api } from "@/connections";
 import { routes } from "@/constants";
 import { useStore } from "@/hooks";
 import { Responsive } from "@/layouts";
-import { Button, Typography } from "@/library";
+import { Button } from "@/library";
 import { notify } from "@/messages";
 import { authMiddleware } from "@/middlewares";
 import PageNotFound from "@/pages/404";
@@ -19,7 +20,6 @@ import { IGroup, UpdateGroupData } from "@/types/group";
 import { IUser } from "@/types/user";
 import { stylesConfig } from "@/utils/functions";
 import { getNonEmptyString } from "@/utils/safety";
-import Image from "next/image";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { FiPlus } from "react-icons/fi";
@@ -136,24 +136,9 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 				<section className={classes("-body")}>
 					{expenses.filter((exp) => exp.group.id === groupDetails.id)
 						.length === 0 ? (
-						<div className={classes("-placeholder")}>
-							<Image
-								src="/vectors/empty-records.svg"
-								alt="empty-records"
-								width={1920}
-								height={1080}
-							/>
-							<Typography>
-								No expenses yet <br />
-								Add one to get this party started
-							</Typography>
-							<Button
-								size="large"
-								onClick={() => setOpenAddExpensePopup(true)}
-							>
-								Add expense
-							</Button>
-						</div>
+						<GroupPlaceholder
+							action={() => setOpenAddExpensePopup(true)}
+						/>
 					) : (
 						<Responsive.Row>
 							{expenses

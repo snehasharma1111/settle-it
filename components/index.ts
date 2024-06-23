@@ -10,6 +10,7 @@ import {
 import {
 	CreateGroup,
 	GroupMetaData,
+	GroupPlaceholder,
 	GroupSummary,
 	OwedRecords,
 	UpdateGroup,
@@ -23,6 +24,7 @@ export {
 	Error,
 	ExpenseCard,
 	GroupMetaData,
+	GroupPlaceholder,
 	GroupSummary,
 	Header,
 	OwedRecords,
