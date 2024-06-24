@@ -57,7 +57,6 @@ const AuthOnboarding: React.FC<IAuthOnboardingProps> = ({
 				placeholder="Avatar URL"
 				name="avatar"
 				type="text"
-				required
 				value={data.avatar}
 				onChange={handleChange}
 			/>
