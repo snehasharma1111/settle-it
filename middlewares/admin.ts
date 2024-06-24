@@ -1,19 +1,21 @@
-import { jwtSecret } from "@/config";
+import { googleEmailConfig, jwtSecret } from "@/config";
 import { http } from "@/connections";
 import { HTTP } from "@/constants";
+import { userService } from "@/services/api";
 import { ApiRequest, ApiResponse } from "@/types/api";
 import { IUser } from "@/types/user";
+import { getNonEmptyString } from "@/utils/safety";
 import jwt from "jsonwebtoken";
 
 export const page = async (
 	context: any,
 	{
-		onLoggedInAndOnboarded,
-		onLoggedInAndNotOnboarded,
+		onAdmin,
+		onNonAdmin,
 		onLoggedOut,
 	}: {
-		onLoggedInAndOnboarded: (_: IUser, __?: any) => void;
-		onLoggedInAndNotOnboarded: (_: IUser, __?: any) => void;
+		onAdmin: (_: IUser, __?: any) => void;
+		onNonAdmin: (_: IUser, __?: any) => void;
 		onLoggedOut: () => void;
 	}
 ) => {
@@ -33,12 +35,12 @@ export const page = async (
 				cookie: req.headers.cookie,
 			},
 		});
-		if (res.data.data.name && res.data.data.phone) {
-			return onLoggedInAndOnboarded(userDetailsRes.data.data, {
+		if (res.data.data.email === googleEmailConfig.email) {
+			return onAdmin(userDetailsRes.data.data, {
 				cookie: req.headers.cookie,
 			});
 		} else {
-			return onLoggedInAndNotOnboarded(userDetailsRes.data.data, {
+			return onNonAdmin(userDetailsRes.data.data, {
 				cookie: req.headers.cookie,
 			});
 		}
@@ -59,6 +61,18 @@ export const apiRoute =
 		try {
 			const decoded: any = jwt.verify(token, jwtSecret);
 			req.user = decoded;
+			const userId = getNonEmptyString(decoded.id);
+			const user = await userService.findById(userId);
+			if (!user) {
+				return res
+					.status(HTTP.status.UNAUTHORIZED)
+					.json({ message: "Please login to continue" });
+			}
+			if (user.email !== googleEmailConfig.email) {
+				return res
+					.status(HTTP.status.UNAUTHORIZED)
+					.json({ message: "You are not authorized" });
+			}
 			return await next(req, res);
 		} catch (err) {
 			return res
