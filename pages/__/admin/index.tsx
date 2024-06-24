@@ -30,7 +30,7 @@ const AdminPanel: React.FC<AdminPanelProps> = (props) => {
 	return (
 		<main className={classes("")}>
 			<Typography size="xxl" weight="medium" as="h1">
-				Users
+				Users ({props.users.length})
 			</Typography>
 			<Responsive.Row style={{ alignItems: "stretch" }}>
 				{props.users.map((user) => (
@@ -87,7 +87,7 @@ const AdminPanel: React.FC<AdminPanelProps> = (props) => {
 				))}
 			</Responsive.Row>
 			<Typography size="xxl" weight="medium" as="h1">
-				Groups
+				Groups ({props.groups.length})
 			</Typography>
 			<Responsive.Row style={{ alignItems: "stretch" }}>
 				{props.groups.map((group) => (
