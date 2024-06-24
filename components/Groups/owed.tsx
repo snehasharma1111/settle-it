@@ -1,4 +1,5 @@
 import { api } from "@/connections";
+import { useStore } from "@/hooks";
 import { Button, Typography } from "@/library";
 import { notify } from "@/messages";
 import { IOwedRecord } from "@/types/member";
@@ -26,6 +27,7 @@ const GroupOwedDataPerson: React.FC<GroupOwedDataPersonProps> = ({
 	transaction,
 	onUpdate,
 }) => {
+	const { user: loggedInUser } = useStore();
 	const [settling, setSettling] = useState(false);
 	const settleTwoUsers = async (userA: string, userB: string) => {
 		try {
@@ -54,15 +56,17 @@ const GroupOwedDataPerson: React.FC<GroupOwedDataPersonProps> = ({
 				</span>
 				to {transaction.user.name || transaction.user.email}
 			</Typography>
-			<Button
-				size="small"
-				loading={settling}
-				onClick={() => {
-					settleTwoUsers(record.user.id, transaction.user.id);
-				}}
-			>
-				Settle
-			</Button>
+			{transaction.user.id === loggedInUser.id ? (
+				<Button
+					size="small"
+					loading={settling}
+					onClick={() => {
+						settleTwoUsers(record.user.id, transaction.user.id);
+					}}
+				>
+					Settle
+				</Button>
+			) : null}
 		</div>
 	);
 };

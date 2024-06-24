@@ -374,7 +374,7 @@ ${
     <!--[if (mso)|(IE)]><td width="24" style="width:24px; padding-right: 12px;" valign="top"><![endif]-->
     <table align="center" border="0" cellspacing="0" cellpadding="0" width="24" height="24" style="width: 24px !important;height: 24px !important;display: inline-block;border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;margin-right: 12px">
       <tbody><tr style="vertical-align: top"><td align="center" valign="middle" style="word-break: break-word;border-collapse: collapse !important;vertical-align: top">
-        <a href="https://linkedin.com/akshatmittal61" title="LinkedIn" target="_blank">
+        <a href="https://linkedin.com/in/akshatmittal61" title="LinkedIn" target="_blank">
           <img src="${frontendBaseUrl}/icons/linkedin.png" alt="LinkedIn" title="LinkedIn" width="24" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: block !important;border: none;height: auto;float: none;max-width: 24px !important">
         </a>
       </td></tr>

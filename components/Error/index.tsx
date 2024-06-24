@@ -55,7 +55,11 @@ const Error: React.FC<ErrorPageProps> = ({
 					>
 						{title}
 					</Typography>
-					<Button variant="filled" onClick={() => button.action()}>
+					<Button
+						size="large"
+						variant="filled"
+						onClick={() => button.action()}
+					>
 						{button.label}
 					</Button>
 				</div>

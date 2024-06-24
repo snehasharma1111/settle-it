@@ -115,8 +115,11 @@ const HomePage: React.FC<HomePageProps> = (props) => {
 							<br />
 							Plan a trip or an outing to get started.
 						</Typography>
-						<Button onClick={() => setOpenCreateGroupPopup(true)}>
-							Create Group
+						<Button
+							size="large"
+							onClick={() => setOpenCreateGroupPopup(true)}
+						>
+							<FiPlus /> Create Group
 						</Button>
 					</div>
 				)}
