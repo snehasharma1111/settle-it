@@ -195,8 +195,14 @@ export const updateExpense = async (req: ApiRequest, res: ApiResponse) => {
 						groupId: foundExpense.group.id,
 						expenseId: id,
 						amount: member.amount,
-						owed: member.amount,
-						paid: 0,
+						owed:
+							member.userId === (paidBy || foundExpense.paidBy.id)
+								? 0
+								: member.amount,
+						paid:
+							member.userId === (paidBy || foundExpense.paidBy.id)
+								? member.amount
+								: 0,
 					}));
 					await memberService.bulkCreate(
 						membersToCreateForCurrentExpense
@@ -216,8 +222,16 @@ export const updateExpense = async (req: ApiRequest, res: ApiResponse) => {
 							groupId: member.group.id,
 							expenseId: member.expense.id,
 							amount: foundMember.amount,
-							owed: foundMember.amount,
-							paid: 0,
+							owed:
+								foundMember.userId ===
+								(paidBy ?? foundExpense.paidBy.id)
+									? 0
+									: foundMember.amount,
+							paid:
+								foundMember.userId ===
+								(paidBy ?? foundExpense.paidBy.id)
+									? foundMember.amount
+									: 0,
 						});
 					} else {
 						membersToRemoveForCurrentExpense.push({
@@ -272,8 +286,8 @@ export const updateExpense = async (req: ApiRequest, res: ApiResponse) => {
 							update: {
 								$set: {
 									amount: m.amount,
-									owed: m.amount,
-									paid: 0,
+									owed: m.owed,
+									paid: m.paid,
 								},
 							},
 						}))
