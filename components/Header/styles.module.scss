@@ -11,9 +11,19 @@
 	top: 0;
 	left: 0;
 	z-index: 150;
+	background-image: linear-gradient(
+		to right bottom,
+		rgba(255, 255, 255, 0.4),
+		rgba(255, 255, 255, 0.1)
+	);
+	backdrop-filter: blur(20px);
 
 	@include responsive(phone) {
 		padding: 16px;
+	}
+
+	&--visible {
+		box-shadow: 0 1px 20px -1px rgba(0, 0, 0, 0.1);
 	}
 
 	a {

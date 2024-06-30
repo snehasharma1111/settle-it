@@ -7,6 +7,7 @@ import {
 	UpdateExpense,
 	ViewExpense,
 } from "./Expenses";
+import Footer from "./Footer";
 import {
 	CreateGroup,
 	GroupMetaData,
@@ -25,6 +26,7 @@ export {
 	CreateGroup,
 	Error,
 	ExpenseCard,
+	Footer,
 	GroupMetaData,
 	GroupPlaceholder,
 	GroupSummary,

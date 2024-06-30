@@ -1,4 +1,5 @@
-import { Header } from "@/components";
+import { Footer, Header } from "@/components";
+import { routes } from "@/constants";
 import { frontendBaseUrl } from "@/constants/variables";
 import { useStore } from "@/hooks";
 import { useRouter } from "next/router";
@@ -17,7 +18,7 @@ const Wrapper: React.FC<any> = ({ children }) => {
 		fetchAuthenticatedUser,
 	} = useStore();
 	const router = useRouter();
-	const staticPagesPaths = ["/", "/about"];
+	const staticPagesPaths: Array<string> = [routes.ROOT, routes.ERROR];
 
 	useEffect(() => {
 		if (!user) {
@@ -98,6 +99,7 @@ const Wrapper: React.FC<any> = ({ children }) => {
 			/>
 			{staticPagesPaths.includes(router.pathname) ? <Header /> : null}
 			{children}
+			{staticPagesPaths.includes(router.pathname) ? <Footer /> : null}
 			<Toaster position="top-center" />
 		</>
 	);

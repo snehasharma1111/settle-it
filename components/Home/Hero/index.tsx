@@ -1,6 +1,8 @@
+import { routes } from "@/constants";
 import { Button, Typography } from "@/library";
 import { stylesConfig } from "@/utils/functions";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import React from "react";
 import { AiOutlineArrowRight } from "react-icons/ai";
 import styles from "./styles.module.scss";
@@ -10,6 +12,7 @@ interface IHomeHeroProps {}
 const classes = stylesConfig(styles, "home-hero");
 
 const HomeHero: React.FC<IHomeHeroProps> = () => {
+	const router = useRouter();
 	return (
 		<section className={classes("")}>
 			<div className={classes("-content")}>
@@ -37,6 +40,9 @@ const HomeHero: React.FC<IHomeHeroProps> = () => {
 					size="large"
 					icon={<AiOutlineArrowRight />}
 					iconPosition="right"
+					onClick={() => {
+						router.push(routes.LOGIN);
+					}}
 				>
 					Get Started Today
 				</Button>
