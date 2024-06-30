@@ -1,8 +1,10 @@
+import { Header } from "@/components";
 import { frontendBaseUrl } from "@/constants/variables";
+import { useStore } from "@/hooks";
+import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 import Seo from "./Seo";
-import { useStore } from "@/hooks";
 
 const Wrapper: React.FC<any> = ({ children }) => {
 	const {
@@ -14,6 +16,8 @@ const Wrapper: React.FC<any> = ({ children }) => {
 		getAllExpensesForUser,
 		fetchAuthenticatedUser,
 	} = useStore();
+	const router = useRouter();
+	const staticPagesPaths = ["/", "/about"];
 
 	useEffect(() => {
 		if (!user) {
@@ -92,6 +96,7 @@ const Wrapper: React.FC<any> = ({ children }) => {
 					siteName: "Settle It!",
 				}}
 			/>
+			{staticPagesPaths.includes(router.pathname) ? <Header /> : null}
 			{children}
 			<Toaster position="top-center" />
 		</>

@@ -1,0 +1,33 @@
+@import "@/styles/config/mixins";
+
+.header {
+	width: 100%;
+	height: var(--head-height);
+	padding: 8px 60px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 150;
+
+	@include responsive(phone) {
+		padding: 16px;
+	}
+
+	a {
+		height: 100%;
+		display: inline-flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	&-logo {
+		width: auto;
+		height: 100%;
+		object-fit: contain;
+		cursor: pointer;
+		user-select: none;
+	}
+}
