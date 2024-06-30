@@ -74,10 +74,18 @@ export const getGroupsUserIsPartOf = async (userId: string): Promise<any> => {
 export const getExpensesForGroup = async (
 	groupId: string
 ): Promise<Array<IExpense>> => {
-	const res = await ExpenseModel.find({ groupId }).populate(
-		"groupId paidBy createdBy"
-	);
-	return res.map((obj) => parsePopulatedExpense(obj) as IExpense);
+	const res = await ExpenseModel.find({ groupId })
+		.populate("groupId paidBy createdBy")
+		.populate({
+			path: "groupId",
+			populate: {
+				path: "members createdBy",
+			},
+		});
+	const expenses: Array<IExpense> = res
+		.map(parsePopulatedExpense)
+		.map(getNonNullValue);
+	return expenses;
 };
 
 export const getExpenditure = async (groupId: string): Promise<number> => {
