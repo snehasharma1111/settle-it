@@ -84,7 +84,10 @@ export const invite = async (
 export const searchByEmail = async (
 	emailQuery: string
 ): Promise<Array<User> | null> => {
-	const res = await UserModel.find({ email: { $regex: emailQuery } });
+	const query = emailQuery.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+	const res = await UserModel.find({
+		email: { $regex: query, $options: "i" },
+	});
 	const parsedRes = res
 		.map((user) => getObjectFromMongoResponse<User>(user))
 		.filter((user) => user !== null) as User[];
