@@ -79,7 +79,7 @@ const UpdateGroup: React.FC<IUpdateGroupProps> = ({
 			onClose={onClose}
 			className={classes("")}
 			title="Update Group"
-			height={manageMembers ? "1080px" : "auto"}
+			height="1080px"
 		>
 			<form className={classes("-form")} onSubmit={handleSubmit}>
 				{manageMembers ? (
@@ -102,6 +102,21 @@ const UpdateGroup: React.FC<IUpdateGroupProps> = ({
 					</Responsive.Row>
 				) : (
 					<Responsive.Row>
+						<Responsive.Col>
+							<div
+								className={classes("-banner")}
+								style={{
+									backgroundImage: `url(${fields.banner})`,
+								}}
+							>
+								<div
+									className={classes("-banner__icon")}
+									style={{
+										backgroundImage: `url(${fields.icon})`,
+									}}
+								/>
+							</div>
+						</Responsive.Col>
 						<Responsive.Col
 							xlg={50}
 							lg={50}
@@ -128,9 +143,8 @@ const UpdateGroup: React.FC<IUpdateGroupProps> = ({
 							xsm={100}
 						>
 							<Input
-								label="Icon"
+								label="Icon URL (optional)"
 								name="icon"
-								type="url"
 								placeholder="https://example.com/icon.png"
 								size="small"
 								value={fields.icon}
@@ -145,9 +159,8 @@ const UpdateGroup: React.FC<IUpdateGroupProps> = ({
 							xsm={100}
 						>
 							<Input
-								label="Banner"
+								label="Banner URL (optional)"
 								name="banner"
-								type="url"
 								placeholder="https://example.com/banner.png"
 								size="small"
 								value={fields.banner}

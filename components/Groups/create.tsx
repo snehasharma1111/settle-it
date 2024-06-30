@@ -111,9 +111,8 @@ const CreateGroup: React.FC<ICreateGroupProps> = ({
 							xsm={100}
 						>
 							<Input
-								label="Icon"
+								label="Icon URL (optional)"
 								name="icon"
-								type="url"
 								placeholder="https://example.com/icon.png"
 								size="small"
 								value={fields.icon}
@@ -128,9 +127,8 @@ const CreateGroup: React.FC<ICreateGroupProps> = ({
 							xsm={100}
 						>
 							<Input
-								label="Banner"
+								label="Banner URL (optional)"
 								name="banner"
-								type="url"
 								placeholder="https://example.com/banner.png"
 								size="small"
 								value={fields.banner}

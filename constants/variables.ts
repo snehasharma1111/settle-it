@@ -4,7 +4,7 @@ export const frontendBaseUrl: string = url.frontend;
 export const backendBaseUrl: string = url.backend;
 
 export const fallbackAssets = Object.freeze({
-	avatar: "/vectors/user.svg",
-	groupIcon: "/images/group-icon.png",
-	banner: "/images/banner.png",
+	avatar: `${frontendBaseUrl}/vectors/user.svg`,
+	groupIcon: `${frontendBaseUrl}/images/group-icon.png`,
+	banner: `${frontendBaseUrl}/images/banner.png`,
 });

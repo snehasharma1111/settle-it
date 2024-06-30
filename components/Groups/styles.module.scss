@@ -26,6 +26,31 @@
 		}
 	}
 
+	&-banner {
+		@include banner;
+		min-height: unset;
+		height: 150px;
+		background-color: none;
+		background-blend-mode: normal;
+		border-radius: 8px;
+		justify-content: center;
+		align-items: flex-end;
+		transform: none;
+		padding: 0;
+		margin-bottom: 30px;
+
+		&__icon {
+			height: 50%;
+			aspect-ratio: 1 / 1;
+			border-radius: 50%;
+			background-size: cover;
+			background-position: center;
+			background-repeat: no-repeat;
+			transform: translateY(50%);
+			background-color: var(--accent-color);
+		}
+	}
+
 	&-members {
 		&-bar {
 			width: 100%;
