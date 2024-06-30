@@ -230,6 +230,7 @@ const UpdateExpense: React.FC<IUpdateExpenseProps> = ({
 							/>
 						</Responsive.Col>
 						<Members
+							totalAmount={fields.amount}
 							allMembers={group.members}
 							selectedMembers={selectedMembers}
 							setSelectedMembers={(newMembers) => {

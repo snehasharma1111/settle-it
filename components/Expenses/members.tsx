@@ -10,6 +10,7 @@ export type ExpenseUser = IUser & {
 	amount: number;
 };
 interface IExpenseMembersProps {
+	totalAmount: number;
 	allMembers: Array<IUser>;
 	selectedMembers: Array<ExpenseUser>;
 	setSelectedMembers: (_: Array<ExpenseUser>) => void;
@@ -18,6 +19,7 @@ interface IExpenseMembersProps {
 const classes = stylesConfig(styles, "create-expense");
 
 const ExpenseMembers: React.FC<IExpenseMembersProps> = ({
+	totalAmount,
 	allMembers,
 	selectedMembers,
 	setSelectedMembers,
@@ -27,7 +29,17 @@ const ExpenseMembers: React.FC<IExpenseMembersProps> = ({
 		if (selectedMembers.map((user) => user.id).includes(member.id)) {
 			newMembers = newMembers.filter((user) => user.id !== member.id);
 		} else {
-			newMembers = [...selectedMembers, { ...member, amount: 0 }];
+			newMembers = [
+				...selectedMembers,
+				{
+					...member,
+					amount: Math.max(
+						totalAmount -
+							selectedMembers.reduce((a, b) => a + b.amount, 0),
+						0
+					),
+				},
+			];
 		}
 		setSelectedMembers(newMembers);
 	};
@@ -83,6 +95,12 @@ const ExpenseMembers: React.FC<IExpenseMembersProps> = ({
 							)?.amount || 0
 						}
 						onChange={(e: any) => {
+							if (
+								e.target.value.startsWith("0") &&
+								e.target.value.length > 1
+							) {
+								e.target.value = e.target.value.slice(1);
+							}
 							handleChangeMemberAmount(member, +e.target.value);
 						}}
 					/>

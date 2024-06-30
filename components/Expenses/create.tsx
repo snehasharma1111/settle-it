@@ -44,7 +44,11 @@ const CreateExpense: React.FC<ICreateExpenseProps> = ({
 				});
 				return newMembers;
 			});
-			setFields({ ...fields, [name]: +value });
+			if (value.startsWith("0") && value.length > 1) {
+				setFields({ ...fields, [name]: +value.slice(1) });
+			} else {
+				setFields({ ...fields, [name]: +value });
+			}
 		} else {
 			setFields({ ...fields, [name]: value });
 		}
@@ -52,31 +56,6 @@ const CreateExpense: React.FC<ICreateExpenseProps> = ({
 
 	const handleSubmit = (e: any) => {
 		e.preventDefault();
-		/* if (selectedMembers.map((user) => user.id).includes(loggedInuser.id)) {
-			onSave({
-				...fields,
-				members: selectedMembers.map((user) => ({
-					userId: user.id,
-					amount: user.amount,
-				})),
-			});
-		} else {
-			onSave({
-				...fields,
-				members: [
-					...selectedMembers.map((user) => ({
-						userId: user.id,
-						amount: user.amount,
-					})),
-					{
-						userId: loggedInuser.id,
-						amount:
-							fields.amount -
-							fields.members.reduce((a, b) => a + b.amount, 0),
-					},
-				],
-			});
-		} */
 		onSave({
 			...fields,
 			members: selectedMembers.map((user) => ({
@@ -114,7 +93,6 @@ const CreateExpense: React.FC<ICreateExpenseProps> = ({
 							label="Amount"
 							name="amount"
 							placeholder="Amount e.g. 100"
-							type="number"
 							size="small"
 							required
 							value={fields.amount}
@@ -155,6 +133,7 @@ const CreateExpense: React.FC<ICreateExpenseProps> = ({
 						/>
 					</Responsive.Col>
 					<Members
+						totalAmount={fields.amount}
 						allMembers={group.members}
 						selectedMembers={selectedMembers}
 						setSelectedMembers={(newMembers) => {
