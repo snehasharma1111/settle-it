@@ -59,27 +59,45 @@ const AuthVerification: React.FC<IAuthVerificationProps> = ({
 							value={data}
 							className={classes("-input--otp")}
 							onKeyUp={(e: any) => {
-								if (e.target.value.length === 1) {
-									if (
-										e.target.value >= 0 &&
-										e.target.value <= 9
-									) {
-										if (e.target.name === "otp5") {
-											e.target.blur();
-										} else {
-											document
-												.getElementsByName(
-													"otp" +
-														(+e.target.name[
-															e.target.name
-																.length - 1
-														] +
-															1)
-												)[0]
-												.focus();
-										}
-									} else {
+								if (e.key === "Backspace") {
+									if (e.target.name === "otp0") {
 										e.target.value = "";
+										return;
+									}
+									if (e.target.value === "") {
+										document
+											.getElementsByName(
+												"otp" +
+													(+e.target.name[
+														e.target.name.length - 1
+													] -
+														1)
+											)[0]
+											.focus();
+									}
+								} else {
+									if (e.target.value.length === 1) {
+										if (
+											e.target.value >= 0 &&
+											e.target.value <= 9
+										) {
+											if (e.target.name === "otp5") {
+												e.target.blur();
+											} else {
+												document
+													.getElementsByName(
+														"otp" +
+															(+e.target.name[
+																e.target.name
+																	.length - 1
+															] +
+																1)
+													)[0]
+													.focus();
+											}
+										} else {
+											e.target.value = "";
+										}
 									}
 								}
 							}}
@@ -87,14 +105,7 @@ const AuthVerification: React.FC<IAuthVerificationProps> = ({
 								if (
 									e.target.value.length === 6 &&
 									index === 0 &&
-									e.target.value
-										.split("")
-										.every(
-											(val: any) =>
-												!isNaN(val) &&
-												+val >= 0 &&
-												+val <= 9
-										)
+									/^\d{6}$/.test(e.target.value)
 								) {
 									const otpArray = e.target.value.split("");
 									setOtp(otpArray);
