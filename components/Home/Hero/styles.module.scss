@@ -1,0 +1,77 @@
+@import "@/styles/config/mixins";
+
+.home-hero {
+	width: 100%;
+	height: calc(100vh - var(--head-height));
+	display: flex;
+	justify-content: flex-start;
+	align-items: flex-start;
+	flex-flow: column;
+	gap: 24px;
+	position: relative;
+
+	@include responsive(phone) {
+		height: auto;
+		flex-direction: column;
+		justify-content: flex-start;
+		align-items: center;
+	}
+
+	&-logo {
+		width: 60%;
+		height: auto;
+		max-height: 150px;
+		object-fit: contain;
+	}
+
+	&-content {
+		width: 40%;
+		display: flex;
+		justify-content: flex-start;
+		align-items: flex-start;
+		flex-direction: column;
+		gap: 12px;
+		margin-right: auto;
+		padding: 48px;
+
+		@include responsive(phone) {
+			width: 100%;
+			justify-content: center;
+			align-items: center;
+			text-align: center;
+		}
+
+		button {
+			margin-top: 24px;
+		}
+
+		&__subheading {
+			@include responsive(phone) {
+				font-size: 20px;
+			}
+		}
+
+		&__description {
+			color: var(--theme-grey);
+		}
+	}
+
+	&-image {
+		object-fit: contain;
+		max-width: 80%;
+		max-height: 50%;
+		height: auto;
+		position: absolute;
+		bottom: 0;
+		right: 0;
+
+		@include responsive(phone) {
+			position: relative;
+			bottom: unset;
+			right: unset;
+			max-height: unset;
+			width: 120%;
+			max-width: unset;
+		}
+	}
+}

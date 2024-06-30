@@ -1,5 +1,5 @@
+import { Home } from "@/components";
 import { routes } from "@/constants";
-import { Typography } from "@/library";
 import { authMiddleware } from "@/middlewares";
 import styles from "@/styles/pages/Home.module.scss";
 import { stylesConfig } from "@/utils/functions";
@@ -10,12 +10,7 @@ const classes = stylesConfig(styles, "home");
 const HomePage: React.FC = () => {
 	return (
 		<main className={classes("")}>
-			<Typography size="head-1" as="h1" weight="semi-bold">
-				Settle It
-			</Typography>
-			<Typography size="lg" as="p">
-				Blend in the fun and let us handle your expenses.
-			</Typography>
+			<Home.Hero />
 		</main>
 	);
 };
@@ -42,10 +37,7 @@ export const getServerSideProps = async (context: any) => {
 		},
 		onLoggedOut() {
 			return {
-				redirect: {
-					destination: routes.LOGIN,
-					permanent: false,
-				},
+				props: {},
 			};
 		},
 	});

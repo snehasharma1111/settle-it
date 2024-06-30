@@ -28,17 +28,12 @@ export const page = async (
 				cookie: req.headers.cookie,
 			},
 		});
-		const userDetailsRes = await http.get(`/users/${res.data.data.id}`, {
-			headers: {
-				cookie: req.headers.cookie,
-			},
-		});
 		if (res.data.data.name && res.data.data.phone) {
-			return onLoggedInAndOnboarded(userDetailsRes.data.data, {
+			return onLoggedInAndOnboarded(res.data.data, {
 				cookie: req.headers.cookie,
 			});
 		} else {
-			return onLoggedInAndNotOnboarded(userDetailsRes.data.data, {
+			return onLoggedInAndNotOnboarded(res.data.data, {
 				cookie: req.headers.cookie,
 			});
 		}
