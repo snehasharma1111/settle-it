@@ -15,8 +15,8 @@ import {
 	OwedRecords,
 	UpdateGroup,
 } from "./Groups";
-import Header from "./Header";
 import * as Home from "./Home";
+import HomeHeader from "./Home/Header";
 
 export {
 	Auth,
@@ -27,8 +27,8 @@ export {
 	GroupMetaData,
 	GroupPlaceholder,
 	GroupSummary,
-	Header,
 	Home,
+	HomeHeader,
 	OwedRecords,
 	UpdateExpense,
 	UpdateGroup,

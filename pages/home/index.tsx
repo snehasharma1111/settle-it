@@ -1,4 +1,4 @@
-import { CreateGroup, Header } from "@/components";
+import { CreateGroup, HomeHeader } from "@/components";
 import { api } from "@/connections";
 import { fallbackAssets, routes } from "@/constants";
 import { useStore } from "@/hooks";
@@ -52,7 +52,7 @@ const HomePage: React.FC<HomePageProps> = (props) => {
 
 	return (
 		<>
-			<Header />
+			<HomeHeader />
 			<main className={classes("")}>
 				{groups.length > 0 ? (
 					<Responsive.Row>
