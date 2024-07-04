@@ -1,0 +1,14 @@
+User-agent: *
+Disallow: /design/
+Disallow: /js/
+Disallow: /css/
+Disallow: /admin/
+Disallow: /__/admin/
+Disallow: /tmp/
+Disallow: /cgi-bin/
+Disallow: /download/
+Disallow: /includes/
+Disallow: /modules/
+Allow: /
+
+Sitemap: https://settleit.vercel.app/sitemap.xml
