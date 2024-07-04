@@ -19,6 +19,7 @@ export const sendEmailService = async (
 				type: "OAuth2",
 				user: googleEmailConfig.email,
 				clientId: googleEmailConfig.clientId,
+				clientSecret: googleEmailConfig.clientSecret,
 				refreshToken: googleEmailConfig.refreshToken,
 				accessToken: accessToken.token,
 			},
