@@ -40,6 +40,7 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 		deleteGroup,
 		createExpense,
 		groups,
+		setGroups,
 		expenses,
 	} = useStore();
 	const router = useRouter();
@@ -58,8 +59,12 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 	useEffect(() => {
 		const group = groups.find((group) => group.id === props.group?.id);
 		if (group) setGroupDetails(group);
+		else {
+			setGroupDetails(props.group);
+			dispatch(setGroups([...groups, props.group]));
+		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	}, [groups]);
 
 	const updateGroupHelper = async (
 		id: string,
@@ -153,6 +158,11 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 										md={50}
 										sm={50}
 										xsm={100}
+										style={{
+											height: "unset",
+											flex: "0 1 auto",
+											margin: "6px auto",
+										}}
 									>
 										<ExpenseCard {...expense} />
 									</Responsive.Col>

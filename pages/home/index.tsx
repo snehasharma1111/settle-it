@@ -66,6 +66,9 @@ const HomePage: React.FC<HomePageProps> = (props) => {
 								xsm={100}
 								style={{
 									padding: "8px",
+									height: "unset",
+									flex: "0 1 auto",
+									margin: "6px auto",
 								}}
 							>
 								<Link

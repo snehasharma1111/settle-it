@@ -78,8 +78,8 @@
 
 .view-expense-card,
 .expense {
-	width: calc(100% - 12px);
-	margin: 6px 0;
+	width: calc(100% - 6px);
+	height: 100%;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
