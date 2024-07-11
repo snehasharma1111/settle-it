@@ -27,9 +27,9 @@ export const getAllGroups = async (
 	}
 };
 
-export const getAllCacheData = async () => {
+export const getAllCacheData = async (headers?: any) => {
 	try {
-		const res = await http.get("/admin/cache");
+		const res = await http.get("/admin/cache", { headers });
 		return Promise.resolve(res.data);
 	} catch (error: any) {
 		console.error(error);
@@ -37,9 +37,9 @@ export const getAllCacheData = async () => {
 	}
 };
 
-export const clearCacheData = async () => {
+export const clearCacheData = async (headers?: any) => {
 	try {
-		const res = await http.delete("/admin/cache");
+		const res = await http.delete("/admin/cache", { headers });
 		return Promise.resolve(res.data);
 	} catch (error: any) {
 		console.error(error);
