@@ -26,3 +26,23 @@ export const getAllGroups = async (
 		return Promise.reject(error);
 	}
 };
+
+export const getAllCacheData = async () => {
+	try {
+		const res = await http.get("/admin/cache");
+		return Promise.resolve(res.data);
+	} catch (error: any) {
+		console.error(error);
+		return Promise.reject(error);
+	}
+};
+
+export const clearCacheData = async () => {
+	try {
+		const res = await http.delete("/admin/cache");
+		return Promise.resolve(res.data);
+	} catch (error: any) {
+		console.error(error);
+		return Promise.reject(error);
+	}
+};
