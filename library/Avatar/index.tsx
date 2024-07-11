@@ -1,4 +1,4 @@
-import { fallbackAssets, regex } from "@/constants";
+import { fallbackAssets } from "@/constants";
 import { stylesConfig } from "@/utils/functions";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
@@ -8,6 +8,8 @@ import styles from "./styles.module.scss";
 export interface IAvatarProps extends React.HTMLAttributes<HTMLDivElement> {
 	src: string;
 	alt: string;
+	fallback?: string;
+	shape?: "circle" | "square";
 	className?: string;
 	onClick?: () => void;
 	size?: "small" | "medium" | "large" | number;
@@ -18,16 +20,20 @@ const classes = stylesConfig(styles);
 const Avatar: React.FC<IAvatarProps> = ({
 	src,
 	alt,
+	fallback = fallbackAssets.avatar,
+	shape = "circle",
 	className,
 	onClick,
 	size = "medium",
 	...props
 }) => {
 	const [isImageValid, setIsImageValid] = useState(
-		src && regex.avatar.test(src) ? true : false
+		src && (src.startsWith("https://") || src.startsWith("/"))
+			? true
+			: false
 	);
 	const [imageUrl, setImageUrl] = useState(
-		src && regex.avatar.test(src) ? src : ""
+		src && (src.startsWith("https://") || src.startsWith("/")) ? src : ""
 	);
 
 	const getAvatarSize = () => {
@@ -56,13 +62,20 @@ const Avatar: React.FC<IAvatarProps> = ({
 	};
 
 	useEffect(() => {
-		setIsImageValid(src && regex.avatar.test(src) ? true : false);
+		setIsImageValid(
+			src && (src.startsWith("https://") || src.startsWith("/"))
+				? true
+				: false
+		);
 		setImageUrl(getImageUrlFromDriveLink(src));
-	}, [src]);
+	}, [src, fallback]);
 
 	return (
 		<div
-			className={classes("avatar") + ` ${className ?? ""}`}
+			className={
+				classes("avatar", `avatar-shape--${shape}`) +
+				` ${className ?? ""}`
+			}
 			onClick={onClick}
 			title={alt}
 			{...props}
@@ -89,7 +102,7 @@ const Avatar: React.FC<IAvatarProps> = ({
 				/>
 			) : (
 				<Image
-					src={fallbackAssets.avatar}
+					src={fallback}
 					alt={alt + ""}
 					width={getAvatarSize() * 2}
 					height={getAvatarSize() * 2}

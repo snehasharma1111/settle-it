@@ -3,7 +3,7 @@ import { api } from "@/connections";
 import { fallbackAssets, routes } from "@/constants";
 import { useStore } from "@/hooks";
 import { Responsive, Seo } from "@/layouts";
-import { Avatars, Button, Typography } from "@/library";
+import { Avatar, Avatars, Button, Typography } from "@/library";
 import { notify } from "@/messages";
 import { authMiddleware } from "@/middlewares";
 import PageNotFound from "@/pages/404";
@@ -55,9 +55,9 @@ const HomePage: React.FC<HomePageProps> = (props) => {
 			<Seo title={`${props.user.name} - Home | Settle It`} />
 			<HomeHeader />
 			<main className={classes("")}>
-				{groups.length > 0 ? (
+				{(groups || props.groups).length > 0 ? (
 					<Responsive.Row>
-						{groups.map((group) => (
+						{(groups || props.groups).map((group) => (
 							<Responsive.Col
 								key={group.id}
 								xlg={25}
@@ -76,14 +76,15 @@ const HomePage: React.FC<HomePageProps> = (props) => {
 									className={classes("-group")}
 									href={routes.GROUP(group.id)}
 								>
-									<Image
+									<Avatar
 										src={
 											group.icon ||
 											fallbackAssets.groupIcon
 										}
+										fallback={fallbackAssets.groupIcon}
+										shape="square"
 										alt={group.name}
-										width={1920}
-										height={1080}
+										size={100}
 									/>
 									<div>
 										<Typography
@@ -98,7 +99,10 @@ const HomePage: React.FC<HomePageProps> = (props) => {
 												src:
 													member.avatar ||
 													fallbackAssets.avatar,
-												alt: member.name || "User",
+												alt:
+													member.name ||
+													member.email.slice(0, 7) +
+														"...",
 											}))}
 										</Avatars>
 									</div>

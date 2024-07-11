@@ -1,8 +1,7 @@
 import { fallbackAssets, routes } from "@/constants";
-import { Avatars, Button, Typography } from "@/library";
+import { Avatar, Avatars, Button, Typography } from "@/library";
 import { IGroup } from "@/types/group";
 import { stylesConfig } from "@/utils/functions";
-import Image from "next/image";
 import { useRouter } from "next/router";
 import React from "react";
 import { FiArrowLeft, FiList, FiSettings } from "react-icons/fi";
@@ -50,11 +49,12 @@ const GroupPageMeta: React.FC<IGroupPageMetaProps> = ({ group, onUpdate }) => {
 			<section className={classes("")}>
 				<div className={classes("-details")}>
 					<div className={classes("-icon")}>
-						<Image
+						<Avatar
 							src={group.icon || fallbackAssets.groupIcon}
+							fallback={fallbackAssets.groupIcon}
+							shape="square"
 							alt={group.name}
-							width={1920}
-							height={1080}
+							size={80}
 						/>
 					</div>
 					<Typography size="xxl" as="h2" weight="medium">

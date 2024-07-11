@@ -1,5 +1,5 @@
 import { Responsive } from "@/layouts";
-import { Avatars, Button, Input, Popup, Typography } from "@/library";
+import { Avatar, Avatars, Button, Input, Popup, Typography } from "@/library";
 import { UpdateGroupData } from "@/types/group";
 import { IUser } from "@/types/user";
 import { stylesConfig } from "@/utils/functions";
@@ -109,10 +109,17 @@ const UpdateGroup: React.FC<IUpdateGroupProps> = ({
 									backgroundImage: `url(${fields.banner})`,
 								}}
 							>
-								<div
+								<Avatar
+									src={
+										fields.icon || fallbackAssets.groupIcon
+									}
+									alt={fields.name}
 									className={classes("-banner__icon")}
+									fallback={fallbackAssets.groupIcon}
+									shape="square"
 									style={{
-										backgroundImage: `url(${fields.icon})`,
+										height: "80%",
+										width: "auto",
 									}}
 								/>
 							</div>
