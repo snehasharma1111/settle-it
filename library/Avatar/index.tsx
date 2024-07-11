@@ -1,4 +1,4 @@
-import Typography from "@/library/Typography";
+import { fallbackAssets, regex } from "@/constants";
 import { stylesConfig } from "@/utils/functions";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
@@ -23,7 +23,12 @@ const Avatar: React.FC<IAvatarProps> = ({
 	size = "medium",
 	...props
 }) => {
-	const [isImageValid, setIsImageValid] = useState(src ? true : false);
+	const [isImageValid, setIsImageValid] = useState(
+		src && regex.avatar.test(src) ? true : false
+	);
+	const [imageUrl, setImageUrl] = useState(
+		src && regex.avatar.test(src) ? src : ""
+	);
 
 	const getAvatarSize = () => {
 		switch (size) {
@@ -38,8 +43,21 @@ const Avatar: React.FC<IAvatarProps> = ({
 		}
 	};
 
+	const getImageUrlFromDriveLink = (link: string) => {
+		// eslint-disable-next-line no-useless-escape
+		const regex = /^https:\/\/drive\.google\.com\/file\/d\/([^\/]+)(\/|$)/;
+		const match = link.match(regex);
+		if (match && match[1]) {
+			const assetUrl = `https://lh3.googleusercontent.com/d/${match[1]}=w1000`;
+			return assetUrl;
+		} else {
+			return link;
+		}
+	};
+
 	useEffect(() => {
-		setIsImageValid(src ? true : false);
+		setIsImageValid(src && regex.avatar.test(src) ? true : false);
+		setImageUrl(getImageUrlFromDriveLink(src));
 	}, [src]);
 
 	return (
@@ -60,7 +78,7 @@ const Avatar: React.FC<IAvatarProps> = ({
 		>
 			{isImageValid ? (
 				<Image
-					src={src}
+					src={imageUrl}
 					alt={alt + ""}
 					width={getAvatarSize() * 2}
 					height={getAvatarSize() * 2}
@@ -70,11 +88,13 @@ const Avatar: React.FC<IAvatarProps> = ({
 					}}
 				/>
 			) : (
-				<div className={classes("avatar-placeholder")}>
-					<Typography family="poppins" size="head-4">
-						{alt ? (alt[0] === "+" ? alt : alt[0]) : "A"}
-					</Typography>
-				</div>
+				<Image
+					src={fallbackAssets.avatar}
+					alt={alt + ""}
+					width={getAvatarSize() * 2}
+					height={getAvatarSize() * 2}
+					className={classes("avatar-image")}
+				/>
 			)}
 		</div>
 	);
