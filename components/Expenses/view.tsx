@@ -225,7 +225,9 @@ const ViewExpense: React.FC<IViewExpenseProps> = ({
 							{expense.title}
 						</Typography>
 						<Typography size="sm">
-							{moment(expense.createdAt).format("MMM DD, YYYY")}
+							{moment(expense.paidOn ?? expense.createdAt).format(
+								"MMM DD, YYYY"
+							)}
 						</Typography>
 					</div>
 					<div className={classes("-card-paid")}>
@@ -234,6 +236,15 @@ const ViewExpense: React.FC<IViewExpenseProps> = ({
 						<Typography size="sm">paid {expense.amount}</Typography>
 					</div>
 				</div>
+				{expense.description ? (
+					<Typography
+						as="p"
+						size="sm"
+						className={classes("-description")}
+					>
+						{expense.description}
+					</Typography>
+				) : null}
 				<div className={classes("-members")}>
 					{gettingMembers ? (
 						<Responsive.Row>

@@ -25,6 +25,12 @@ const ExpenseSchema = new mongoose.Schema(
 			required: true,
 			ref: "User",
 		},
+		description: {
+			type: String,
+		},
+		paidOn: {
+			type: Date,
+		},
 	},
 	{
 		timestamps: true,
@@ -41,6 +47,8 @@ export type Expense = {
 	groupId: string;
 	paidBy: string;
 	createdBy: string;
+	description?: string;
+	paidOn?: string;
 	createdAt: string;
 	updatedAt: string;
 };

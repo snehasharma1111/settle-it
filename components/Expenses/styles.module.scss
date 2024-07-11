@@ -118,6 +118,8 @@
 
 	&-card {
 		border: none;
+		height: auto;
+		padding: 8px;
 
 		&:hover {
 			background-color: transparent;
@@ -191,6 +193,12 @@
 				height: 20px;
 			}
 		}
+	}
+
+	&-description {
+		width: 100%;
+		padding: 8px;
+		white-space: pre-wrap;
 	}
 }
 

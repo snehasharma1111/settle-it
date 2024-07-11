@@ -15,6 +15,7 @@ const classes = stylesConfig(styles, "expense");
 const Expense: React.FC<IExpenseProps> = ({
 	id,
 	title,
+	paidOn,
 	createdAt,
 	paidBy,
 	amount,
@@ -80,7 +81,7 @@ const Expense: React.FC<IExpenseProps> = ({
 						{title}
 					</Typography>
 					<Typography size="sm">
-						{moment(createdAt).format("MMM DD, YYYY")}
+						{moment(paidOn ?? createdAt).format("MMM DD, YYYY")}
 					</Typography>
 				</div>
 				<div className={classes("-paid")}>

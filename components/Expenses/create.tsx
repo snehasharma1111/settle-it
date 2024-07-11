@@ -27,6 +27,8 @@ const CreateExpense: React.FC<ICreateExpenseProps> = ({
 	const [fields, setFields] = useState<CreateExpenseData>({
 		title: "",
 		amount: 0,
+		description: "",
+		paidOn: new Date().toISOString(),
 		groupId,
 		paidBy: loggedInuser.id,
 		members: [],
@@ -129,7 +131,35 @@ const CreateExpense: React.FC<ICreateExpenseProps> = ({
 									setFields({ ...fields, paidBy: user.id });
 								},
 							}}
-							// onChange={handleChange}
+						/>
+					</Responsive.Col>
+					<Responsive.Col xlg={33} lg={33} md={50} sm={100} xsm={100}>
+						<Input
+							label="Paid On"
+							name="paidOn"
+							type="datetime-local"
+							size="small"
+							value={fields.paidOn}
+							onChange={handleChange}
+							style={{
+								width: "100%",
+							}}
+						/>
+					</Responsive.Col>
+					<Responsive.Col
+						xlg={100}
+						lg={100}
+						md={100}
+						sm={100}
+						xsm={100}
+					>
+						<Input
+							label="Description"
+							name="description"
+							placeholder="Description"
+							size="small"
+							value={fields.description}
+							onChange={handleChange}
 						/>
 					</Responsive.Col>
 					<Members

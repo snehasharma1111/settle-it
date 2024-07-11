@@ -38,6 +38,8 @@ const UpdateExpense: React.FC<IUpdateExpenseProps> = ({
 		amount: originalExpense.amount,
 		groupId,
 		paidBy: originalExpense.paidBy.id,
+		paidOn: originalExpense.paidOn,
+		description: originalExpense.description,
 		members: [],
 	});
 	const [selectedMembers, setSelectedMembers] = useState<Array<ExpenseUser>>(
@@ -227,6 +229,41 @@ const UpdateExpense: React.FC<IUpdateExpenseProps> = ({
 										});
 									},
 								}}
+							/>
+						</Responsive.Col>
+						<Responsive.Col
+							xlg={33}
+							lg={33}
+							md={50}
+							sm={100}
+							xsm={100}
+						>
+							<Input
+								label="Paid On"
+								name="paidOn"
+								type="datetime-local"
+								size="small"
+								value={fields.paidOn}
+								onChange={handleChange}
+								style={{
+									width: "100%",
+								}}
+							/>
+						</Responsive.Col>
+						<Responsive.Col
+							xlg={100}
+							lg={100}
+							md={100}
+							sm={100}
+							xsm={100}
+						>
+							<Input
+								label="Description"
+								name="description"
+								placeholder="Description"
+								size="small"
+								value={fields.description}
+								onChange={handleChange}
 							/>
 						</Responsive.Col>
 						<Members

@@ -37,6 +37,8 @@ export const createNewExpense = async (req: ApiRequest, res: ApiResponse) => {
 		const amount = genericParse(getNonNegativeNumber, req.body.amount);
 		const groupId = genericParse(getNonEmptyString, req.query.id);
 		const paidBy = safeParse(getNonEmptyString, req.body.paidBy);
+		const paidOn = safeParse(getNonEmptyString, req.body.paidOn);
+		const description = safeParse(getNonEmptyString, req.body.description);
 		const members = genericParse(
 			getArray<{ userId: string; amount: number }>,
 			req.body.members
@@ -79,6 +81,8 @@ export const createNewExpense = async (req: ApiRequest, res: ApiResponse) => {
 				groupId,
 				paidBy: paidBy || loggedInUserId,
 				createdBy: loggedInUserId,
+				description: description || "",
+				paidOn: paidOn || new Date().toISOString(),
 			};
 		const createdExpense = await expenseService.create(newExpenseBody);
 		// initially, all members are pending, and they have to pay the expense
@@ -118,6 +122,8 @@ export const updateExpense = async (req: ApiRequest, res: ApiResponse) => {
 		const title = safeParse(getNonEmptyString, req.body.title);
 		const amount = safeParse(getNonNegativeNumber, req.body.amount);
 		const paidBy = safeParse(getNonEmptyString, req.body.paidBy);
+		const paidOn = safeParse(getNonEmptyString, req.body.paidOn);
+		const description = safeParse(getNonEmptyString, req.body.description);
 		const status = safeParse(
 			(s: T_EXPENSE_STATUS) => EXPENSE_STATUS[s],
 			req.body.status
@@ -298,6 +304,8 @@ export const updateExpense = async (req: ApiRequest, res: ApiResponse) => {
 		const updatedExpenseBody: Partial<Expense> = {};
 		if (title) updatedExpenseBody.title = title;
 		if (amount) updatedExpenseBody.amount = amount;
+		if (description) updatedExpenseBody.description = description;
+		if (paidOn) updatedExpenseBody.paidOn = paidOn;
 		if (paidBy) {
 			// person who paid should be a part of the group
 			if (
