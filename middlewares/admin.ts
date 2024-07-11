@@ -1,6 +1,7 @@
-import { googleEmailConfig, jwtSecret } from "@/config";
+import { jwtSecret } from "@/config";
 import { http } from "@/connections";
 import { HTTP } from "@/constants";
+import { admins } from "@/constants/admin";
 import { userService } from "@/services/api";
 import { ApiRequest, ApiResponse } from "@/types/api";
 import { IUser } from "@/types/user";
@@ -35,7 +36,7 @@ export const page = async (
 				cookie: req.headers.cookie,
 			},
 		});
-		if (res.data.data.email === googleEmailConfig.email) {
+		if (admins.includes(res.data.data.email)) {
 			return onAdmin(userDetailsRes.data.data, {
 				cookie: req.headers.cookie,
 			});
@@ -68,7 +69,7 @@ export const apiRoute =
 					.status(HTTP.status.UNAUTHORIZED)
 					.json({ message: "Please login to continue" });
 			}
-			if (user.email !== googleEmailConfig.email) {
+			if (!admins.includes(user.email)) {
 				return res
 					.status(HTTP.status.UNAUTHORIZED)
 					.json({ message: "You are not authorized" });
