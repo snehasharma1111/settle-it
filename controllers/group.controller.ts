@@ -1,6 +1,6 @@
 import { HTTP } from "@/constants";
 import { Group } from "@/models";
-import { groupService, userService } from "@/services/api";
+import { groupService, memberService, userService } from "@/services/api";
 import { ApiRequest, ApiResponse } from "@/types/api";
 import {
 	genericParse,
@@ -238,6 +238,26 @@ export const updateGroup = async (req: ApiRequest, res: ApiResponse) => {
 				members.push(loggedInUserId);
 			}
 			newGroupBody.members = members;
+			// get removed members list
+			const removedMembers = foundGroup.members
+				.map((member) => member.id)
+				.filter((member) => !members.includes(member));
+			if (removedMembers.length > 0) {
+				// check is removed user have any pending transactions
+				const pendingTransactions = await memberService.find({
+					userId: { $in: removedMembers },
+					groupId: id,
+					owed: { $gt: 0 },
+				});
+				if (!pendingTransactions)
+					await groupService.removeMembers(id, removedMembers);
+				else if (pendingTransactions.length > 0) {
+					return res.status(HTTP.status.BAD_REQUEST).json({
+						message:
+							"One (or more) removed users have pending transactions",
+					});
+				}
+			}
 		}
 		const updatedGroup = await groupService.update({ id }, newGroupBody);
 		return res.status(HTTP.status.SUCCESS).json({
