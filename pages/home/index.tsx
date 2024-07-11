@@ -2,7 +2,7 @@ import { CreateGroup, HomeHeader } from "@/components";
 import { api } from "@/connections";
 import { fallbackAssets, routes } from "@/constants";
 import { useStore } from "@/hooks";
-import { Responsive } from "@/layouts";
+import { Responsive, Seo } from "@/layouts";
 import { Avatars, Button, Typography } from "@/library";
 import { notify } from "@/messages";
 import { authMiddleware } from "@/middlewares";
@@ -52,6 +52,7 @@ const HomePage: React.FC<HomePageProps> = (props) => {
 
 	return (
 		<>
+			<Seo title={`${props.user.name} - Home | Settle It`} />
 			<HomeHeader />
 			<main className={classes("")}>
 				{groups.length > 0 ? (

@@ -2,6 +2,7 @@ import { GroupMetaData, GroupPlaceholder } from "@/components";
 import { api } from "@/connections";
 import { routes } from "@/constants";
 import { useStore } from "@/hooks";
+import { Seo } from "@/layouts";
 import { authMiddleware } from "@/middlewares";
 import PageNotFound from "@/pages/404";
 import styles from "@/styles/pages/Group.module.scss";
@@ -41,6 +42,7 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 
 	return (
 		<>
+			<Seo title={`${groupDetails?.name} - Transactions | Settle It`} />
 			<main className={classes("")}>
 				<GroupMetaData group={groupDetails} />
 				{props.transactions.length === 0 ? (

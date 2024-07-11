@@ -9,7 +9,7 @@ import {
 import { api } from "@/connections";
 import { routes } from "@/constants";
 import { useStore } from "@/hooks";
-import { Responsive } from "@/layouts";
+import { Responsive, Seo } from "@/layouts";
 import { Button } from "@/library";
 import { notify } from "@/messages";
 import { authMiddleware } from "@/middlewares";
@@ -133,6 +133,7 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 
 	return (
 		<>
+			<Seo title={`${groupDetails?.name} - Settle It`} />
 			<main className={classes("")}>
 				<GroupMetaData
 					group={groupDetails}

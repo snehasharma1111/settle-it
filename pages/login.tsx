@@ -3,6 +3,7 @@ import { UserDetails } from "@/components/Auth";
 import { api } from "@/connections";
 import { routes } from "@/constants";
 import { useStore } from "@/hooks";
+import { Seo } from "@/layouts";
 import { Typography } from "@/library";
 import { notify } from "@/messages";
 import { authMiddleware } from "@/middlewares";
@@ -87,45 +88,48 @@ const LoginPage: React.FC<LoginPageProps> = (props) => {
 	}, [props.user]);
 
 	return (
-		<main className={classes("")}>
-			<span />
-			<section>
-				<Image
-					src="/logo-full.png"
-					alt="settle it logo"
-					height={1920}
-					width={1080}
-					className={classes("-logo")}
-				/>
-				{authFrame === "input" ? (
-					<Components.Content
-						email={email}
-						setEmail={(value) => setEmail(value)}
-						onContinueWithEmail={requestOtpWithEmail}
-						requestingOtp={requestingOtp}
+		<>
+			<Seo title="Login | Settle It" />
+			<main className={classes("")}>
+				<span />
+				<section>
+					<Image
+						src="/logo-full.png"
+						alt="settle it logo"
+						height={1920}
+						width={1080}
+						className={classes("-logo")}
 					/>
-				) : authFrame === "otp-verification" ? (
-					<Components.Verification
-						email={email}
-						verifyingOtp={verifyingOtp}
-						onSubmit={verifyOtp}
-						onGoBack={() => {
-							setAuthFrame("input");
-						}}
-					/>
-				) : authFrame === "onboarding" ? (
-					<Components.Onboarding
-						loading={updatingUserDetails}
-						onContinue={saveUserDetails}
-					/>
-				) : null}
-			</section>
-			<Typography size="sm" className={classes("-footer")} as="p">
-				By joining, you agree to the Settle It Terms of Service and to
-				occasionally receive emails from us. Please read our Privacy
-				Policy to learn how we use your personal data.
-			</Typography>
-		</main>
+					{authFrame === "input" ? (
+						<Components.Content
+							email={email}
+							setEmail={(value) => setEmail(value)}
+							onContinueWithEmail={requestOtpWithEmail}
+							requestingOtp={requestingOtp}
+						/>
+					) : authFrame === "otp-verification" ? (
+						<Components.Verification
+							email={email}
+							verifyingOtp={verifyingOtp}
+							onSubmit={verifyOtp}
+							onGoBack={() => {
+								setAuthFrame("input");
+							}}
+						/>
+					) : authFrame === "onboarding" ? (
+						<Components.Onboarding
+							loading={updatingUserDetails}
+							onContinue={saveUserDetails}
+						/>
+					) : null}
+				</section>
+				<Typography size="sm" className={classes("-footer")} as="p">
+					By joining, you agree to the Settle It Terms of Service and
+					to occasionally receive emails from us. Please read our
+					Privacy Policy to learn how we use your personal data.
+				</Typography>
+			</main>
+		</>
 	);
 };
 

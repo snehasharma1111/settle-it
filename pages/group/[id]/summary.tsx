@@ -7,6 +7,7 @@ import {
 import { api } from "@/connections";
 import { routes } from "@/constants";
 import { useStore } from "@/hooks";
+import { Seo } from "@/layouts";
 import { Typography } from "@/library";
 import { authMiddleware } from "@/middlewares";
 import PageNotFound from "@/pages/404";
@@ -56,6 +57,7 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 
 	return (
 		<>
+			<Seo title={`${groupDetails?.name} - Summary | Settle It`} />
 			<main className={classes("")}>
 				<GroupMetaData group={groupDetails} />
 				{props.balances.owes.length === 0 &&

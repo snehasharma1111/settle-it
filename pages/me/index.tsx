@@ -1,5 +1,6 @@
 import { fallbackAssets, routes } from "@/constants";
 import { useStore } from "@/hooks";
+import { Seo } from "@/layouts";
 import { Avatar, Button, Input, Typography } from "@/library";
 import { notify } from "@/messages";
 import { authMiddleware } from "@/middlewares";
@@ -59,76 +60,79 @@ const ProfilePage: React.FC<IProfilePageProps> = (props) => {
 	}, []);
 
 	return (
-		<main className={classes("")}>
-			<div className={classes("-banner")}>
-				<button
-					onClick={() => router.back()}
-					className={classes("-banner-btn")}
-				>
-					<FiArrowLeft />
-				</button>
-				<button
-					onClick={logout}
-					className={classes("-banner-btn", "-banner-btn--flat")}
-				>
-					<FiLogOut />
-					<Typography size="s">Logout</Typography>
-				</button>
-			</div>
-			<div className={classes("-meta")}>
-				<Avatar
-					src={
-						user.avatar ||
-						props.user.avatar ||
-						fallbackAssets.avatar
-					}
-					alt={
-						user.name ||
-						props.user.name ||
-						user.email ||
-						props.user.email
-					}
-					size={160}
-				/>
-			</div>
-			<form className={classes("-form")} onSubmit={handleSubmit}>
-				<Input
-					label="Name"
-					name="name"
-					type="text"
-					required
-					placeholder="Name"
-					value={fields.name}
-					onChange={handleChange}
-				/>
-				<Input
-					label="Phone"
-					name="phone"
-					type="tel"
-					required
-					placeholder="Phone"
-					value={fields.phone}
-					onChange={handleChange}
-				/>
-				<Input
-					label="Avatar"
-					name="avatar"
-					type="url"
-					required
-					placeholder="Avatar"
-					value={fields.avatar}
-					onChange={handleChange}
-				/>
-				<Button
-					type="submit"
-					loading={updating}
-					className={classes("-form-btn")}
-					size="large"
-				>
-					Save
-				</Button>
-			</form>
-		</main>
+		<>
+			<Seo title={`${user.name} - Profile | Settle It`} />
+			<main className={classes("")}>
+				<div className={classes("-banner")}>
+					<button
+						onClick={() => router.back()}
+						className={classes("-banner-btn")}
+					>
+						<FiArrowLeft />
+					</button>
+					<button
+						onClick={logout}
+						className={classes("-banner-btn", "-banner-btn--flat")}
+					>
+						<FiLogOut />
+						<Typography size="s">Logout</Typography>
+					</button>
+				</div>
+				<div className={classes("-meta")}>
+					<Avatar
+						src={
+							user.avatar ||
+							props.user.avatar ||
+							fallbackAssets.avatar
+						}
+						alt={
+							user.name ||
+							props.user.name ||
+							user.email ||
+							props.user.email
+						}
+						size={160}
+					/>
+				</div>
+				<form className={classes("-form")} onSubmit={handleSubmit}>
+					<Input
+						label="Name"
+						name="name"
+						type="text"
+						required
+						placeholder="Name"
+						value={fields.name}
+						onChange={handleChange}
+					/>
+					<Input
+						label="Phone"
+						name="phone"
+						type="tel"
+						required
+						placeholder="Phone"
+						value={fields.phone}
+						onChange={handleChange}
+					/>
+					<Input
+						label="Avatar"
+						name="avatar"
+						type="url"
+						required
+						placeholder="Avatar"
+						value={fields.avatar}
+						onChange={handleChange}
+					/>
+					<Button
+						type="submit"
+						loading={updating}
+						className={classes("-form-btn")}
+						size="large"
+					>
+						Save
+					</Button>
+				</form>
+			</main>
+		</>
 	);
 };
 
