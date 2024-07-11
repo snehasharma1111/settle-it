@@ -1,7 +1,7 @@
 import { HTTP, OTP_STATUS, USER_STATUS } from "@/constants";
 import { authService, otpService, userService } from "@/services/api";
 import { ApiRequest, ApiResponse } from "@/types/api";
-import { getNonEmptyString, genericParse } from "@/utils/safety";
+import { genericParse, getNonEmptyString } from "@/utils/safety";
 
 export const requestOtpWithEmail = async (
 	req: ApiRequest,

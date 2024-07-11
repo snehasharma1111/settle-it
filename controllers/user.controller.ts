@@ -1,6 +1,8 @@
 import { HTTP, USER_STATUS } from "@/constants";
 import { userService } from "@/services/api";
+import cache from "@/services/cache";
 import { ApiRequest, ApiResponse } from "@/types/api";
+import { cacheParameter, getCacheKey } from "@/utils/cache";
 import { genericParse, getNonEmptyString } from "@/utils/safety";
 
 export const getLoggedInUserDetails = async (
@@ -18,7 +20,12 @@ export const getLoggedInUserDetails = async (
 			return res
 				.status(HTTP.status.FORBIDDEN)
 				.json({ message: HTTP.message.FORBIDDEN });
-		const foundUser = await userService.findById(id);
+		const foundUser = await cache.fetch(
+			getCacheKey(cacheParameter.USER, { id }),
+			() => {
+				return userService.findById(id);
+			}
+		);
 		if (!foundUser)
 			return res
 				.status(HTTP.status.NOT_FOUND)
@@ -85,6 +92,9 @@ export const updateUserDetails = async (req: ApiRequest, res: ApiResponse) => {
 		const updatedUser = await userService.update(
 			{ id: loggedInUserId },
 			updatedBody
+		);
+		cache.invalidate(
+			getCacheKey(cacheParameter.USER, { id: loggedInUserId })
 		);
 		return res.status(HTTP.status.SUCCESS).json({
 			message: HTTP.message.SUCCESS,

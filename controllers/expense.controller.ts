@@ -2,8 +2,10 @@ import { EXPENSE_STATUS, HTTP } from "@/constants";
 import { memberControllers } from "@/controllers";
 import { Expense, Member } from "@/models";
 import { expenseService, groupService, memberService } from "@/services/api";
+import cache from "@/services/cache";
 import { ApiRequest, ApiResponse } from "@/types/api";
 import { T_EXPENSE_STATUS } from "@/types/user";
+import { cacheParameter, getCacheKey } from "@/utils/cache";
 import {
 	genericParse,
 	getArray,
@@ -97,6 +99,9 @@ export const createNewExpense = async (req: ApiRequest, res: ApiResponse) => {
 			paid: member.userId === paidBy ? member.amount : 0,
 		}));
 		await memberService.bulkCreate(membersForCurrentExpense);
+		cache.invalidate(
+			getCacheKey(cacheParameter.GROUP_EXPENSES, { groupId })
+		);
 		return res.status(HTTP.status.CREATED).json({
 			message: "Expense created successfully",
 			data: createdExpense,
@@ -326,6 +331,11 @@ export const updateExpense = async (req: ApiRequest, res: ApiResponse) => {
 			{ id },
 			updatedExpenseBody
 		);
+		cache.invalidate(
+			getCacheKey(cacheParameter.GROUP_EXPENSES, {
+				groupId: updatedExpense?.group.id,
+			})
+		);
 		return res.status(HTTP.status.SUCCESS).json({
 			message: HTTP.message.SUCCESS,
 			data: updatedExpense,
@@ -363,6 +373,11 @@ export const removeExpense = async (req: ApiRequest, res: ApiResponse) => {
 		// remove all members for the current expense
 		await memberService.bulkRemove({ expenseId: id });
 		const removedExpense = await expenseService.remove({ id });
+		cache.invalidate(
+			getCacheKey(cacheParameter.GROUP_EXPENSES, {
+				groupId: foundExpense.group.id,
+			})
+		);
 		return res.status(HTTP.status.SUCCESS).json({
 			message: HTTP.message.SUCCESS,
 			data: removedExpense,

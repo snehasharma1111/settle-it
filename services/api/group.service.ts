@@ -61,7 +61,9 @@ export const findAll = async (): Promise<Array<IGroup>> => {
 	return parsedRes;
 };
 
-export const getGroupsUserIsPartOf = async (userId: string): Promise<any> => {
+export const getGroupsUserIsPartOf = async (
+	userId: string
+): Promise<Array<IGroup>> => {
 	const result = await GroupModel.find({
 		members: { $in: [userId] },
 	}).populate("members createdBy");

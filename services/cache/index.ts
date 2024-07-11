@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
-import NodeCache from "node-cache";
 import * as constants from "@/constants/cache";
+import NodeCache from "node-cache";
 
 class Cache {
 	private cache: NodeCache;

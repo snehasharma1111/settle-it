@@ -1,7 +1,9 @@
 import { HTTP } from "@/constants";
 import { Group } from "@/models";
 import { groupService, memberService, userService } from "@/services/api";
+import cache from "@/services/cache";
 import { ApiRequest, ApiResponse } from "@/types/api";
+import { cacheParameter, getCacheKey } from "@/utils/cache";
 import {
 	genericParse,
 	getArray,
@@ -13,7 +15,12 @@ export const getAllGroups = async (req: ApiRequest, res: ApiResponse) => {
 	try {
 		const loggedInUserId = getNonEmptyString(req.user?.id);
 		// search for group whose members array contains loggedInUserId
-		const groups = await groupService.getGroupsUserIsPartOf(loggedInUserId);
+		const groups = await cache.fetch(
+			getCacheKey(cacheParameter.USER_GROUPS, { userId: loggedInUserId }),
+			() => {
+				return groupService.getGroupsUserIsPartOf(loggedInUserId);
+			}
+		);
 		return res
 			.status(HTTP.status.SUCCESS)
 			.json({ message: HTTP.message.SUCCESS, data: groups });
@@ -41,7 +48,12 @@ export const getGroupDetailsAndExpenses = async (
 			return res
 				.status(HTTP.status.FORBIDDEN)
 				.json({ message: HTTP.message.FORBIDDEN });
-		const expenses = await groupService.getExpensesForGroup(groupId);
+		const expenses = await cache.fetch(
+			getCacheKey(cacheParameter.GROUP_EXPENSES, { groupId }),
+			() => {
+				return groupService.getExpensesForGroup(groupId);
+			}
+		);
 		return res.status(HTTP.status.SUCCESS).json({
 			message: HTTP.message.SUCCESS,
 			data: {
@@ -187,6 +199,9 @@ export const createGroup = async (req: ApiRequest, res: ApiResponse) => {
 		if (banner) newGroupBody.banner = banner;
 		if (type) newGroupBody.type = type;
 		const createdGroup = await groupService.create(newGroupBody);
+		cache.invalidate(
+			getCacheKey(cacheParameter.USER_GROUPS, { userId: loggedInUserId })
+		);
 		await groupService.sendInvitationToUsers(
 			{ name: createdGroup.name, id: createdGroup.id },
 			members.filter((m) => m !== loggedInUserId),
@@ -260,6 +275,9 @@ export const updateGroup = async (req: ApiRequest, res: ApiResponse) => {
 			}
 		}
 		const updatedGroup = await groupService.update({ id }, newGroupBody);
+		cache.invalidate(
+			getCacheKey(cacheParameter.GROUP_EXPENSES, { groupId: id })
+		);
 		return res.status(HTTP.status.SUCCESS).json({
 			message: HTTP.message.SUCCESS,
 			data: updatedGroup,
@@ -297,6 +315,10 @@ export const deleteGroup = async (req: ApiRequest, res: ApiResponse) => {
 			});
 		await groupService.clear(id);
 		const deletedGroup = await groupService.remove({ id });
+		cache.del(getCacheKey(cacheParameter.GROUP_EXPENSES, { groupId: id }));
+		cache.invalidate(
+			getCacheKey(cacheParameter.USER_GROUPS, { userId: id })
+		);
 		return res.status(HTTP.status.SUCCESS).json({
 			message: HTTP.message.SUCCESS,
 			data: deletedGroup,
@@ -338,6 +360,12 @@ export const addGroupMembers = async (req: ApiRequest, res: ApiResponse) => {
 				!foundGroup.members.map((member) => member.id).includes(member)
 		);
 		const updatedGroup = await groupService.addMembers(id, membersToAdd);
+		cache.invalidate(
+			getCacheKey(cacheParameter.GROUP_EXPENSES, { groupId: id })
+		);
+		cache.invalidate(
+			getCacheKey(cacheParameter.USER_GROUPS, { userId: id })
+		);
 		return res.status(HTTP.status.SUCCESS).json({
 			message: HTTP.message.SUCCESS,
 			data: updatedGroup,
@@ -380,6 +408,12 @@ export const removeGroupMembers = async (req: ApiRequest, res: ApiResponse) => {
 		const updatedGroup = await groupService.removeMembers(
 			id,
 			membersToRemove
+		);
+		cache.invalidate(
+			getCacheKey(cacheParameter.GROUP_EXPENSES, { groupId: id })
+		);
+		cache.invalidate(
+			getCacheKey(cacheParameter.USER_GROUPS, { userId: id })
 		);
 		return res.status(HTTP.status.SUCCESS).json({
 			message: HTTP.message.SUCCESS,
