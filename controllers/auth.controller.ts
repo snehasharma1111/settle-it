@@ -172,21 +172,9 @@ export const login = async (req: ApiRequest, res: ApiResponse) => {
 
 export const verify = async (req: ApiRequest, res: ApiResponse) => {
 	try {
-		const token = req.cookies.token;
-		if (!token) {
-			return res
-				.status(HTTP.status.UNAUTHORIZED)
-				.json({ message: HTTP.message.BAD_REQUEST });
-		}
-		const user = await authService.authenticate(token);
-		if (!user) {
-			return res
-				.status(HTTP.status.UNAUTHORIZED)
-				.json({ message: HTTP.message.UNAUTHORIZED });
-		}
 		return res.status(HTTP.status.SUCCESS).json({
 			message: HTTP.message.SUCCESS,
-			data: user,
+			data: req.user,
 		});
 	} catch (error) {
 		console.error(error);

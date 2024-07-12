@@ -10,7 +10,12 @@ export const getLoggedInUserDetails = async (
 	res: ApiResponse
 ) => {
 	try {
-		const loggedInUserId = genericParse(getNonEmptyString, req.user?.id);
+		const foundUser = req.user;
+		if (!foundUser)
+			return res
+				.status(HTTP.status.NOT_FOUND)
+				.json({ message: HTTP.message.NOT_FOUND });
+		const loggedInUserId = foundUser.id;
 		const id = genericParse(getNonEmptyString, req.query.id);
 		if (!id || !loggedInUserId)
 			return res
@@ -20,16 +25,6 @@ export const getLoggedInUserDetails = async (
 			return res
 				.status(HTTP.status.FORBIDDEN)
 				.json({ message: HTTP.message.FORBIDDEN });
-		const foundUser = await cache.fetch(
-			getCacheKey(cacheParameter.USER, { id }),
-			() => {
-				return userService.findById(id);
-			}
-		);
-		if (!foundUser)
-			return res
-				.status(HTTP.status.NOT_FOUND)
-				.json({ message: HTTP.message.NOT_FOUND });
 		return res
 			.status(HTTP.status.SUCCESS)
 			.json({ message: HTTP.message.SUCCESS, data: foundUser });
@@ -49,16 +44,12 @@ export const getLoggedInUserDetails = async (
 
 export const updateUserDetails = async (req: ApiRequest, res: ApiResponse) => {
 	try {
-		const loggedInUserId = genericParse(getNonEmptyString, req.user?.id);
-		if (!loggedInUserId)
-			return res
-				.status(HTTP.status.BAD_REQUEST)
-				.json({ message: HTTP.message.BAD_REQUEST });
-		const foundUser = await userService.findById(loggedInUserId);
+		const foundUser = req.user;
 		if (!foundUser)
 			return res
 				.status(HTTP.status.NOT_FOUND)
 				.json({ message: HTTP.message.NOT_FOUND });
+		const loggedInUserId = foundUser.id;
 		const keysToUpdate = ["name", "phone", "avatar"];
 		const updatedBody: any = {};
 		Object.keys(req.body).forEach((key: any) => {

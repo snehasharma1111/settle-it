@@ -1,15 +1,12 @@
 import { NextApiRequest, NextApiResponse } from "next";
+import { IUser } from "./user";
 
 interface ApiRequest extends NextApiRequest {
-	user?: {
-		id: string;
-	};
+	user?: IUser;
 }
 
 interface ApiResponse extends NextApiResponse {
-	user?: {
-		id: string;
-	};
+	user?: IUser;
 }
 
 export type ApiRes<T> = { message: string; data: T };

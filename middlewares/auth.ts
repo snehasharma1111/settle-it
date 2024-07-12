@@ -1,9 +1,8 @@
-import { jwtSecret } from "@/config";
 import { http } from "@/connections";
 import { HTTP } from "@/constants";
+import { authService } from "@/services/api";
 import { ApiRequest, ApiResponse } from "@/types/api";
 import { ServerSideAuthMiddleware } from "@/types/server";
-import jwt from "jsonwebtoken";
 
 export const page: ServerSideAuthMiddleware = async (
 	context: any,
@@ -44,8 +43,13 @@ export const apiRoute =
 				.json({ message: "Please login to continue" });
 		}
 		try {
-			const decoded: any = jwt.verify(token, jwtSecret);
-			req.user = decoded;
+			const loggedInUser = await authService.authenticate(token);
+			if (!loggedInUser) {
+				return res
+					.status(HTTP.status.UNAUTHORIZED)
+					.json({ message: "Please login to continue" });
+			}
+			req.user = loggedInUser;
 			return await next(req, res);
 		} catch (err) {
 			return res

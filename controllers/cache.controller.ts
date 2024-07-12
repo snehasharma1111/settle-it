@@ -2,7 +2,7 @@ import { HTTP } from "@/constants";
 import cache from "@/services/cache";
 import { ApiRequest, ApiResponse } from "@/types/api";
 
-export const getAllCacheData = async (req: ApiRequest, res: ApiResponse) => {
+export const getAllCacheData = async (_: ApiRequest, res: ApiResponse) => {
 	try {
 		const keys: string[] = cache.getAll();
 		if (keys.length === 0) {

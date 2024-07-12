@@ -1,12 +1,9 @@
-import { jwtSecret } from "@/config";
 import { http } from "@/connections";
 import { HTTP } from "@/constants";
 import { admins } from "@/constants/admin";
-import { userService } from "@/services/api";
+import { authService } from "@/services/api";
 import { ApiRequest, ApiResponse } from "@/types/api";
 import { ServerSideAdminMiddleware } from "@/types/server";
-import { getNonEmptyString } from "@/utils/safety";
-import jwt from "jsonwebtoken";
 
 export const page: ServerSideAdminMiddleware = async (
 	context: any,
@@ -52,20 +49,18 @@ export const apiRoute =
 				.json({ message: "Please login to continue" });
 		}
 		try {
-			const decoded: any = jwt.verify(token, jwtSecret);
-			req.user = decoded;
-			const userId = getNonEmptyString(decoded.id);
-			const user = await userService.findById(userId);
-			if (!user) {
+			const loggedInUser = await authService.authenticate(token);
+			if (!loggedInUser) {
 				return res
 					.status(HTTP.status.UNAUTHORIZED)
 					.json({ message: "Please login to continue" });
 			}
-			if (!admins.includes(user.email)) {
+			if (!admins.includes(loggedInUser.email)) {
 				return res
-					.status(HTTP.status.UNAUTHORIZED)
+					.status(HTTP.status.FORBIDDEN)
 					.json({ message: "You are not authorized" });
 			}
+			req.user = loggedInUser;
 			return await next(req, res);
 		} catch (err) {
 			return res

@@ -1,6 +1,7 @@
 import { HTTP } from "@/constants";
 import { authControllers } from "@/controllers";
 import { db } from "@/db";
+import { authMiddleware } from "@/middlewares";
 import { ApiRequest, ApiResponse } from "@/types/api";
 import { NextApiHandler } from "next";
 
@@ -11,7 +12,10 @@ const handler: NextApiHandler = async (req: ApiRequest, res: ApiResponse) => {
 
 		switch (method) {
 			case "GET":
-				return authControllers.verify(req, res);
+				return authMiddleware.apiRoute(authControllers.verify)(
+					req,
+					res
+				);
 			default:
 				res.setHeader("Allow", ["GET"]);
 				return res
