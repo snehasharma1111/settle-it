@@ -9,6 +9,7 @@ import { authMiddleware } from "@/middlewares";
 import PageNotFound from "@/pages/404";
 import styles from "@/styles/pages/Home.module.scss";
 import { CreateGroupData, IGroup } from "@/types/group";
+import { ServerSideResult } from "@/types/server";
 import { IUser } from "@/types/user";
 import { stylesConfig } from "@/utils/functions";
 import Image from "next/image";
@@ -154,10 +155,12 @@ const HomePage: React.FC<HomePageProps> = (props) => {
 
 export default HomePage;
 
-export const getServerSideProps = async (context: any) => {
-	try {
-		return await authMiddleware.page(context, {
-			async onLoggedInAndOnboarded(user, headers) {
+export const getServerSideProps = (
+	context: any
+): Promise<ServerSideResult<HomePageProps>> => {
+	return authMiddleware.page(context, {
+		async onLoggedInAndOnboarded(user, headers) {
+			try {
 				const groupsRes = await api.group.getAllGroups(headers);
 				return {
 					props: {
@@ -165,29 +168,29 @@ export const getServerSideProps = async (context: any) => {
 						groups: groupsRes.data,
 					},
 				};
-			},
-			onLoggedInAndNotOnboarded() {
+			} catch (error: any) {
 				return {
-					redirect: {
-						destination: routes.ONBOARDING + "?redirect=/home",
-						permanent: false,
+					props: {
+						error: error.message,
 					},
 				};
-			},
-			onLoggedOut() {
-				return {
-					redirect: {
-						destination: routes.LOGIN + "?redirect=/home",
-						permanent: false,
-					},
-				};
-			},
-		});
-	} catch (error: any) {
-		return {
-			props: {
-				error: error.message,
-			},
-		};
-	}
+			}
+		},
+		onLoggedInAndNotOnboarded() {
+			return {
+				redirect: {
+					destination: routes.ONBOARDING + "?redirect=/home",
+					permanent: false,
+				},
+			};
+		},
+		onLoggedOut() {
+			return {
+				redirect: {
+					destination: routes.LOGIN + "?redirect=/home",
+					permanent: false,
+				},
+			};
+		},
+	});
 };

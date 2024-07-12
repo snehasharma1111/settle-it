@@ -6,6 +6,7 @@ import { Avatar, Avatars, Typography } from "@/library";
 import { adminMiddleware } from "@/middlewares";
 import styles from "@/styles/pages/Admin.module.scss";
 import { IGroup } from "@/types/group";
+import { ServerSideResult } from "@/types/server";
 import { IUser } from "@/types/user";
 import { stylesConfig } from "@/utils/functions";
 import React, { useEffect } from "react";
@@ -155,10 +156,12 @@ const AdminPanel: React.FC<AdminPanelProps> = (props) => {
 
 export default AdminPanel;
 
-export const getServerSideProps = async (context: any) => {
-	try {
-		return await adminMiddleware.page(context, {
-			async onAdmin(user, headers) {
+export const getServerSideProps = (
+	context: any
+): Promise<ServerSideResult<AdminPanelProps>> => {
+	return adminMiddleware.page(context, {
+		async onAdmin(user, headers) {
+			try {
 				const usersRes = await api.admin.getAllUsers(headers);
 				const groupsRes = await api.admin.getAllGroups(headers);
 				return {
@@ -168,29 +171,29 @@ export const getServerSideProps = async (context: any) => {
 						groups: groupsRes.data,
 					},
 				};
-			},
-			onNonAdmin() {
+			} catch (error: any) {
 				return {
-					redirect: {
-						destination: routes.HOME,
-						permanent: false,
+					props: {
+						error: error.message,
 					},
 				};
-			},
-			onLoggedOut() {
-				return {
-					redirect: {
-						destination: routes.LOGIN + "?redirect=/__/admin",
-						permanent: false,
-					},
-				};
-			},
-		});
-	} catch (error: any) {
-		return {
-			props: {
-				error: error.message,
-			},
-		};
-	}
+			}
+		},
+		onNonAdmin() {
+			return {
+				redirect: {
+					destination: routes.HOME,
+					permanent: false,
+				},
+			};
+		},
+		onLoggedOut() {
+			return {
+				redirect: {
+					destination: routes.LOGIN + "?redirect=/__/admin",
+					permanent: false,
+				},
+			};
+		},
+	});
 };

@@ -5,6 +5,7 @@ import { Avatar, Button, Input, Typography } from "@/library";
 import { notify } from "@/messages";
 import { authMiddleware } from "@/middlewares";
 import styles from "@/styles/pages/Profile.module.scss";
+import { ServerSideResult } from "@/types/server";
 import { IUser } from "@/types/user";
 import { stylesConfig } from "@/utils/functions";
 import { useRouter } from "next/router";
@@ -138,8 +139,10 @@ const ProfilePage: React.FC<IProfilePageProps> = (props) => {
 
 export default ProfilePage;
 
-export const getServerSideProps = async (context: any) => {
-	return await authMiddleware.page(context, {
+export const getServerSideProps = (
+	context: any
+): Promise<ServerSideResult<IProfilePageProps>> => {
+	return authMiddleware.page(context, {
 		async onLoggedInAndOnboarded(user) {
 			return {
 				props: {

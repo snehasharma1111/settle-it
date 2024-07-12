@@ -5,6 +5,7 @@ import { Button, Table, Typography } from "@/library";
 import { notify } from "@/messages";
 import { adminMiddleware } from "@/middlewares";
 import styles from "@/styles/pages/Admin.module.scss";
+import { ServerSideResult } from "@/types/server";
 import { IUser } from "@/types/user";
 import { copyToClipboard, stylesConfig } from "@/utils/functions";
 import React, { useEffect, useState } from "react";
@@ -106,10 +107,12 @@ const AdminPanelCache: React.FC<AdminPanelCacheProps> = (props) => {
 
 export default AdminPanelCache;
 
-export const getServerSideProps = async (context: any) => {
-	try {
-		return await adminMiddleware.page(context, {
-			async onAdmin(user, headers) {
+export const getServerSideProps = (
+	context: any
+): Promise<ServerSideResult<AdminPanelCacheProps>> => {
+	return adminMiddleware.page(context, {
+		async onAdmin(user, headers) {
+			try {
 				const cacheRes = await api.admin.getAllCacheData(headers);
 				return {
 					props: {
@@ -117,29 +120,29 @@ export const getServerSideProps = async (context: any) => {
 						cacheData: cacheRes.data,
 					},
 				};
-			},
-			onNonAdmin() {
+			} catch (error: any) {
 				return {
-					redirect: {
-						destination: routes.HOME,
-						permanent: false,
+					props: {
+						error: error.message,
 					},
 				};
-			},
-			onLoggedOut() {
-				return {
-					redirect: {
-						destination: routes.LOGIN + "?redirect=/__/admin",
-						permanent: false,
-					},
-				};
-			},
-		});
-	} catch (error: any) {
-		return {
-			props: {
-				error: error.message,
-			},
-		};
-	}
+			}
+		},
+		onNonAdmin() {
+			return {
+				redirect: {
+					destination: routes.HOME,
+					permanent: false,
+				},
+			};
+		},
+		onLoggedOut() {
+			return {
+				redirect: {
+					destination: routes.LOGIN + "?redirect=/__/admin",
+					permanent: false,
+				},
+			};
+		},
+	});
 };

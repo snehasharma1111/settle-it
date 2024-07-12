@@ -2,20 +2,12 @@ import { jwtSecret } from "@/config";
 import { http } from "@/connections";
 import { HTTP } from "@/constants";
 import { ApiRequest, ApiResponse } from "@/types/api";
-import { IUser } from "@/types/user";
+import { ServerSideAuthMiddleware } from "@/types/server";
 import jwt from "jsonwebtoken";
 
-export const page = async (
+export const page: ServerSideAuthMiddleware = async (
 	context: any,
-	{
-		onLoggedInAndOnboarded,
-		onLoggedInAndNotOnboarded,
-		onLoggedOut,
-	}: {
-		onLoggedInAndOnboarded: (_: IUser, __?: any) => void;
-		onLoggedInAndNotOnboarded: (_: IUser, __?: any) => void;
-		onLoggedOut: () => void;
-	}
+	{ onLoggedInAndNotOnboarded, onLoggedInAndOnboarded, onLoggedOut }
 ) => {
 	const { req } = context;
 	const cookies = req.cookies;

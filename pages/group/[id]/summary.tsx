@@ -14,6 +14,7 @@ import PageNotFound from "@/pages/404";
 import styles from "@/styles/pages/Group.module.scss";
 import { IGroup } from "@/types/group";
 import { IBalancesSummary } from "@/types/member";
+import { ServerSideResult } from "@/types/server";
 import { IUser } from "@/types/user";
 import { stylesConfig } from "@/utils/functions";
 import { getNonEmptyString } from "@/utils/safety";
@@ -116,10 +117,12 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 
 export default GroupPage;
 
-export const getServerSideProps = async (context: any) => {
-	try {
-		return await authMiddleware.page(context, {
-			async onLoggedInAndOnboarded(user, headers) {
+export const getServerSideProps = (
+	context: any
+): Promise<ServerSideResult<GroupPageProps>> => {
+	return authMiddleware.page(context, {
+		async onLoggedInAndOnboarded(user, headers) {
+			try {
 				const id = getNonEmptyString(context.query.id);
 				const groupDetailsRes = await api.group.getBalancesSummary(
 					id,
@@ -131,33 +134,33 @@ export const getServerSideProps = async (context: any) => {
 						...groupDetailsRes.data,
 					},
 				};
-			},
-			onLoggedInAndNotOnboarded() {
+			} catch (error: any) {
 				return {
-					redirect: {
-						destination:
-							routes.ONBOARDING +
-							`?redirect=/group/${context.query.id}/summary`,
-						permanent: false,
+					props: {
+						error: error.message,
 					},
 				};
-			},
-			onLoggedOut() {
-				return {
-					redirect: {
-						destination:
-							routes.LOGIN +
-							`?redirect=/group/${context.query.id}/summary`,
-						permanent: false,
-					},
-				};
-			},
-		});
-	} catch (error: any) {
-		return {
-			props: {
-				error: error.message,
-			},
-		};
-	}
+			}
+		},
+		onLoggedInAndNotOnboarded() {
+			return {
+				redirect: {
+					destination:
+						routes.ONBOARDING +
+						`?redirect=/group/${context.query.id}/summary`,
+					permanent: false,
+				},
+			};
+		},
+		onLoggedOut() {
+			return {
+				redirect: {
+					destination:
+						routes.LOGIN +
+						`?redirect=/group/${context.query.id}/summary`,
+					permanent: false,
+				},
+			};
+		},
+	});
 };

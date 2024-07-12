@@ -8,6 +8,7 @@ import { Typography } from "@/library";
 import { notify } from "@/messages";
 import { authMiddleware } from "@/middlewares";
 import styles from "@/styles/pages/Auth.module.scss";
+import { ServerSideResult } from "@/types/server";
 import { IUser } from "@/types/user";
 import { stylesConfig } from "@/utils/functions";
 import Image from "next/image";
@@ -20,7 +21,7 @@ type T_Auth_Frame = "input" | "otp-verification" | "onboarding";
 
 interface LoginPageProps {
 	frame: T_Auth_Frame;
-	user: IUser;
+	user?: IUser;
 }
 
 const LoginPage: React.FC<LoginPageProps> = (props) => {
@@ -135,10 +136,12 @@ const LoginPage: React.FC<LoginPageProps> = (props) => {
 
 export default LoginPage;
 
-export const getServerSideProps = async (context: any) => {
-	const { redirect } = context.query;
-	return await authMiddleware.page(context, {
+export const getServerSideProps = (
+	context: any
+): Promise<ServerSideResult<LoginPageProps>> => {
+	return authMiddleware.page(context, {
 		onLoggedInAndOnboarded() {
+			const { redirect } = context.query;
 			return {
 				redirect: {
 					destination: redirect ?? routes.HOME,

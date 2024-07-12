@@ -4,21 +4,13 @@ import { HTTP } from "@/constants";
 import { admins } from "@/constants/admin";
 import { userService } from "@/services/api";
 import { ApiRequest, ApiResponse } from "@/types/api";
-import { IUser } from "@/types/user";
+import { ServerSideAdminMiddleware } from "@/types/server";
 import { getNonEmptyString } from "@/utils/safety";
 import jwt from "jsonwebtoken";
 
-export const page = async (
+export const page: ServerSideAdminMiddleware = async (
 	context: any,
-	{
-		onAdmin,
-		onNonAdmin,
-		onLoggedOut,
-	}: {
-		onAdmin: (_: IUser, __?: any) => void;
-		onNonAdmin: (_: IUser, __?: any) => void;
-		onLoggedOut: () => void;
-	}
+	{ onAdmin, onNonAdmin, onLoggedOut }
 ) => {
 	const { req } = context;
 	const cookies = req.cookies;

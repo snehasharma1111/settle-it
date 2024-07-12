@@ -2,6 +2,7 @@ import { Home } from "@/components";
 import { routes } from "@/constants";
 import { authMiddleware } from "@/middlewares";
 import styles from "@/styles/pages/Home.module.scss";
+import { ServerSideResult } from "@/types/server";
 import { stylesConfig } from "@/utils/functions";
 import React from "react";
 
@@ -17,9 +18,9 @@ const HomePage: React.FC = () => {
 
 export default HomePage;
 
-export const getServerSideProps = async (context: any) => {
-	return await authMiddleware.page(context, {
-		async onLoggedInAndOnboarded() {
+export const getServerSideProps = (context: any): Promise<ServerSideResult> => {
+	return authMiddleware.page(context, {
+		onLoggedInAndOnboarded() {
 			return {
 				redirect: {
 					destination: routes.HOME,
