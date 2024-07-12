@@ -1,37 +1,14 @@
 import { Footer, Header } from "@/components";
 import { routes } from "@/constants";
 import { frontendBaseUrl } from "@/constants/variables";
-import { useStore } from "@/hooks";
 import { useRouter } from "next/router";
-import React, { useEffect } from "react";
+import React from "react";
 import { Toaster } from "react-hot-toast";
 import Seo from "./Seo";
 
 const Wrapper: React.FC<any> = ({ children }) => {
-	const {
-		dispatch,
-		expenses,
-		user,
-		groups,
-		getAllGroups,
-		getAllExpensesForUser,
-		fetchAuthenticatedUser,
-	} = useStore();
 	const router = useRouter();
 	const staticPagesPaths: Array<string> = [routes.ROOT, routes.ERROR];
-
-	useEffect(() => {
-		if (!user) {
-			dispatch(fetchAuthenticatedUser());
-		}
-		if (groups.length === 0) {
-			dispatch(getAllGroups());
-		}
-		if (expenses.length === 0) {
-			dispatch(getAllExpensesForUser());
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
 
 	return (
 		<>

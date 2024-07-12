@@ -43,6 +43,7 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 		groups,
 		setGroups,
 		expenses,
+		setExpenses,
 	} = useStore();
 	const router = useRouter();
 	const [openManageGroupPopup, setOpenManageGroupPopup] = useState(false);
@@ -54,6 +55,10 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 
 	useEffect(() => {
 		dispatch(setUser(props.user));
+		const groupExpenses = expenses
+			.filter((exp) => exp.group.id !== groupDetails.id)
+			.concat(props.expenses);
+		dispatch(setExpenses(groupExpenses));
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
