@@ -55,6 +55,16 @@ const Error: React.FC<ErrorPageProps> = ({
 					>
 						{title}
 					</Typography>
+					{description ? (
+						<Typography
+							as="p"
+							size="lg"
+							weight="medium"
+							className={classes("-description")}
+						>
+							{description}
+						</Typography>
+					) : null}
 					<Button
 						size="large"
 						variant="filled"

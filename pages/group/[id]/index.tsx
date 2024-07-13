@@ -63,11 +63,13 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 	}, []);
 
 	useEffect(() => {
-		const group = groups.find((group) => group.id === props.group?.id);
-		if (group) setGroupDetails(group);
-		else {
-			setGroupDetails(props.group);
-			dispatch(setGroups([...groups, props.group]));
+		if (props.group) {
+			const group = groups.find((group) => group?.id === props.group?.id);
+			if (group) setGroupDetails(group);
+			else {
+				setGroupDetails(props.group);
+				dispatch(setGroups([...groups, props.group]));
+			}
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [groups]);
@@ -135,7 +137,8 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 		deletingExpense
 	);
 
-	if (!props.group) return <PageNotFound />;
+	if (!props.group)
+		return <PageNotFound description={(props as any).error} />;
 
 	return (
 		<>

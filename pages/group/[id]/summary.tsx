@@ -37,7 +37,7 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 	const [groupDetails, setGroupDetails] = useState<IGroup>(props.group);
 	const [uncollapsedGroup, setUncollapsedGroup] = useState<
 		"owed" | "summary" | null
-	>("summary");
+	>(props.balances?.owes?.length > 0 ? "owed" : "summary");
 
 	const handleGroupCollapse = (group: "owed" | "summary") => {
 		if (uncollapsedGroup === group) setUncollapsedGroup(null);
@@ -52,9 +52,10 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 	useEffect(() => {
 		const group = groups.find((group) => group.id === props.group.id);
 		if (group) setGroupDetails(group);
-	}, [groups, props.group.id]);
+	}, [groups, props.group?.id]);
 
-	if (!props.group) return <PageNotFound />;
+	if (!props.group)
+		return <PageNotFound description={(props as any).error} />;
 
 	return (
 		<>
@@ -78,6 +79,7 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 								"-head--uncollapsed":
 									uncollapsedGroup === "owed",
 							})}
+							onClick={() => handleGroupCollapse("owed")}
 						>
 							<Typography size="lg">Owed Amount</Typography>
 							<hr />

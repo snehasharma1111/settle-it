@@ -37,9 +37,10 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 	useEffect(() => {
 		const group = groups.find((group) => group.id === props.group.id);
 		if (group) setGroupDetails(group);
-	}, [groups, props.group.id]);
+	}, [groups, props.group?.id]);
 
-	if (!props.group) return <PageNotFound />;
+	if (!props.group)
+		return <PageNotFound description={(props as any).error} />;
 
 	return (
 		<>
