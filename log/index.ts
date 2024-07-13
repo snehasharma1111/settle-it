@@ -11,7 +11,7 @@ export type LOG_LEVEL =
 	| "http";
 
 const log = (level: LOG_LEVEL, dir: string, ...messages: Array<any>) => {
-	http.post("/logs", { level, messages, dir });
+	http.post("/log", { level, messages, dir });
 };
 
 class Logger {
