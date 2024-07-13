@@ -9,9 +9,12 @@ const nextConfig = {
 				protocol: "https",
 				hostname: "**",
 			},
+			{
+				protocol: "http",
+				hostname: "**",
+			},
 		],
 		dangerouslyAllowSVG: true,
-		domains: ["localhost"],
 	},
 	sassOptions: {
 		includePaths: [path.join(process.cwd(), "styles")],
