@@ -47,3 +47,28 @@ export const clearCacheData = async (headers?: any) => {
 		return Promise.reject(error);
 	}
 };
+
+export const getAllLogFiles = async (
+	headers?: any
+): Promise<ApiRes<Array<string>>> => {
+	try {
+		const res = await http.get("/logs", { headers });
+		return Promise.resolve(res.data);
+	} catch (error: any) {
+		logger.error(error);
+		return Promise.reject(error);
+	}
+};
+
+export const getLogFileByName = async (
+	name: string,
+	headers?: any
+): Promise<ApiRes<string>> => {
+	try {
+		const res = await http.get(`/logs/${name}`, { headers });
+		return Promise.resolve(res.data);
+	} catch (error: any) {
+		logger.error(error);
+		return Promise.reject(error);
+	}
+};

@@ -9,4 +9,8 @@ export const routes = Object.freeze({
 	GROUP: (id: string) => `/group/${id}`,
 	GROUP_SUMMARY: (id: string) => `/group/${id}/summary`,
 	GROUP_TRANSACTIONS: (id: string) => `/group/${id}/transactions`,
+	ADMIN: "/__/admin",
+	CACHE: "/__/admin/cache",
+	LOGS: "/__/admin/logs",
+	LOG_FILE: (file: string) => `/__/admin/logs/${file}`,
 });

@@ -11,6 +11,8 @@ export const getContentType = (extension: FileExtension) => {
 			return "application/json";
 		case "csv":
 			return "text/csv";
+		case "log":
+			return "text/plain";
 		default:
 			return "text/plain";
 	}
@@ -29,7 +31,7 @@ export const saveFile = (
 		link.download = `${name}.${extension}`;
 		link.click();
 		window.URL.revokeObjectURL(url);
-		document.body.removeChild(link);
+		document.removeChild(link);
 	} catch (error) {
 		logger.error(error);
 	}

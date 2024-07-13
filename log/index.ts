@@ -1,4 +1,5 @@
 import { http } from "@/connections";
+import { logsBaseUrl } from "@/constants/variables";
 
 export type LOG_LEVEL =
 	| "log"
@@ -56,5 +57,5 @@ class Logger {
 
 // export default new Logger("logs");
 
-const logger = new Logger("logs");
+const logger = new Logger(logsBaseUrl);
 export default logger;

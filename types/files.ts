@@ -1,1 +1,1 @@
-export type FileExtension = "txt" | "md" | "json" | "csv";
+export type FileExtension = "txt" | "md" | "json" | "csv" | "log";

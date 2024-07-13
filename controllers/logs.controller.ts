@@ -1,4 +1,5 @@
 import { HTTP } from "@/constants";
+import { logsBaseUrl } from "@/constants/variables";
 import { LOG_LEVEL } from "@/log";
 import { ApiRequest, ApiResponse } from "@/types/api";
 import {
@@ -8,6 +9,37 @@ import {
 	safeParse,
 } from "@/utils/safety";
 import fs from "fs";
+
+export const getAllLogs = async (req: ApiRequest, res: ApiResponse) => {
+	try {
+		const files = fs.readdirSync(logsBaseUrl);
+		return res.status(HTTP.status.SUCCESS).json({
+			message: "Logs fetched successfully",
+			data: files.map((f) => f.replace(".log", "")),
+		});
+	} catch (error: any) {
+		return res.status(HTTP.status.INTERNAL_SERVER_ERROR).json({
+			message: error.message || HTTP.message.INTERNAL_SERVER_ERROR,
+		});
+	}
+};
+
+export const getLogFile = async (req: ApiRequest, res: ApiResponse) => {
+	try {
+		const fileName = getNonNullValue(
+			safeParse(getNonEmptyString, req.query.id)
+		);
+		const log = fs.readFileSync(`${logsBaseUrl}/${fileName}.log`, "utf8");
+		return res.status(HTTP.status.SUCCESS).json({
+			message: "Log fetched successfully",
+			data: log,
+		});
+	} catch (error: any) {
+		return res.status(HTTP.status.INTERNAL_SERVER_ERROR).json({
+			message: error.message || HTTP.message.INTERNAL_SERVER_ERROR,
+		});
+	}
+};
 
 export const log = (req: ApiRequest, res: ApiResponse) => {
 	try {

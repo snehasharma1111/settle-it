@@ -2,15 +2,16 @@ import { api } from "@/connections";
 import { fallbackAssets, routes } from "@/constants";
 import { useStore } from "@/hooks";
 import { Responsive } from "@/layouts";
-import { Avatar, Avatars, Typography } from "@/library";
+import { Avatar, Avatars, Button, Typography } from "@/library";
 import { adminMiddleware } from "@/middlewares";
 import styles from "@/styles/pages/Admin.module.scss";
 import { IGroup } from "@/types/group";
 import { ServerSideResult } from "@/types/server";
 import { IUser } from "@/types/user";
 import { stylesConfig } from "@/utils/functions";
+import Link from "next/link";
 import React, { useEffect } from "react";
-import { FiMail, FiPhone } from "react-icons/fi";
+import { FiCpu, FiFileText, FiMail, FiPhone } from "react-icons/fi";
 
 type AdminPanelProps = {
 	user: IUser;
@@ -30,6 +31,17 @@ const AdminPanel: React.FC<AdminPanelProps> = (props) => {
 
 	return (
 		<main className={classes("")}>
+			<Typography size="xxl" weight="medium" as="h1">
+				Admin Panel
+			</Typography>
+			<div className={classes("-navigation")}>
+				<Link href={routes.CACHE}>
+					<Button icon={<FiCpu />}>Cache</Button>
+				</Link>
+				<Link href={routes.LOGS}>
+					<Button icon={<FiFileText />}>Logs</Button>
+				</Link>
+			</div>
 			<Typography size="xxl" weight="medium" as="h1">
 				Users ({props.users.length})
 			</Typography>

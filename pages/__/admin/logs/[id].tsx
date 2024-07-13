@@ -1,0 +1,97 @@
+import { api } from "@/connections";
+import { routes } from "@/constants";
+import { useStore } from "@/hooks";
+import { Button, Typography } from "@/library";
+import { adminMiddleware } from "@/middlewares";
+import { saveFile } from "@/services/files.service";
+import styles from "@/styles/pages/Admin.module.scss";
+import { ServerSideResult } from "@/types/server";
+import { IUser } from "@/types/user";
+import { stylesConfig } from "@/utils/functions";
+import { getNonEmptyString, getNonNullValue, safeParse } from "@/utils/safety";
+import React, { useEffect } from "react";
+import { FiDownload } from "react-icons/fi";
+
+type AdminPanelLogPageProps = {
+	user: IUser;
+	file: string;
+	content: string;
+};
+
+const classes = stylesConfig(styles, "admin");
+
+const AdminPanelLogPage: React.FC<AdminPanelLogPageProps> = (props) => {
+	const { user, setUser, dispatch } = useStore();
+
+	useEffect(() => {
+		if (!user) dispatch(setUser(props.user));
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+	return props.content ? (
+		<main className={classes("")}>
+			<Typography size="xxl" weight="medium" as="h1">
+				Logs for {props.file}
+			</Typography>
+			<Button
+				onClick={() => {
+					saveFile(props.content, props.file, "log");
+				}}
+				icon={<FiDownload />}
+			>
+				Download file
+			</Button>
+			<pre style={{ width: "100%", overflowX: "auto" }}>
+				{props.content}
+			</pre>
+		</main>
+	) : (
+		"No logs found"
+	);
+};
+
+export default AdminPanelLogPage;
+
+export const getServerSideProps = (
+	context: any
+): Promise<ServerSideResult<AdminPanelLogPageProps>> => {
+	return adminMiddleware.page(context, {
+		async onAdmin(user, headers) {
+			try {
+				// const fileName = context.query.id as string;
+				const fileName = getNonNullValue(
+					safeParse(getNonEmptyString, context.query.id)
+				);
+				const res = await api.admin.getLogFileByName(fileName, headers);
+				return {
+					props: {
+						user,
+						file: fileName,
+						content: res.data,
+					},
+				};
+			} catch (error: any) {
+				return {
+					props: {
+						error: error.message,
+					},
+				};
+			}
+		},
+		onNonAdmin() {
+			return {
+				redirect: {
+					destination: routes.HOME,
+					permanent: false,
+				},
+			};
+		},
+		onLoggedOut() {
+			return {
+				redirect: {
+					destination: routes.LOGIN + `?redirect=${routes.LOGS}`,
+					permanent: false,
+				},
+			};
+		},
+	});
+};
