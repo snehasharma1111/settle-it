@@ -1,4 +1,3 @@
-import { http } from "@/connections";
 import { logsBaseUrl } from "@/constants/variables";
 
 export type LOG_LEVEL =
@@ -12,7 +11,44 @@ export type LOG_LEVEL =
 	| "http";
 
 const log = (level: LOG_LEVEL, dir: string, ...messages: Array<any>) => {
-	http.post("/log", { level, messages, dir });
+	const message = messages
+		.map((m) =>
+			typeof m === "string"
+				? m
+				: typeof m === "object"
+					? JSON.stringify(m)
+					: m
+		)
+		.map((m) => m.toString())
+		.join(" ");
+	const date = new Date();
+	const log = `[${date.toISOString()}] [${level.toUpperCase()}] ${message}\n`;
+	switch (level) {
+		case "info":
+			console.info("\x1b[32m%s\x1b[37m", log);
+			break;
+		case "warn":
+			console.warn("\x1b[33m%s\x1b[0m", log);
+			break;
+		case "error":
+			console.error("\x1b[31m%s\x1b[0m", log);
+			break;
+		case "debug":
+			console.debug("\x1b[34m%s\x1b[0m", log);
+			break;
+		case "verbose":
+			console.log("\x1b[35m%s\x1b[0m", log);
+			break;
+		case "silly":
+			console.log("\x1b[36m%s\x1b[0m", log);
+			break;
+		case "http":
+			console.log("\x1b[35m%s\x1b[0m", log);
+			break;
+		default:
+			console.log("\x1b[37m%s\x1b[0m", log);
+			break;
+	}
 };
 
 class Logger {
