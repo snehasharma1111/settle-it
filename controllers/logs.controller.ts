@@ -12,6 +12,13 @@ import fs from "fs";
 
 export const getAllLogs = async (req: ApiRequest, res: ApiResponse) => {
 	try {
+		// check if dir exists
+		if (!fs.existsSync(logsBaseUrl)) {
+			return res.status(HTTP.status.SUCCESS).json({
+				message: "No logs found",
+				data: [],
+			});
+		}
 		const files = fs.readdirSync(logsBaseUrl);
 		return res.status(HTTP.status.SUCCESS).json({
 			message: "Logs fetched successfully",
@@ -29,6 +36,13 @@ export const getLogFile = async (req: ApiRequest, res: ApiResponse) => {
 		const fileName = getNonNullValue(
 			safeParse(getNonEmptyString, req.query.id)
 		);
+		// check if dir exists
+		if (!fs.existsSync(`${logsBaseUrl}/${fileName}.log`)) {
+			return res.status(HTTP.status.SUCCESS).json({
+				message: "No logs found",
+				data: "",
+			});
+		}
 		const log = fs.readFileSync(`${logsBaseUrl}/${fileName}.log`, "utf8");
 		return res.status(HTTP.status.SUCCESS).json({
 			message: "Log fetched successfully",
@@ -95,7 +109,9 @@ export const log = (req: ApiRequest, res: ApiResponse) => {
 			fs.mkdirSync(dir, { recursive: true });
 		}
 		const fileName = `${dir}/${date.getFullYear()}-${date.getMonth()}-${date.getDate()}.log`;
-		fs.appendFileSync(fileName, log);
+		if (fs.existsSync(fileName)) {
+			fs.appendFileSync(fileName, log);
+		}
 		return res
 			.status(HTTP.status.SUCCESS)
 			.json({ message: "Logged successfully" });
