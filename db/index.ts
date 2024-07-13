@@ -32,7 +32,4 @@ export class DatabaseManager {
 	}
 }
 
-// export const db = new DatabaseManager();
-if (!global.client) global.client = new DatabaseManager();
-
-export const db = global.client;
+export const db = new DatabaseManager();
