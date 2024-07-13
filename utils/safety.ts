@@ -17,18 +17,18 @@ export const safeParse = <T>(parse: (_: any) => T, input: any): T | null => {
 	}
 };
 
-export const getString = (input: any): string => {
+export const getString = <T extends string>(input: any): T => {
 	// TODO: Replace with zod
 	if (typeof input != "string") {
 		throw new Error(
 			`${input} of type ${typeof input} is not a valid string!`
 		);
 	}
-	return input;
+	return input as T;
 };
 
-export const getNonEmptyString = (input: any): string => {
-	const output = getString(input);
+export const getNonEmptyString = <T extends string>(input: any): T => {
+	const output = getString<T>(input);
 	if (output === "") {
 		throw new Error(`${input} is an empty string!`);
 	}

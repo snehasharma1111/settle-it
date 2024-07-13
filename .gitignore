@@ -19,6 +19,7 @@
 .DS_Store
 *.pem
 .swc/
+logs/
 
 # debug
 npm-debug.log*
