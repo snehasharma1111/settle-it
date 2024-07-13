@@ -1,6 +1,7 @@
 import { api } from "@/connections";
 import { routes } from "@/constants";
 import { useStore } from "@/hooks";
+import { Seo } from "@/layouts";
 import { Button, Table, Typography } from "@/library";
 import { notify } from "@/messages";
 import { adminMiddleware } from "@/middlewares";
@@ -39,6 +40,10 @@ const AdminPanelCache: React.FC<AdminPanelCacheProps> = (props) => {
 	}, []);
 	return props.cacheData ? (
 		<main className={classes("")}>
+			<Seo
+				title="Cache | Admin Panel"
+				description="Cache management page of Admin Panel"
+			/>
 			<Typography size="xxl" weight="medium" as="h1">
 				Cache Data ({Object.keys(props.cacheData).length})
 			</Typography>

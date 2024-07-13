@@ -62,7 +62,7 @@ const CreateGroup: React.FC<ICreateGroupProps> = ({
 			onClose={onClose}
 			className={classes("")}
 			title="Create Group"
-			height={manageMembers ? "1080px" : "auto"}
+			height={manageMembers ? "1080px" : "600px"}
 		>
 			<form className={classes("-form")} onSubmit={handleSubmit}>
 				{manageMembers ? (

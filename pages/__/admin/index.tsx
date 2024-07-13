@@ -1,7 +1,7 @@
 import { api } from "@/connections";
 import { fallbackAssets, routes } from "@/constants";
 import { useStore } from "@/hooks";
-import { Responsive } from "@/layouts";
+import { Responsive, Seo } from "@/layouts";
 import { Avatar, Avatars, Button, Typography } from "@/library";
 import { adminMiddleware } from "@/middlewares";
 import styles from "@/styles/pages/Admin.module.scss";
@@ -31,6 +31,7 @@ const AdminPanel: React.FC<AdminPanelProps> = (props) => {
 
 	return (
 		<main className={classes("")}>
+			<Seo title="Admin Panel" description="Admin Panel" />
 			<Typography size="xxl" weight="medium" as="h1">
 				Admin Panel
 			</Typography>
@@ -118,6 +119,7 @@ const AdminPanel: React.FC<AdminPanelProps> = (props) => {
 								src={group.icon || fallbackAssets.groupIcon}
 								alt={group.name}
 								size={96}
+								shape="square"
 							/>
 							<div className={classes("-user-content")}>
 								<Typography

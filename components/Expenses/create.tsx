@@ -74,7 +74,7 @@ const CreateExpense: React.FC<ICreateExpenseProps> = ({
 			onClose={onClose}
 			title="Add Expense"
 			className={classes("")}
-			height="auto"
+			height="800px"
 		>
 			<form className={classes("-form")} onSubmit={handleSubmit}>
 				<Responsive.Row>

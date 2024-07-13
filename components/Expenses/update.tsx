@@ -132,7 +132,7 @@ const UpdateExpense: React.FC<IUpdateExpenseProps> = ({
 			onClose={onClose}
 			title={`Update Expense - ${originalExpense.title}`}
 			className={classes("")}
-			height="auto"
+			height="800px"
 		>
 			{gettingMembers ? (
 				<Responsive.Row>
