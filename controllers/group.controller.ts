@@ -1,4 +1,5 @@
 import { HTTP } from "@/constants";
+import logger from "@/log";
 import { Group } from "@/models";
 import { groupService, memberService, userService } from "@/services/api";
 import cache from "@/services/cache";
@@ -113,7 +114,7 @@ export const getBalancesSummary = async (req: ApiRequest, res: ApiResponse) => {
 			},
 		});
 	} catch (error: any) {
-		console.error(error);
+		logger.error(error);
 		if (error.message && error.message.startsWith("Invalid input:")) {
 			return res
 				.status(HTTP.status.BAD_REQUEST)
@@ -154,7 +155,7 @@ export const getGroupTransactions = async (
 			},
 		});
 	} catch (error: any) {
-		console.error(error);
+		logger.error(error);
 		if (error.message && error.message.startsWith("Invalid input:")) {
 			return res
 				.status(HTTP.status.BAD_REQUEST)
@@ -212,7 +213,7 @@ export const createGroup = async (req: ApiRequest, res: ApiResponse) => {
 			data: createdGroup,
 		});
 	} catch (error: any) {
-		console.error(error);
+		logger.error(error);
 		if (error.message && error.message.startsWith("Invalid input:")) {
 			return res
 				.status(HTTP.status.BAD_REQUEST)
@@ -283,7 +284,7 @@ export const updateGroup = async (req: ApiRequest, res: ApiResponse) => {
 			data: updatedGroup,
 		});
 	} catch (error: any) {
-		console.error(error);
+		logger.error(error);
 		if (error.message && error.message.startsWith("Invalid input:")) {
 			return res
 				.status(HTTP.status.BAD_REQUEST)
@@ -324,7 +325,7 @@ export const deleteGroup = async (req: ApiRequest, res: ApiResponse) => {
 			data: deletedGroup,
 		});
 	} catch (error: any) {
-		console.error(error);
+		logger.error(error);
 		if (error.message && error.message.startsWith("Invalid input:")) {
 			return res
 				.status(HTTP.status.BAD_REQUEST)
@@ -371,7 +372,7 @@ export const addGroupMembers = async (req: ApiRequest, res: ApiResponse) => {
 			data: updatedGroup,
 		});
 	} catch (error: any) {
-		console.error(error);
+		logger.error(error);
 		if (error.message && error.message.startsWith("Invalid input:")) {
 			return res
 				.status(HTTP.status.BAD_REQUEST)
@@ -420,7 +421,7 @@ export const removeGroupMembers = async (req: ApiRequest, res: ApiResponse) => {
 			data: updatedGroup,
 		});
 	} catch (error: any) {
-		console.error(error);
+		logger.error(error);
 		if (error.message && error.message.startsWith("Invalid input:")) {
 			return res
 				.status(HTTP.status.BAD_REQUEST)

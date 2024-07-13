@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { url } from "@/config";
+import logger from "@/log";
 import mongoose from "mongoose";
 
 declare global {
@@ -15,17 +16,18 @@ export class DatabaseManager {
 
 	public async connect() {
 		if (global.isConnected) {
-			console.info("MongoDB is already connected");
+			logger.info("MongoDB is already connected");
 			return;
 		}
 
 		try {
+			logger.info("Connecting to MongoDB");
 			const db = await mongoose.connect(url.db);
-			console.info("MongoDB connected");
+			logger.info("MongoDB connected");
 			global.isConnected = db.connections[0].readyState === 1;
 			global.db = db;
 		} catch (error) {
-			console.error("Error connecting to MongoDB", error);
+			logger.error("Error connecting to MongoDB", error);
 		}
 	}
 }

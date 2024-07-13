@@ -1,4 +1,5 @@
 import { HTTP, OTP_STATUS, USER_STATUS } from "@/constants";
+import logger from "@/log";
 import { authService, otpService, userService } from "@/services/api";
 import { ApiRequest, ApiResponse } from "@/types/api";
 import { genericParse, getNonEmptyString } from "@/utils/safety";
@@ -32,7 +33,7 @@ export const requestOtpWithEmail = async (
 			.status(HTTP.status.SUCCESS)
 			.json({ message: "OTP sent successfully" });
 	} catch (error) {
-		console.error(error);
+		logger.error(error);
 		return res.status(HTTP.status.INTERNAL_SERVER_ERROR).json({
 			message: HTTP.message.INTERNAL_SERVER_ERROR,
 		});
@@ -76,7 +77,7 @@ export const verifyOtpWithEmail = async (req: ApiRequest, res: ApiResponse) => {
 			.status(HTTP.status.SUCCESS)
 			.json({ message: "OTP verified successfully" });
 	} catch (error: any) {
-		console.error(error);
+		logger.error(error);
 		if (error.message.toLowerCase().startsWith("invalid input")) {
 			return res
 				.status(HTTP.status.BAD_REQUEST)
@@ -163,7 +164,7 @@ export const login = async (req: ApiRequest, res: ApiResponse) => {
 			});
 		}
 	} catch (error) {
-		console.error(error);
+		logger.error(error);
 		return res.status(HTTP.status.INTERNAL_SERVER_ERROR).json({
 			message: HTTP.message.INTERNAL_SERVER_ERROR,
 		});
@@ -177,7 +178,7 @@ export const verify = async (req: ApiRequest, res: ApiResponse) => {
 			data: req.user,
 		});
 	} catch (error) {
-		console.error(error);
+		logger.error(error);
 		return res.status(HTTP.status.INTERNAL_SERVER_ERROR).json({
 			message: HTTP.message.INTERNAL_SERVER_ERROR,
 		});
@@ -194,7 +195,7 @@ export const logout = async (_: ApiRequest, res: ApiResponse) => {
 			.status(HTTP.status.SUCCESS)
 			.json({ message: HTTP.message.SUCCESS });
 	} catch (error) {
-		console.error(error);
+		logger.error(error);
 		return res.status(HTTP.status.INTERNAL_SERVER_ERROR).json({
 			message: HTTP.message.INTERNAL_SERVER_ERROR,
 		});

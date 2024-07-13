@@ -17,7 +17,6 @@ const handler: NextApiHandler = (req: ApiRequest, res: ApiResponse) => {
 					.json({ message: `Method ${method} Not Allowed` });
 		}
 	} catch (error: any) {
-		console.error(error);
 		return res.status(HTTP.status.INTERNAL_SERVER_ERROR).json({
 			message: error.message || HTTP.message.INTERNAL_SERVER_ERROR,
 		});

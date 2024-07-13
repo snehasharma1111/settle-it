@@ -1,5 +1,6 @@
 import { HTTP } from "@/constants";
 import regex from "@/constants/regex";
+import logger from "@/log";
 import { ApiRequest, ApiResponse } from "@/types/api";
 import { getNonEmptyString, safeParse } from "@/utils/safety";
 
@@ -17,7 +18,7 @@ export const email =
 					.json({ message: "Invalid email provided" });
 			await next(req, res);
 		} catch (error: any) {
-			console.error(error);
+			logger.error(error);
 			if (error.message.toLowerCase().startsWith("invalid input")) {
 				return res
 					.status(HTTP.status.BAD_REQUEST)
@@ -43,7 +44,7 @@ export const password =
 				});
 			await next(req, res);
 		} catch (error: any) {
-			console.error(error);
+			logger.error(error);
 			if (error.message.toLowerCase().startsWith("invalid input")) {
 				return res
 					.status(HTTP.status.BAD_REQUEST)
@@ -69,7 +70,7 @@ export const phone =
 					.json({ message: "Invalid phone provided" });
 			await next(req, res);
 		} catch (error: any) {
-			console.error(error);
+			logger.error(error);
 			if (error.message.toLowerCase().startsWith("invalid input")) {
 				return res
 					.status(HTTP.status.BAD_REQUEST)

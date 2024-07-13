@@ -1,5 +1,6 @@
 import { googleEmailConfig } from "@/config";
 import { frontendBaseUrl } from "@/constants/variables";
+import logger from "@/log";
 import { myOAuth2Client } from "@/services";
 import { createTransport } from "nodemailer";
 
@@ -40,7 +41,7 @@ export const sendEmailService = async (
 		await smtpTransport.sendMail(mailOptions);
 		return Promise.resolve();
 	} catch (error: any) {
-		console.error(error);
+		logger.error(error);
 		return Promise.reject(error);
 	}
 };

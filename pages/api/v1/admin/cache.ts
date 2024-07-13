@@ -1,6 +1,7 @@
 import { HTTP } from "@/constants";
 import { cacheControllers } from "@/controllers";
 import { db } from "@/db";
+import logger from "@/log";
 import { adminMiddleware } from "@/middlewares";
 import { ApiRequest, ApiResponse } from "@/types/api";
 import { NextApiHandler } from "next";
@@ -26,7 +27,7 @@ const handler: NextApiHandler = async (req: ApiRequest, res: ApiResponse) => {
 					.json({ message: "Method " + method + " Not Allowed" });
 		}
 	} catch (error: any) {
-		console.error(error);
+		logger.error(error);
 		return res.status(500).json({
 			message: error.message || HTTP.message.INTERNAL_SERVER_ERROR,
 		});

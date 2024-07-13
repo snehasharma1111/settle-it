@@ -1,3 +1,4 @@
+import logger from "@/log";
 import { FileExtension } from "@/types/files";
 
 export const getContentType = (extension: FileExtension) => {
@@ -30,7 +31,7 @@ export const saveFile = (
 		window.URL.revokeObjectURL(url);
 		document.body.removeChild(link);
 	} catch (error) {
-		console.error(error);
+		logger.error(error);
 	}
 };
 

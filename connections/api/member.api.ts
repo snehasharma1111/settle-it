@@ -1,4 +1,5 @@
 import { http } from "@/connections";
+import logger from "@/log";
 import { ApiRes } from "@/types/api";
 import { IMember, IOwedRecord } from "@/types/member";
 
@@ -12,7 +13,7 @@ export const settleMemberInExpense = async (
 		);
 		return Promise.resolve(response.data);
 	} catch (error: any) {
-		console.error(error);
+		logger.error(error);
 		return Promise.reject(error?.response?.data);
 	}
 };
@@ -29,7 +30,7 @@ export const settleOwedMembersInGroup = async (
 		});
 		return Promise.resolve(response.data);
 	} catch (error: any) {
-		console.error(error);
+		logger.error(error);
 		return Promise.reject(error?.response?.data);
 	}
 };

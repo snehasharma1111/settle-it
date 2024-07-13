@@ -1,4 +1,5 @@
 import { http } from "@/connections";
+import logger from "@/log";
 import { IUser } from "@/types/user";
 
 export const verifyUserIfLoggedIn = async (): Promise<{
@@ -9,7 +10,7 @@ export const verifyUserIfLoggedIn = async (): Promise<{
 		const response = await http.get("/auth/verify");
 		return Promise.resolve(response.data);
 	} catch (error: any) {
-		console.error(error);
+		logger.error(error);
 		return Promise.reject(error.response.data);
 	}
 };

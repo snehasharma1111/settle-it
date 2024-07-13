@@ -1,3 +1,4 @@
+import logger from "@/log";
 import { ExpenseModel, Group, GroupModel, MemberModel, User } from "@/models";
 import { sendEmailTemplate } from "@/services";
 import { expenseService, memberService, userService } from "@/services/api";
@@ -587,7 +588,7 @@ export const sendInvitationToUsers = async (
 		const invitedByUser = await userService.findById(invitedBy);
 		const allUsers = await userService.find({ _id: { $in: users } });
 		if (!allUsers || !invitedByUser || !group)
-			return console.error("Could not send invitation to users");
+			return logger.error("Could not send invitation to users");
 		await Promise.all(
 			allUsers.map(async (user) => {
 				await sendEmailTemplate(
@@ -608,6 +609,6 @@ export const sendInvitationToUsers = async (
 			})
 		);
 	} catch (error) {
-		console.error(error);
+		logger.error(error);
 	}
 };

@@ -3,6 +3,7 @@ import { fallbackAssets, regex } from "@/constants";
 import { useDebounce } from "@/hooks";
 import { Responsive } from "@/layouts";
 import { Avatar, Avatars, Button, Input, Typography } from "@/library";
+import logger from "@/log";
 import { notify } from "@/messages";
 import { IUser } from "@/types/user";
 import { stylesConfig } from "@/utils/functions";
@@ -127,7 +128,7 @@ const CreateGroupMembers: React.FC<ICreateGroupMembersProps> = ({
 			const res = await api.user.searchForUsers(searchStr);
 			setSearchResults(res.data);
 		} catch (error) {
-			console.error(error);
+			logger.error(error);
 		} finally {
 			setSearching(false);
 		}

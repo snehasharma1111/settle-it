@@ -1,4 +1,5 @@
 import { jwtSecret } from "@/config";
+import logger from "@/log";
 import { User } from "@/models";
 import { userService } from "@/services/api";
 import cache from "@/services/cache";
@@ -21,7 +22,7 @@ export const authenticate = async (token: string): Promise<User | null> => {
 		}
 		return foundUser as User;
 	} catch (error) {
-		console.error(error);
+		logger.error(error);
 		return null;
 	}
 };

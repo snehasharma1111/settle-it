@@ -1,4 +1,5 @@
 import { http } from "@/connections";
+import logger from "@/log";
 import { ApiRes } from "@/types/api";
 import {
 	CreateExpenseData,
@@ -14,7 +15,7 @@ export const getAllExpensesForUser = async (
 		const response = await http.get("/expenses", { headers });
 		return Promise.resolve(response.data);
 	} catch (error: any) {
-		console.error(error);
+		logger.error(error);
 		return Promise.reject(error?.response?.data);
 	}
 };
@@ -29,7 +30,7 @@ export const getMembersOfExpense = async (
 		});
 		return Promise.resolve(response.data);
 	} catch (error: any) {
-		console.error(error);
+		logger.error(error);
 		return Promise.reject(error?.response?.data);
 	}
 };
@@ -46,7 +47,7 @@ export const createExpense = async (
 		);
 		return Promise.resolve(response.data);
 	} catch (error: any) {
-		console.error(error);
+		logger.error(error);
 		return Promise.reject(error?.response?.data);
 	}
 };
@@ -60,7 +61,7 @@ export const updateExpense = async (
 		const response = await http.patch(`/expenses/${id}`, data, { headers });
 		return Promise.resolve(response.data);
 	} catch (error: any) {
-		console.error(error);
+		logger.error(error);
 		return Promise.reject(error?.response?.data);
 	}
 };
@@ -77,7 +78,7 @@ export const settleExpense = async (
 		);
 		return Promise.resolve(response.data);
 	} catch (error: any) {
-		console.error(error);
+		logger.error(error);
 		return Promise.reject(error?.response?.data);
 	}
 };
@@ -90,7 +91,7 @@ export const deleteExpense = async (
 		const response = await http.delete(`/expenses/${id}`, { headers });
 		return Promise.resolve(response.data);
 	} catch (error: any) {
-		console.error(error);
+		logger.error(error);
 		return Promise.reject(error?.response?.data);
 	}
 };

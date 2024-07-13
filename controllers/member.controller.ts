@@ -1,4 +1,5 @@
 import { HTTP } from "@/constants";
+import logger from "@/log";
 import {
 	expenseService,
 	groupService,
@@ -45,7 +46,7 @@ export const getMembersForExpense = async (
 		}
 		return res.status(HTTP.status.FORBIDDEN).json({ message: "Forbidden" });
 	} catch (error: any) {
-		console.error(error);
+		logger.error(error);
 		return res.status(HTTP.status.INTERNAL_SERVER_ERROR).json({
 			message: HTTP.message.INTERNAL_SERVER_ERROR,
 		});
@@ -79,7 +80,7 @@ export const settleMemberInExpense = async (
 				.json({ message: HTTP.message.NOT_FOUND });
 		return getMembersForExpense(req, res);
 	} catch (error: any) {
-		console.error(error);
+		logger.error(error);
 		if (error.message && error.message.startsWith("Invalid input:")) {
 			return res
 				.status(HTTP.status.BAD_REQUEST)
@@ -130,7 +131,7 @@ export const settleOwedMembersInGroup = async (
 			.status(HTTP.status.SUCCESS)
 			.json({ data: owed, message: HTTP.message.SUCCESS });
 	} catch (error: any) {
-		console.error(error);
+		logger.error(error);
 		if (error.message && error.message.startsWith("Invalid input:")) {
 			return res
 				.status(HTTP.status.BAD_REQUEST)

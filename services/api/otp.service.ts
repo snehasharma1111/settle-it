@@ -1,3 +1,4 @@
+import logger from "@/log";
 import { Otp, OtpModel } from "@/models";
 import { sendEmailTemplate } from "@/services";
 import { getObjectFromMongoResponse } from "@/utils/parser";
@@ -79,7 +80,7 @@ export const send = async (email: string, otp: string) => {
 		);
 		return Promise.resolve();
 	} catch (error: any) {
-		console.error(error);
+		logger.error(error);
 		return Promise.reject(error);
 	}
 };

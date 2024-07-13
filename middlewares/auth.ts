@@ -1,5 +1,6 @@
 import { http } from "@/connections";
 import { HTTP } from "@/constants";
+import logger from "@/log";
 import { authService } from "@/services/api";
 import { ApiRequest, ApiResponse } from "@/types/api";
 import { ServerSideAuthMiddleware } from "@/types/server";
@@ -29,7 +30,7 @@ export const page: ServerSideAuthMiddleware = async (
 			});
 		}
 	} catch (error: any) {
-		console.error(error.message);
+		logger.error(error.message);
 		return onLoggedOut();
 	}
 };

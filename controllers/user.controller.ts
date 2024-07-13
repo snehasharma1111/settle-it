@@ -1,4 +1,5 @@
 import { HTTP, USER_STATUS } from "@/constants";
+import logger from "@/log";
 import { userService } from "@/services/api";
 import cache from "@/services/cache";
 import { ApiRequest, ApiResponse } from "@/types/api";
@@ -29,7 +30,7 @@ export const getLoggedInUserDetails = async (
 			.status(HTTP.status.SUCCESS)
 			.json({ message: HTTP.message.SUCCESS, data: foundUser });
 	} catch (error: any) {
-		console.error(error);
+		logger.error(error);
 		if (error.message && error.message.startsWith("Invalid input:")) {
 			return res
 				.status(HTTP.status.BAD_REQUEST)
@@ -92,7 +93,7 @@ export const updateUserDetails = async (req: ApiRequest, res: ApiResponse) => {
 			data: updatedUser,
 		});
 	} catch (error: any) {
-		console.error(error);
+		logger.error(error);
 		return res.status(HTTP.status.INTERNAL_SERVER_ERROR).json({
 			message: HTTP.message.INTERNAL_SERVER_ERROR,
 		});
@@ -123,7 +124,7 @@ export const inviteUser = async (req: ApiRequest, res: ApiResponse) => {
 			data: createdUser,
 		});
 	} catch (error: any) {
-		console.error(error);
+		logger.error(error);
 		return res.status(HTTP.status.INTERNAL_SERVER_ERROR).json({
 			message: HTTP.message.INTERNAL_SERVER_ERROR,
 		});
@@ -150,7 +151,7 @@ export const searchForUsers = async (req: ApiRequest, res: ApiResponse) => {
 			data: foundUsers || [],
 		});
 	} catch (error: any) {
-		console.error(error);
+		logger.error(error);
 		return res.status(HTTP.status.INTERNAL_SERVER_ERROR).json({
 			message: HTTP.message.INTERNAL_SERVER_ERROR,
 		});

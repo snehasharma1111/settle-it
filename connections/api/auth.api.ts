@@ -1,4 +1,5 @@
 import { http } from "@/connections";
+import logger from "@/log";
 import { IUser } from "@/types/user";
 
 export const requestOtpWithEmail = async (
@@ -12,7 +13,7 @@ export const requestOtpWithEmail = async (
 		});
 		return Promise.resolve(response.data);
 	} catch (error: any) {
-		console.error(error);
+		logger.error(error);
 		return Promise.reject(error?.response?.data);
 	}
 };
@@ -28,7 +29,7 @@ export const verifyOtpWithEmail = async (
 		});
 		return Promise.resolve(response.data);
 	} catch (error: any) {
-		console.error(error);
+		logger.error(error);
 		return Promise.reject(error.response.data);
 	}
 };
@@ -41,7 +42,7 @@ export const verifyUserIfLoggedIn = async (): Promise<{
 		const response = await http.get("/auth/verify");
 		return Promise.resolve(response.data);
 	} catch (error: any) {
-		console.error(error);
+		logger.error(error);
 		return Promise.reject(error.response.data);
 	}
 };
@@ -60,7 +61,7 @@ export const loginWithEmail = async (
 		});
 		return Promise.resolve(response.data);
 	} catch (error: any) {
-		console.error(error);
+		logger.error(error);
 		return Promise.reject(error.response.data);
 	}
 };
@@ -76,7 +77,7 @@ export const logout = async (
 		});
 		return Promise.resolve(response.data);
 	} catch (error: any) {
-		console.error(error);
+		logger.error(error);
 		return Promise.reject(error.response.data);
 	}
 };

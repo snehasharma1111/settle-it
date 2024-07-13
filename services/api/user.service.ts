@@ -1,3 +1,4 @@
+import logger from "@/log";
 import { User, UserModel } from "@/models";
 import { IUser } from "@/types/user";
 import { getObjectFromMongoResponse } from "@/utils/parser";
@@ -77,7 +78,7 @@ export const invite = async (
 			},
 		});
 	} catch (error) {
-		console.error(error);
+		logger.error(error);
 	}
 };
 

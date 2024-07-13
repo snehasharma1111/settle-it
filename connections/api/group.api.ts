@@ -1,4 +1,5 @@
 import { http } from "@/connections";
+import logger from "@/log";
 import { ApiRes } from "@/types/api";
 import { IExpense } from "@/types/expense";
 import { CreateGroupData, IGroup, UpdateGroupData } from "@/types/group";
@@ -11,7 +12,7 @@ export const getAllGroups = async (
 		const response = await http.get("/groups", { headers });
 		return Promise.resolve(response.data);
 	} catch (error: any) {
-		console.error(error);
+		logger.error(error);
 		return Promise.reject(error?.response?.data);
 	}
 };
@@ -29,7 +30,7 @@ export const getGroupDetails = async (
 		const response = await http.get(`/groups/${id}`, { headers });
 		return Promise.resolve(response.data);
 	} catch (error: any) {
-		console.error(error);
+		logger.error(error);
 		return Promise.reject(error?.response?.data);
 	}
 };
@@ -48,7 +49,7 @@ export const getBalancesSummary = async (
 		const response = await http.get(`/groups/${id}/summary`, { headers });
 		return Promise.resolve(response.data);
 	} catch (error: any) {
-		console.error(error);
+		logger.error(error);
 		return Promise.reject(error?.response?.data);
 	}
 };
@@ -69,7 +70,7 @@ export const getTransactions = async (
 		});
 		return Promise.resolve(response.data);
 	} catch (error: any) {
-		console.error(error);
+		logger.error(error);
 		return Promise.reject(error?.response?.data);
 	}
 };
@@ -82,7 +83,7 @@ export const createGroup = async (
 		const response = await http.post("/groups", data, { headers });
 		return Promise.resolve(response.data);
 	} catch (error: any) {
-		console.error(error);
+		logger.error(error);
 		return Promise.reject(error?.response?.data);
 	}
 };
@@ -96,7 +97,7 @@ export const updateGroup = async (
 		const response = await http.patch(`/groups/${id}`, data, { headers });
 		return Promise.resolve(response.data);
 	} catch (error: any) {
-		console.error(error);
+		logger.error(error);
 		return Promise.reject(error?.response?.data);
 	}
 };
@@ -109,7 +110,7 @@ export const deleteGroup = async (
 		const response = await http.delete(`/groups/${id}`, { headers });
 		return Promise.resolve(response.data);
 	} catch (error: any) {
-		console.error(error);
+		logger.error(error);
 		return Promise.reject(error?.response?.data);
 	}
 };

@@ -1,5 +1,6 @@
 import { EXPENSE_STATUS, HTTP } from "@/constants";
 import { memberControllers } from "@/controllers";
+import logger from "@/log";
 import { Expense, Member } from "@/models";
 import { expenseService, groupService, memberService } from "@/services/api";
 import cache from "@/services/cache";
@@ -107,7 +108,7 @@ export const createNewExpense = async (req: ApiRequest, res: ApiResponse) => {
 			data: createdExpense,
 		});
 	} catch (error: any) {
-		console.error(error);
+		logger.error(error);
 		if (error.message && error.message.startsWith("Invalid input:")) {
 			return res
 				.status(HTTP.status.BAD_REQUEST)
@@ -341,7 +342,7 @@ export const updateExpense = async (req: ApiRequest, res: ApiResponse) => {
 			data: updatedExpense,
 		});
 	} catch (error: any) {
-		console.error(error);
+		logger.error(error);
 		if (error.message && error.message.startsWith("Invalid input:")) {
 			return res
 				.status(HTTP.status.BAD_REQUEST)
@@ -383,7 +384,7 @@ export const removeExpense = async (req: ApiRequest, res: ApiResponse) => {
 			data: removedExpense,
 		});
 	} catch (error: any) {
-		console.error(error);
+		logger.error(error);
 		if (error.message && error.message.startsWith("Invalid input:")) {
 			return res
 				.status(HTTP.status.BAD_REQUEST)
@@ -412,7 +413,7 @@ export const settleExpense = async (req: ApiRequest, res: ApiResponse) => {
 		await memberService.settleMany({ expenseId: id });
 		return memberControllers.getMembersForExpense(req, res);
 	} catch (error: any) {
-		console.error(error);
+		logger.error(error);
 		if (error.message && error.message.startsWith("Invalid input:")) {
 			return res
 				.status(HTTP.status.BAD_REQUEST)
@@ -464,7 +465,7 @@ export const memberPaid = async (req: ApiRequest, res: ApiResponse) => {
 			);
 		}
 	} catch (error: any) {
-		console.error(error);
+		logger.error(error);
 		if (error.message && error.message.startsWith("Invalid input:")) {
 			return res
 				.status(HTTP.status.BAD_REQUEST)

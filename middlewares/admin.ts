@@ -1,6 +1,7 @@
 import { http } from "@/connections";
 import { HTTP } from "@/constants";
 import { admins } from "@/constants/admin";
+import logger from "@/log";
 import { authService } from "@/services/api";
 import { ApiRequest, ApiResponse } from "@/types/api";
 import { ServerSideAdminMiddleware } from "@/types/server";
@@ -35,7 +36,7 @@ export const page: ServerSideAdminMiddleware = async (
 			});
 		}
 	} catch (error: any) {
-		console.error(error.message);
+		logger.error(error.message);
 		return onLoggedOut();
 	}
 };
