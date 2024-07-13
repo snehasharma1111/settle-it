@@ -75,7 +75,7 @@ export const log = (req: ApiRequest, res: ApiResponse) => {
 			)
 			.map((m) => m.toString())
 			.join(" ");
-		const dir = getNonNullValue(safeParse(getNonEmptyString, req.body.dir));
+		// const dir = getNonNullValue(safeParse(getNonEmptyString, req.body.dir));
 		const date = new Date();
 		const log = `[${date.toISOString()}] [${level.toUpperCase()}] ${message}\n`;
 		switch (level) {
@@ -105,13 +105,13 @@ export const log = (req: ApiRequest, res: ApiResponse) => {
 				break;
 		}
 		// if directory does not exist, create it
-		if (!fs.existsSync(dir)) {
+		/* if (!fs.existsSync(dir)) {
 			fs.mkdirSync(dir, { recursive: true });
 		}
 		const fileName = `${dir}/${date.getFullYear()}-${date.getMonth()}-${date.getDate()}.log`;
 		if (fs.existsSync(fileName)) {
 			fs.appendFileSync(fileName, log);
-		}
+		} */
 		return res
 			.status(HTTP.status.SUCCESS)
 			.json({ message: "Logged successfully" });
