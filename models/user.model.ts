@@ -45,8 +45,6 @@ UserSchema.index({ name: "text", email: "text", phone: "text" });
 
 const UserModel = mongoose.models.User || mongoose.model("User", UserSchema);
 
-UserModel.createIndexes();
-
 export { UserModel };
 
 export type User = {

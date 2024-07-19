@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { url } from "@/config";
 import logger from "@/log";
+import { UserModel } from "@/models";
 import mongoose from "mongoose";
 
 declare global {
@@ -26,8 +27,18 @@ export class DatabaseManager {
 			logger.info("MongoDB connected");
 			global.isConnected = db.connections[0].readyState === 1;
 			global.db = db;
+			await this.ensureIndexes();
 		} catch (error) {
 			logger.error("Error connecting to MongoDB", error);
+		}
+	}
+
+	async ensureIndexes() {
+		try {
+			await UserModel.createIndexes();
+			logger.info("MongoDB indexes created");
+		} catch (error) {
+			logger.error(error);
 		}
 	}
 }
