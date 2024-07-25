@@ -16,9 +16,9 @@ export const sendEmailService = async (
 		const accessToken = await myOAuth2Client.getAccessToken();
 		const transportOptions: any = {
 			service: "gmail",
-			host: "smtp.gmail.com",
-			port: 465,
-			secure: true,
+			// host: "smtp.gmail.com",
+			// port: 465,
+			// secure: true,
 			auth: {
 				type: "OAuth2",
 				user: googleEmailConfig.email,
