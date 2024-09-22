@@ -1,9 +1,8 @@
+import { Seo } from "@/layouts";
+import { Typography } from "@/library";
 import styles from "@/styles/pages/Home.module.scss";
 import { stylesConfig } from "@/utils";
-import { googleEmailConfig } from "@/config";
-import { Seo } from "@/layouts";
 import React from "react";
-import { Typography } from "@/library";
 
 const classes = stylesConfig(styles, "privacy-policy");
 
