@@ -1,5 +1,5 @@
 import { HTTP } from "@/constants";
-import logger from "@/log";
+import { logger } from "@/messages";
 import { groupService } from "@/services/api";
 import { ApiRequest, ApiResponse } from "@/types/api";
 

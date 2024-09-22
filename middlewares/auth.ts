@@ -1,6 +1,6 @@
 import { http } from "@/connections";
 import { HTTP } from "@/constants";
-import logger from "@/log";
+import { logger } from "@/messages";
 import { authService } from "@/services/api";
 import { ApiRequest, ApiResponse } from "@/types/api";
 import { ServerSideAuthMiddleware } from "@/types/server";

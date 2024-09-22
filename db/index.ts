@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { url } from "@/config";
-import logger from "@/log";
+import { logger } from "@/messages";
 import { UserModel } from "@/models";
 import mongoose from "mongoose";
 

@@ -1,5 +1,5 @@
 import { http } from "@/connections";
-import logger from "@/log";
+import { logger } from "@/messages";
 import { ApiRes } from "@/types/api";
 import { IMember, IOwedRecord } from "@/types/member";
 

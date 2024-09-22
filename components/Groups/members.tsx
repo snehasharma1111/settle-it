@@ -3,7 +3,7 @@ import { fallbackAssets, regex } from "@/constants";
 import { useDebounce } from "@/hooks";
 import { Responsive } from "@/layouts";
 import { Avatar, Avatars, Button, Input, Typography } from "@/library";
-import logger from "@/log";
+import { logger } from "@/messages";
 import { notify } from "@/messages";
 import { IUser } from "@/types/user";
 import { stylesConfig } from "@/utils/functions";

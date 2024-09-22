@@ -1,4 +1,4 @@
-import logger from "@/log";
+import { logger } from "@/messages";
 import { FileExtension } from "@/types/files";
 
 export const getContentType = (extension: FileExtension) => {

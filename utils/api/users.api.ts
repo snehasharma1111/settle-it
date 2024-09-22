@@ -1,5 +1,5 @@
 import { http } from "@/connections";
-import logger from "@/log";
+import { logger } from "@/messages";
 import { IUser } from "@/types/user";
 
 export const getAllUsers = async () => {

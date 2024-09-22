@@ -1,6 +1,6 @@
 import { HTTP } from "@/constants";
 import regex from "@/constants/regex";
-import logger from "@/log";
+import { logger } from "@/messages";
 import { ApiRequest, ApiResponse } from "@/types/api";
 import { getNonEmptyString, safeParse } from "@/utils/safety";
 

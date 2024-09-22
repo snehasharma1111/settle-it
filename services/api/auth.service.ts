@@ -1,5 +1,5 @@
 import { jwtSecret } from "@/config";
-import logger from "@/log";
+import { logger } from "@/messages";
 import { User } from "@/models";
 import { userService } from "@/services/api";
 import cache from "@/services/cache";

@@ -1,5 +1,5 @@
 import { HTTP, OTP_STATUS, USER_STATUS } from "@/constants";
-import logger from "@/log";
+import { logger } from "@/messages";
 import { authService, otpService, userService } from "@/services/api";
 import { ApiRequest, ApiResponse } from "@/types/api";
 import { genericParse, getNonEmptyString } from "@/utils/safety";

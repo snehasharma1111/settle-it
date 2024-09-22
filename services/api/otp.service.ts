@@ -1,4 +1,4 @@
-import logger from "@/log";
+import { logger } from "@/messages";
 import { Otp, OtpModel } from "@/models";
 import { sendEmailTemplate } from "@/services";
 import { getObjectFromMongoResponse } from "@/utils/parser";

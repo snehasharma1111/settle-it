@@ -1,5 +1,5 @@
 import { HTTP, USER_STATUS } from "@/constants";
-import logger from "@/log";
+import { logger } from "@/messages";
 import { userService } from "@/services/api";
 import cache from "@/services/cache";
 import { ApiRequest, ApiResponse } from "@/types/api";

@@ -1,5 +1,5 @@
 import { api } from "@/connections";
-import logger from "@/log";
+import { logger } from "@/messages";
 import { CreateExpenseData, UpdateExpenseData } from "@/types/expense";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 

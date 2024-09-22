@@ -1,5 +1,5 @@
 import { HTTP } from "@/constants";
-import logger from "@/log";
+import { logger } from "@/messages";
 import { Group } from "@/models";
 import { groupService, memberService, userService } from "@/services/api";
 import cache from "@/services/cache";

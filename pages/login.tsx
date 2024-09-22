@@ -5,7 +5,7 @@ import { routes } from "@/constants";
 import { useStore } from "@/hooks";
 import { Seo } from "@/layouts";
 import { Typography } from "@/library";
-import logger from "@/log";
+import { logger } from "@/messages";
 import { notify } from "@/messages";
 import { authMiddleware } from "@/middlewares";
 import styles from "@/styles/pages/Auth.module.scss";

@@ -1,6 +1,6 @@
 import { googleEmailConfig } from "@/config";
 import { frontendBaseUrl } from "@/constants/variables";
-import logger from "@/log";
+import { logger } from "@/messages";
 import { myOAuth2Client } from "@/services";
 import { createTransport } from "nodemailer";
 

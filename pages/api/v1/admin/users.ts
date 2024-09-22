@@ -1,7 +1,7 @@
 import { HTTP } from "@/constants";
 import { adminControllers } from "@/controllers";
 import { db } from "@/db";
-import logger from "@/log";
+import { logger } from "@/messages";
 import { adminMiddleware } from "@/middlewares";
 import { ApiRequest, ApiResponse } from "@/types/api";
 import { NextApiHandler } from "next";

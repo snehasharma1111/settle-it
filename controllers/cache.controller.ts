@@ -1,5 +1,5 @@
 import { HTTP } from "@/constants";
-import logger from "@/log";
+import { logger } from "@/messages";
 import cache from "@/services/cache";
 import { ApiRequest, ApiResponse } from "@/types/api";
 

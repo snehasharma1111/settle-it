@@ -10,6 +10,20 @@ export type LOG_LEVEL =
 	| "silly"
 	| "http";
 
+const writeToFile = (dir: string, log: string) => {
+	try {
+		const fs = require("fs");
+		const date = new Date();
+		if (!fs.existsSync(dir)) {
+			fs.mkdirSync(dir);
+		}
+		const fileName = `${dir}/${date.toISOString().slice(0, 10)}.log`;
+		fs.appendFileSync(fileName, log);
+	} catch {
+		console.info("Unable to write to log file");
+	}
+};
+
 const log = (level: LOG_LEVEL, dir: string, ...messages: Array<any>) => {
 	const message = messages
 		.map((m) =>
@@ -23,6 +37,7 @@ const log = (level: LOG_LEVEL, dir: string, ...messages: Array<any>) => {
 		.join(" ");
 	const date = new Date();
 	const log = `[${date.toISOString()}] [${level.toUpperCase()}] ${message}\n`;
+	writeToFile(dir, log);
 	switch (level) {
 		case "info":
 			console.info("\x1b[32m%s\x1b[37m", log);
@@ -91,7 +106,4 @@ class Logger {
 	}
 }
 
-// export default new Logger("logs");
-
-const logger = new Logger(logsBaseUrl);
-export default logger;
+export const logger = new Logger(logsBaseUrl);

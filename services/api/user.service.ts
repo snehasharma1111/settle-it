@@ -1,4 +1,4 @@
-import logger from "@/log";
+import { logger } from "@/messages";
 import { User, UserModel } from "@/models";
 import { IUser } from "@/types/user";
 import { getObjectFromMongoResponse } from "@/utils/parser";
