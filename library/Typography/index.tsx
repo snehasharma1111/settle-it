@@ -1,11 +1,11 @@
+import { stylesConfig } from "@/utils";
 import React from "react";
-import { TypographyProps } from "./types";
-import { stylesConfig } from "@/utils/functions";
 import styles from "./styles.module.scss";
+import { TypographyProps } from "./types";
 
 const classes = stylesConfig(styles, "typography");
 
-const Typography: React.FC<TypographyProps> = ({
+export const Typography: React.FC<TypographyProps> = ({
 	children,
 	family = "poppins",
 	size = "md",
@@ -27,5 +27,3 @@ const Typography: React.FC<TypographyProps> = ({
 		</Component>
 	);
 };
-
-export default Typography;

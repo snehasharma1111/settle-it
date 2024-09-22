@@ -1,10 +1,9 @@
 import { jwtSecret } from "@/config";
-import { logger } from "@/messages";
+import { cacheParameter } from "@/constants";
+import { logger } from "@/log";
 import { User } from "@/models";
-import { userService } from "@/services/api";
-import cache from "@/services/cache";
-import { cacheParameter, getCacheKey } from "@/utils/cache";
-import { genericParse, getNonEmptyString } from "@/utils/safety";
+import { cache, getCacheKey, userService } from "@/services";
+import { genericParse, getNonEmptyString } from "@/utils";
 import jwt from "jsonwebtoken";
 
 export const authenticate = async (token: string): Promise<User | null> => {

@@ -1,9 +1,9 @@
 import { HTTP } from "@/constants";
 import { groupControlllers } from "@/controllers";
 import { db } from "@/db";
-import { logger } from "@/messages";
+import { logger } from "@/log";
 import { authMiddleware } from "@/middlewares";
-import { ApiRequest, ApiResponse } from "@/types/api";
+import { ApiRequest, ApiResponse } from "@/types";
 import { NextApiHandler } from "next";
 
 const handler: NextApiHandler = async (req: ApiRequest, res: ApiResponse) => {

@@ -1,14 +1,13 @@
+import { api } from "@/connections";
 import { useStore } from "@/hooks";
 import { Responsive } from "@/layouts";
 import { Button, Input, Popup } from "@/library";
-import { UpdateExpenseData } from "@/types/expense";
-import { stylesConfig } from "@/utils/functions";
+import { notify } from "@/messages";
+import { UpdateExpenseData } from "@/types";
+import { getNonNullValue, stylesConfig } from "@/utils";
 import React, { useEffect, useState } from "react";
 import Members, { ExpenseUser } from "./members";
 import styles from "./styles.module.scss";
-import { getNonNullValue } from "@/utils/safety";
-import { notify } from "@/messages";
-import { api } from "@/connections";
 
 interface IUpdateExpenseProps {
 	id: string;

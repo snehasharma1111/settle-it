@@ -4,23 +4,25 @@ import {
 	GroupMetaData,
 	GroupPlaceholder,
 	UpdateGroup,
-	useConfirmationModal,
 } from "@/components";
 import { api } from "@/connections";
 import { routes } from "@/constants";
-import { useStore } from "@/hooks";
+import { useConfirmationModal, useStore } from "@/hooks";
 import { Responsive, Seo } from "@/layouts";
 import { Button } from "@/library";
 import { notify } from "@/messages";
 import { authMiddleware } from "@/middlewares";
 import PageNotFound from "@/pages/404";
 import styles from "@/styles/pages/Group.module.scss";
-import { CreateExpenseData, IExpense } from "@/types/expense";
-import { IGroup, UpdateGroupData } from "@/types/group";
-import { ServerSideResult } from "@/types/server";
-import { IUser } from "@/types/user";
-import { stylesConfig } from "@/utils/functions";
-import { getNonEmptyString } from "@/utils/safety";
+import {
+	CreateExpenseData,
+	IExpense,
+	IGroup,
+	IUser,
+	ServerSideResult,
+	UpdateGroupData,
+} from "@/types";
+import { getNonEmptyString, stylesConfig } from "@/utils";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { FiPlus } from "react-icons/fi";

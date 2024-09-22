@@ -1,7 +1,7 @@
 import { HTTP } from "@/constants";
 import { logsControllers } from "@/controllers";
 import { db } from "@/db";
-import { ApiRequest, ApiResponse } from "@/types/api";
+import { ApiRequest, ApiResponse } from "@/types";
 import { NextApiHandler } from "next";
 
 const handler: NextApiHandler = async (req: ApiRequest, res: ApiResponse) => {

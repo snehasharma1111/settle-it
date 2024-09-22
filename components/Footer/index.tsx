@@ -1,5 +1,5 @@
-import { socials } from "@/constants/socials";
-import { stylesConfig } from "@/utils/functions";
+import { socials } from "@/constants";
+import { stylesConfig } from "@/utils";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import React from "react";

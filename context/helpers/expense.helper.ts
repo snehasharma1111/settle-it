@@ -1,6 +1,5 @@
 import { api } from "@/connections";
-import { logger } from "@/messages";
-import { CreateExpenseData, UpdateExpenseData } from "@/types/expense";
+import { CreateExpenseData, UpdateExpenseData } from "@/types";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 export const getAllExpensesForUser = createAsyncThunk(
@@ -10,7 +9,6 @@ export const getAllExpensesForUser = createAsyncThunk(
 			const res = await api.expense.getAllExpensesForUser();
 			return Promise.resolve(res.data);
 		} catch (error: any) {
-			logger.error(error);
 			return thunkApi.rejectWithValue(error.message);
 		}
 	}
@@ -23,7 +21,6 @@ export const createExpense = createAsyncThunk(
 			const res = await api.expense.createExpense(data);
 			return Promise.resolve(res.data);
 		} catch (error: any) {
-			logger.error(error);
 			return thunkApi.rejectWithValue(error.message);
 		}
 	}
@@ -36,7 +33,6 @@ export const updateExpense = createAsyncThunk(
 			const res = await api.expense.updateExpense(id, data);
 			return Promise.resolve(res.data);
 		} catch (error: any) {
-			logger.error(error);
 			return thunkApi.rejectWithValue(error.message);
 		}
 	}
@@ -49,7 +45,6 @@ export const removeExpense = createAsyncThunk(
 			const res = await api.expense.deleteExpense(id);
 			return Promise.resolve(res.data);
 		} catch (error: any) {
-			logger.error(error);
 			return thunkApi.rejectWithValue(error.message);
 		}
 	}

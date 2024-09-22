@@ -1,6 +1,6 @@
-import { IGroup } from "@/types/group";
+import { groupHelpers } from "@/context/helpers";
+import { IGroup } from "@/types";
 import { createSlice } from "@reduxjs/toolkit";
-import { groupHelpers } from "../helpers";
 
 const initialState: Array<IGroup> = [];
 

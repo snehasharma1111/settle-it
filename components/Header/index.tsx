@@ -1,6 +1,6 @@
 import { routes } from "@/constants";
 import { Button } from "@/library";
-import { stylesConfig } from "@/utils/functions";
+import { stylesConfig } from "@/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";

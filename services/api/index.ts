@@ -1,15 +1,6 @@
-import * as authService from "./auth.service";
-import * as expenseService from "./expense.service";
-import * as groupService from "./group.service";
-import * as memberService from "./member.service";
-import * as otpService from "./otp.service";
-import * as userService from "./user.service";
-
-export {
-	authService,
-	expenseService,
-	groupService,
-	memberService,
-	otpService,
-	userService,
-};
+export * as authService from "./auth.service";
+export * as expenseService from "./expense.service";
+export * as groupService from "./group.service";
+export * as memberService from "./member.service";
+export * as otpService from "./otp.service";
+export * as userService from "./user.service";

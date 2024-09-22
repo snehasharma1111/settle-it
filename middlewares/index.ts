@@ -1,5 +1,3 @@
-import * as adminMiddleware from "./admin";
-import * as authMiddleware from "./auth";
-import * as validationMiddleware from "./validation";
-
-export { adminMiddleware, authMiddleware, validationMiddleware };
+export * as adminMiddleware from "./admin";
+export * as authMiddleware from "./auth";
+export * as validationMiddleware from "./validation";

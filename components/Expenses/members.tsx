@@ -1,10 +1,10 @@
-import React from "react";
-import { stylesConfig } from "@/utils/functions";
-import styles from "./styles.module.scss";
-import { IUser } from "@/types/user";
+import { fallbackAssets } from "@/constants";
 import { Responsive } from "@/layouts";
 import { Avatar, CheckBox, Input, Typography } from "@/library";
-import { fallbackAssets } from "@/constants";
+import { IUser } from "@/types";
+import { stylesConfig } from "@/utils";
+import React from "react";
+import styles from "./styles.module.scss";
 
 export type ExpenseUser = IUser & {
 	amount: number;

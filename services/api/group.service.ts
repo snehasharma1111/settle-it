@@ -1,15 +1,25 @@
-import { logger } from "@/messages";
+import { logger } from "@/log";
 import { ExpenseModel, Group, GroupModel, MemberModel, User } from "@/models";
-import { sendEmailTemplate } from "@/services";
-import { expenseService, memberService, userService } from "@/services/api";
-import { IExpense } from "@/types/expense";
-import { IGroup } from "@/types/group";
-import { IBalancesSummary, ITransaction, Transaction } from "@/types/member";
-import { IUser } from "@/types/user";
-import { getObjectFromMongoResponse } from "@/utils/parser";
-import { getNonNullValue, getNumber } from "@/utils/safety";
+import {
+	expenseService,
+	memberService,
+	sendEmailTemplate,
+	userService,
+} from "@/services";
+import {
+	IBalancesSummary,
+	IExpense,
+	IGroup,
+	ITransaction,
+	IUser,
+	Transaction,
+} from "@/types";
+import {
+	getNonNullValue,
+	getNumber,
+	getObjectFromMongoResponse,
+} from "@/utils";
 import mongoose, { FilterQuery } from "mongoose";
-import { parsePopulatedExpense } from "./expense.service";
 
 export const parsePopulatedGroup = (group: Group): IGroup | null => {
 	if (!group) return null;
@@ -86,7 +96,7 @@ export const getExpensesForGroup = async (
 			},
 		});
 	const expenses: Array<IExpense> = res
-		.map(parsePopulatedExpense)
+		.map(expenseService.parsePopulatedExpense)
 		.map(getNonNullValue);
 	return expenses;
 };

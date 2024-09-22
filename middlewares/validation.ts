@@ -1,8 +1,7 @@
-import { HTTP } from "@/constants";
-import regex from "@/constants/regex";
-import { logger } from "@/messages";
-import { ApiRequest, ApiResponse } from "@/types/api";
-import { getNonEmptyString, safeParse } from "@/utils/safety";
+import { HTTP, regex } from "@/constants";
+import { logger } from "@/log";
+import { ApiRequest, ApiResponse } from "@/types";
+import { getNonEmptyString, safeParse } from "@/utils";
 
 export const email =
 	(next: Function) => async (req: ApiRequest, res: ApiResponse) => {

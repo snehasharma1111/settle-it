@@ -1,7 +1,7 @@
 import { HTTP } from "@/constants";
-import { logger } from "@/messages";
-import cache from "@/services/cache";
-import { ApiRequest, ApiResponse } from "@/types/api";
+import { logger } from "@/log";
+import { cache } from "@/services";
+import { ApiRequest, ApiResponse } from "@/types";
 
 export const getAllCacheData = async (_: ApiRequest, res: ApiResponse) => {
 	try {

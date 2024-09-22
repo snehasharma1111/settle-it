@@ -1,12 +1,7 @@
 import { Member, MemberModel } from "@/models";
-import { expenseService } from "@/services/api";
-import { IExpense } from "@/types/expense";
-import { IGroup } from "@/types/group";
-import { IMember } from "@/types/member";
-import { IUser } from "@/types/user";
-import { omitKeys } from "@/utils/functions";
-import { getObjectFromMongoResponse } from "@/utils/parser";
-import { getNonNullValue } from "@/utils/safety";
+import { expenseService } from "@/services";
+import { IExpense, IGroup, IMember, IUser } from "@/types";
+import { getNonNullValue, getObjectFromMongoResponse, omitKeys } from "@/utils";
 import { FilterQuery, UpdateQuery } from "mongoose";
 
 export const parsePopulatedMember = (member: Member): IMember | null => {

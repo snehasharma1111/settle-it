@@ -1,8 +1,7 @@
-import { logger } from "@/messages";
+import { logger } from "@/log";
 import { Otp, OtpModel } from "@/models";
 import { sendEmailTemplate } from "@/services";
-import { getObjectFromMongoResponse } from "@/utils/parser";
-import { getNonNullValue } from "@/utils/safety";
+import { getNonNullValue, getObjectFromMongoResponse } from "@/utils";
 import otpGenerator from "otp-generator";
 
 export const findOne = async (query: Partial<Otp>): Promise<Otp | null> => {

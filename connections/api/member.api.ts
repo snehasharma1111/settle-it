@@ -1,21 +1,14 @@
 import { http } from "@/connections";
-import { logger } from "@/messages";
-import { ApiRes } from "@/types/api";
-import { IMember, IOwedRecord } from "@/types/member";
+import { ApiRes, IMember, IOwedRecord } from "@/types";
 
 export const settleMemberInExpense = async (
 	expenseId: string,
 	memberId: string
 ): Promise<ApiRes<Array<IMember>>> => {
-	try {
-		const response = await http.patch(
-			`/expenses/${expenseId}/settle/${memberId}`
-		);
-		return Promise.resolve(response.data);
-	} catch (error: any) {
-		logger.error(error);
-		return Promise.reject(error?.response?.data);
-	}
+	const response = await http.patch(
+		`/expenses/${expenseId}/settle/${memberId}`
+	);
+	return response.data;
 };
 
 export const settleOwedMembersInGroup = async (
@@ -23,14 +16,9 @@ export const settleOwedMembersInGroup = async (
 	userA: string,
 	userB: string
 ): Promise<ApiRes<Array<IOwedRecord>>> => {
-	try {
-		const response = await http.patch(`/groups/${groupId}/members/settle`, {
-			userA,
-			userB,
-		});
-		return Promise.resolve(response.data);
-	} catch (error: any) {
-		logger.error(error);
-		return Promise.reject(error?.response?.data);
-	}
+	const response = await http.patch(`/groups/${groupId}/members/settle`, {
+		userA,
+		userB,
+	});
+	return response.data;
 };

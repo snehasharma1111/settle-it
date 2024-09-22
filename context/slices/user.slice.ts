@@ -1,7 +1,7 @@
-import { IUser } from "@/types/user";
-import { createSlice } from "@reduxjs/toolkit";
-import { authHelpers, userHelpers } from "@/context/helpers";
 import { USER_STATUS } from "@/constants";
+import { authHelpers, userHelpers } from "@/context/helpers";
+import { IUser } from "@/types";
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState: IUser = {
 	id: "",

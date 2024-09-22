@@ -1,14 +1,6 @@
+/* eslint-disable no-console */
 import { logsBaseUrl } from "@/constants/variables";
-
-export type LOG_LEVEL =
-	| "log"
-	| "info"
-	| "warn"
-	| "error"
-	| "debug"
-	| "verbose"
-	| "silly"
-	| "http";
+import { LOG_LEVEL } from "@/types";
 
 const writeToFile = (dir: string, log: string) => {
 	try {

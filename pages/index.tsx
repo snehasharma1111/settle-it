@@ -2,8 +2,8 @@ import { Home } from "@/components";
 import { routes } from "@/constants";
 import { authMiddleware } from "@/middlewares";
 import styles from "@/styles/pages/Home.module.scss";
-import { ServerSideResult } from "@/types/server";
-import { stylesConfig } from "@/utils/functions";
+import { ServerSideResult } from "@/types";
+import { stylesConfig } from "@/utils";
 import React from "react";
 
 const classes = stylesConfig(styles, "home");

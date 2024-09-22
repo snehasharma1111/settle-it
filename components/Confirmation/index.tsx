@@ -1,6 +1,6 @@
 import { Button, Popup, Typography } from "@/library";
-import { stylesConfig } from "@/utils/functions";
-import React, { useState } from "react";
+import { stylesConfig } from "@/utils";
+import React from "react";
 import styles from "./styles.module.scss";
 
 interface ConfirmationModalProps {
@@ -13,7 +13,7 @@ interface ConfirmationModalProps {
 
 const classes = stylesConfig(styles, "confirmation-modal");
 
-const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
+export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 	title,
 	body,
 	onConfirm,
@@ -43,37 +43,3 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 		</Popup>
 	);
 };
-
-export default ConfirmationModal;
-
-const useConfirmationModal = (
-	title: string,
-	body: any,
-	onConfirm: any,
-	onCancel: any,
-	loading?: boolean
-) => {
-	const [showPopup, setShowPopup] = useState(false);
-
-	const openPopup = () => setShowPopup(true);
-	const closePopup = () => setShowPopup(false);
-
-	const Modal = (
-		<ConfirmationModal
-			title={title}
-			body={body}
-			loading={loading}
-			onConfirm={async () => {
-				await onConfirm();
-				closePopup();
-			}}
-			onCancel={() => {
-				onCancel();
-				closePopup();
-			}}
-		/>
-	);
-	return { openPopup, closePopup, showPopup, Modal };
-};
-
-export { useConfirmationModal };

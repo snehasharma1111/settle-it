@@ -4,9 +4,8 @@ import { useStore } from "@/hooks";
 import { Typography } from "@/library";
 import { adminMiddleware } from "@/middlewares";
 import styles from "@/styles/pages/Admin.module.scss";
-import { ServerSideResult } from "@/types/server";
-import { IUser } from "@/types/user";
-import { copyToClipboard, stylesConfig } from "@/utils/functions";
+import { IUser, ServerSideResult } from "@/types";
+import { copyToClipboard, stylesConfig } from "@/utils";
 import Link from "next/link";
 import React, { useEffect } from "react";
 

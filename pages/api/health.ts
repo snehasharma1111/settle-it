@@ -1,7 +1,7 @@
 import { HTTP } from "@/constants";
 import { db } from "@/db";
-import { logger } from "@/messages";
-import { ApiRequest, ApiResponse } from "@/types/api";
+import { logger } from "@/log";
+import { ApiRequest, ApiResponse } from "@/types";
 
 const handler = async (req: ApiRequest, res: ApiResponse) => {
 	try {

@@ -1,10 +1,9 @@
-import { logger } from "@/messages";
+import { logger } from "@/log";
 import { User, UserModel } from "@/models";
-import { IUser } from "@/types/user";
-import { getObjectFromMongoResponse } from "@/utils/parser";
-import { getNonNullValue } from "@/utils/safety";
+import { sendEmailTemplate } from "@/services";
+import { IUser } from "@/types";
+import { getNonNullValue, getObjectFromMongoResponse } from "@/utils";
 import { FilterQuery } from "mongoose";
-import { sendEmailTemplate } from "../email.service";
 
 export const findOne = async (query: Partial<User>): Promise<User | null> => {
 	const res = await UserModel.findOne(query);

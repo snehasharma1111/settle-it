@@ -1,5 +1,4 @@
-import { logger } from "@/messages";
-import { FileExtension } from "@/types/files";
+import { FileExtension } from "@/types";
 
 export const getContentType = (extension: FileExtension) => {
 	switch (extension) {
@@ -23,18 +22,14 @@ export const saveFile = (
 	name: string,
 	extension: FileExtension
 ) => {
-	try {
-		const blob = new Blob([content], { type: getContentType(extension) });
-		const url = window.URL.createObjectURL(blob);
-		const link = document.createElement("a");
-		link.href = url;
-		link.download = `${name}.${extension}`;
-		link.click();
-		window.URL.revokeObjectURL(url);
-		document.removeChild(link);
-	} catch (error) {
-		logger.error(error);
-	}
+	const blob = new Blob([content], { type: getContentType(extension) });
+	const url = window.URL.createObjectURL(blob);
+	const link = document.createElement("a");
+	link.href = url;
+	link.download = `${name}.${extension}`;
+	link.click();
+	window.URL.revokeObjectURL(url);
+	document.removeChild(link);
 };
 
 export const readFile = (file: File) => {

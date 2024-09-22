@@ -1,7 +1,7 @@
 import { HTTP } from "@/constants";
-import { logger } from "@/messages";
-import { groupService } from "@/services/api";
-import { ApiRequest, ApiResponse } from "@/types/api";
+import { logger } from "@/log";
+import { groupService } from "@/services";
+import { ApiRequest, ApiResponse } from "@/types";
 
 export const getAllGroups = async (req: ApiRequest, res: ApiResponse) => {
 	try {

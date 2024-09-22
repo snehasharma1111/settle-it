@@ -1,5 +1,5 @@
-import { T_EXPENSE_STATUS, T_OTP_STATUS, T_USER_STATUS } from "@/types/user";
-import { getEnumeration } from "@/utils/functions";
+import { T_EXPENSE_STATUS, T_OTP_STATUS, T_USER_STATUS } from "@/types";
+import { getEnumeration } from "@/utils";
 
 export const USER_STATUS = getEnumeration<T_USER_STATUS>(["INVITED", "JOINED"]);
 export const OTP_STATUS = getEnumeration<T_OTP_STATUS>([

@@ -1,6 +1,6 @@
-import { IExpense } from "@/types/expense";
+import { expenseHelpers } from "@/context/helpers";
+import { IExpense } from "@/types";
 import { createSlice } from "@reduxjs/toolkit";
-import { expenseHelpers } from "../helpers";
 
 const initialState: Array<IExpense> = [];
 

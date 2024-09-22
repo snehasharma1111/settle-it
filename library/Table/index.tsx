@@ -1,8 +1,8 @@
-import { stylesConfig } from "@/utils/functions";
+import { Typography } from "@/library";
+import { stylesConfig } from "@/utils";
 import React, { useEffect, useRef, useState } from "react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { IoSwapVerticalSharp } from "react-icons/io5";
-import Typography from "../Typography";
 import styles from "./styles.module.scss";
 
 const classes = stylesConfig(styles);
@@ -372,7 +372,7 @@ const TablePagination: React.FC<TablePaginationProps> = ({
 	);
 };
 
-const Table: {
+export const Table: {
 	Container: React.FC<TableProps>;
 	Element: React.FC<TableProps>;
 	Head: React.FC<TableHeadProps>;
@@ -391,5 +391,3 @@ const Table: {
 	Cell: TableCell,
 	Pagination: TablePagination,
 };
-
-export default Table;

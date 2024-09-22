@@ -1,8 +1,8 @@
 import { useStore } from "@/hooks";
 import { Responsive } from "@/layouts";
 import { Button, Input, Popup } from "@/library";
-import { CreateExpenseData } from "@/types/expense";
-import { stylesConfig } from "@/utils/functions";
+import { CreateExpenseData } from "@/types";
+import { stylesConfig } from "@/utils";
 import React, { useState } from "react";
 import Members, { ExpenseUser } from "./members";
 import styles from "./styles.module.scss";

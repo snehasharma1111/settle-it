@@ -3,12 +3,15 @@ import { routes } from "@/constants";
 import { useStore } from "@/hooks";
 import { Button, Typography } from "@/library";
 import { adminMiddleware } from "@/middlewares";
-import { saveFile } from "@/services/files.service";
 import styles from "@/styles/pages/Admin.module.scss";
-import { ServerSideResult } from "@/types/server";
-import { IUser } from "@/types/user";
-import { stylesConfig } from "@/utils/functions";
-import { getNonEmptyString, getNonNullValue, safeParse } from "@/utils/safety";
+import { IUser, ServerSideResult } from "@/types";
+import {
+	getNonEmptyString,
+	getNonNullValue,
+	safeParse,
+	saveFile,
+	stylesConfig,
+} from "@/utils";
 import React, { useEffect } from "react";
 import { FiDownload } from "react-icons/fi";
 

@@ -1,12 +1,12 @@
+import { stylesConfig } from "@/utils";
 import React from "react";
 import { CheckboxChecked, CheckboxEmpty } from "./assets";
-import { CheckboxProps } from "./types";
-import { stylesConfig } from "@/utils/functions";
 import styles from "./styles.module.scss";
+import { CheckboxProps } from "./types";
 
 const classes = stylesConfig(styles, "form-checkbox");
 
-const FormCheckBox: React.FC<CheckboxProps> = ({
+export const CheckBox: React.FC<CheckboxProps> = ({
 	label,
 	className,
 	checked,
@@ -37,5 +37,3 @@ const FormCheckBox: React.FC<CheckboxProps> = ({
 		</label>
 	);
 };
-
-export default FormCheckBox;

@@ -1,10 +1,10 @@
 import { fallbackAssets } from "@/constants";
 import { useStore } from "@/hooks";
 import { Avatar, Typography } from "@/library";
-import { stylesConfig } from "@/utils/functions";
+import { stylesConfig } from "@/utils";
+import { useRouter } from "next/router";
 import React from "react";
 import styles from "./styles.module.scss";
-import { useRouter } from "next/router";
 
 interface IHeaderProps {}
 

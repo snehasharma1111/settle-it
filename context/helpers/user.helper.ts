@@ -1,6 +1,5 @@
 import { api } from "@/connections";
-import { logger } from "@/messages";
-import { IUser } from "@/types/user";
+import { IUser } from "@/types";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 export const updateUser = createAsyncThunk(
@@ -10,7 +9,6 @@ export const updateUser = createAsyncThunk(
 			const res = await api.user.updateUser(data);
 			return Promise.resolve(res.data);
 		} catch (error: any) {
-			logger.error(error);
 			return thunkApi.rejectWithValue(error.message);
 		}
 	}

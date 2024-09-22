@@ -1,8 +1,8 @@
-import React from "react";
-import { stylesConfig } from "@/utils/functions";
-import styles from "./styles.module.scss";
-import { IBalance } from "@/types/member";
 import { Typography } from "@/library";
+import { IBalance } from "@/types";
+import { stylesConfig } from "@/utils";
+import React from "react";
+import styles from "./styles.module.scss";
 
 interface IGroupSummaryProps {
 	data: Array<IBalance>;

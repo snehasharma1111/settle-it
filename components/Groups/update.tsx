@@ -1,14 +1,13 @@
+import { fallbackAssets } from "@/constants";
+import { useStore } from "@/hooks";
 import { Responsive } from "@/layouts";
 import { Avatar, Avatars, Button, Input, Popup, Typography } from "@/library";
-import { UpdateGroupData } from "@/types/group";
-import { IUser } from "@/types/user";
-import { stylesConfig } from "@/utils/functions";
+import { IUser, UpdateGroupData } from "@/types";
+import { stylesConfig } from "@/utils";
 import React, { useState } from "react";
 import { FiExternalLink, FiSave, FiTrash2 } from "react-icons/fi";
 import Members from "./members";
 import styles from "./styles.module.scss";
-import { fallbackAssets } from "@/constants";
-import { useStore } from "@/hooks";
 
 interface IUpdateGroupProps {
 	id: string;

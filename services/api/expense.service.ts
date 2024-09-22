@@ -1,12 +1,8 @@
 import { Expense, ExpenseModel, Group } from "@/models";
-import { expenseService, groupService } from "@/services/api";
-import { IExpense } from "@/types/expense";
-import { IUser } from "@/types/user";
-import { omitKeys } from "@/utils/functions";
-import { getObjectFromMongoResponse } from "@/utils/parser";
-import { getNonNullValue } from "@/utils/safety";
+import { expenseService, groupService } from "@/services";
+import { IExpense, IUser } from "@/types";
+import { getNonNullValue, getObjectFromMongoResponse, omitKeys } from "@/utils";
 import { FilterQuery } from "mongoose";
-import { parsePopulatedGroup } from "./group.service";
 
 export const parsePopulatedExpense = (expense: Expense): IExpense | null => {
 	if (!expense) return null;
@@ -14,7 +10,7 @@ export const parsePopulatedExpense = (expense: Expense): IExpense | null => {
 	if (!res) return null;
 	return {
 		...omitKeys(res, ["groupId"]),
-		group: parsePopulatedGroup(
+		group: groupService.parsePopulatedGroup(
 			getObjectFromMongoResponse<Group>(res.groupId) as Group
 		),
 		paidBy: getObjectFromMongoResponse<IUser>(res.paidBy) as IUser,

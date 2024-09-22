@@ -12,7 +12,7 @@ const useMountEffect = (fn: any) => {
 
 const useUnmountEffect = (fn: any) => useEffect(() => fn, [fn]);
 
-const useDebounce = <T>(
+export const useDebounce = <T>(
 	initialValue: T,
 	delay: number
 ): [T, T, (_: T) => void] => {
@@ -43,5 +43,3 @@ const useDebounce = <T>(
 
 	return [inputValue, debouncedValue, setInputValue];
 };
-
-export default useDebounce;

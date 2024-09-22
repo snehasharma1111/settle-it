@@ -1,23 +1,13 @@
 import { fallbackAssets } from "@/constants";
-import { stylesConfig } from "@/utils/functions";
+import { stylesConfig } from "@/utils";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import Avatars from "./multiple";
 import styles from "./styles.module.scss";
-
-export interface IAvatarProps extends React.HTMLAttributes<HTMLDivElement> {
-	src: string;
-	alt: string;
-	fallback?: string;
-	shape?: "circle" | "square";
-	className?: string;
-	onClick?: () => void;
-	size?: "small" | "medium" | "large" | number;
-}
+import { IAvatarProps } from "./types";
 
 const classes = stylesConfig(styles);
 
-const Avatar: React.FC<IAvatarProps> = ({
+export const Avatar: React.FC<IAvatarProps> = ({
 	src,
 	alt,
 	fallback = fallbackAssets.avatar,
@@ -112,6 +102,3 @@ const Avatar: React.FC<IAvatarProps> = ({
 		</div>
 	);
 };
-
-export default Avatar;
-export { Avatars };

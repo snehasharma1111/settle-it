@@ -1,6 +1,6 @@
 import { googleEmailConfig } from "@/config";
-import { frontendBaseUrl } from "@/constants/variables";
-import { logger } from "@/messages";
+import { frontendBaseUrl } from "@/constants";
+import { logger } from "@/log";
 import { myOAuth2Client } from "@/services";
 import { createTransport } from "nodemailer";
 
@@ -23,7 +23,7 @@ export const sendEmailService = async (
 				type: "OAuth2",
 				user: googleEmailConfig.email,
 				clientId: googleEmailConfig.clientId,
-				clientSecret: googleEmailConfig.clientSecret,
+				// clientSecret: googleEmailConfig.clientSecret,
 				refreshToken: googleEmailConfig.refreshToken,
 				accessToken: accessToken.token,
 			},
@@ -497,7 +497,7 @@ type EMAIL_TEMPLATE =
 	| "USER_INVITED"
 	| "USER_ADDED_TO_GROUP";
 
-export const getEmailTemplate = async (template: EMAIL_TEMPLATE, data: any) => {
+export const getEmailTemplate = (template: EMAIL_TEMPLATE, data: any) => {
 	switch (template) {
 		case "OTP":
 			return getEmailTemplateHTML(
@@ -536,6 +536,6 @@ export const sendEmailTemplate = async (
 	template: EMAIL_TEMPLATE,
 	data: any
 ) => {
-	const html = await getEmailTemplate(template, data);
+	const html = getEmailTemplate(template, data);
 	await sendEmailService(to, subject, html);
 };

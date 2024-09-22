@@ -2,8 +2,8 @@ import { api } from "@/connections";
 import { useStore } from "@/hooks";
 import { Button, Typography } from "@/library";
 import { notify } from "@/messages";
-import { IOwedRecord } from "@/types/member";
-import { stylesConfig } from "@/utils/functions";
+import { IOwedRecord } from "@/types";
+import { stylesConfig } from "@/utils";
 import React, { useState } from "react";
 import styles from "./styles.module.scss";
 

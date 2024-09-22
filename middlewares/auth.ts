@@ -1,9 +1,8 @@
 import { http } from "@/connections";
 import { HTTP } from "@/constants";
-import { logger } from "@/messages";
-import { authService } from "@/services/api";
-import { ApiRequest, ApiResponse } from "@/types/api";
-import { ServerSideAuthMiddleware } from "@/types/server";
+import { logger } from "@/log";
+import { authService } from "@/services";
+import { ApiRequest, ApiResponse, ServerSideAuthMiddleware } from "@/types";
 
 export const page: ServerSideAuthMiddleware = async (
 	context: any,

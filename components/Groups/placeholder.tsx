@@ -1,5 +1,5 @@
 import { Button, Typography } from "@/library";
-import { stylesConfig } from "@/utils/functions";
+import { stylesConfig } from "@/utils";
 import Image from "next/image";
 import React from "react";
 import styles from "./styles.module.scss";

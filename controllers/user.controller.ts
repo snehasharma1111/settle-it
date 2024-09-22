@@ -1,10 +1,8 @@
-import { HTTP, USER_STATUS } from "@/constants";
-import { logger } from "@/messages";
-import { userService } from "@/services/api";
-import cache from "@/services/cache";
-import { ApiRequest, ApiResponse } from "@/types/api";
-import { cacheParameter, getCacheKey } from "@/utils/cache";
-import { genericParse, getNonEmptyString } from "@/utils/safety";
+import { cacheParameter, HTTP, USER_STATUS } from "@/constants";
+import { logger } from "@/log";
+import { cache, getCacheKey, userService } from "@/services";
+import { ApiRequest, ApiResponse } from "@/types";
+import { genericParse, getNonEmptyString } from "@/utils";
 
 export const getLoggedInUserDetails = async (
 	req: ApiRequest,

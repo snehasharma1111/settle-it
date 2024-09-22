@@ -1,7 +1,7 @@
 import { fallbackAssets, routes } from "@/constants";
 import { Avatar, Avatars, Button, Typography } from "@/library";
-import { IGroup } from "@/types/group";
-import { stylesConfig } from "@/utils/functions";
+import { IGroup } from "@/types";
+import { stylesConfig } from "@/utils";
 import { useRouter } from "next/router";
 import React from "react";
 import { FiArrowLeft, FiList, FiSettings } from "react-icons/fi";

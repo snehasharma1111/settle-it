@@ -1,20 +1,19 @@
 import { http } from "@/connections";
-import { logger } from "@/messages";
-import { ApiRes } from "@/types/api";
-import { IExpense } from "@/types/expense";
-import { CreateGroupData, IGroup, UpdateGroupData } from "@/types/group";
-import { IBalancesSummary, ITransaction } from "@/types/member";
+import {
+	ApiRes,
+	CreateGroupData,
+	IBalancesSummary,
+	IExpense,
+	IGroup,
+	ITransaction,
+	UpdateGroupData,
+} from "@/types";
 
 export const getAllGroups = async (
 	headers?: any
 ): Promise<ApiRes<Array<IGroup>>> => {
-	try {
-		const response = await http.get("/groups", { headers });
-		return Promise.resolve(response.data);
-	} catch (error: any) {
-		logger.error(error);
-		return Promise.reject(error?.response?.data);
-	}
+	const response = await http.get("/groups", { headers });
+	return response.data;
 };
 
 export const getGroupDetails = async (
@@ -26,13 +25,8 @@ export const getGroupDetails = async (
 		expenses: Array<IExpense>;
 	}>
 > => {
-	try {
-		const response = await http.get(`/groups/${id}`, { headers });
-		return Promise.resolve(response.data);
-	} catch (error: any) {
-		logger.error(error);
-		return Promise.reject(error?.response?.data);
-	}
+	const response = await http.get(`/groups/${id}`, { headers });
+	return response.data;
 };
 
 export const getBalancesSummary = async (
@@ -45,13 +39,8 @@ export const getBalancesSummary = async (
 		balances: IBalancesSummary;
 	}>
 > => {
-	try {
-		const response = await http.get(`/groups/${id}/summary`, { headers });
-		return Promise.resolve(response.data);
-	} catch (error: any) {
-		logger.error(error);
-		return Promise.reject(error?.response?.data);
-	}
+	const response = await http.get(`/groups/${id}/summary`, { headers });
+	return response.data;
 };
 
 export const getTransactions = async (
@@ -64,28 +53,18 @@ export const getTransactions = async (
 		transactions: Array<ITransaction>;
 	}>
 > => {
-	try {
-		const response = await http.get(`/groups/${id}/transactions`, {
-			headers,
-		});
-		return Promise.resolve(response.data);
-	} catch (error: any) {
-		logger.error(error);
-		return Promise.reject(error?.response?.data);
-	}
+	const response = await http.get(`/groups/${id}/transactions`, {
+		headers,
+	});
+	return response.data;
 };
 
 export const createGroup = async (
 	data: CreateGroupData,
 	headers?: any
 ): Promise<ApiRes<IGroup>> => {
-	try {
-		const response = await http.post("/groups", data, { headers });
-		return Promise.resolve(response.data);
-	} catch (error: any) {
-		logger.error(error);
-		return Promise.reject(error?.response?.data);
-	}
+	const response = await http.post("/groups", data, { headers });
+	return response.data;
 };
 
 export const updateGroup = async (
@@ -93,24 +72,14 @@ export const updateGroup = async (
 	data: UpdateGroupData,
 	headers?: any
 ): Promise<ApiRes<IGroup>> => {
-	try {
-		const response = await http.patch(`/groups/${id}`, data, { headers });
-		return Promise.resolve(response.data);
-	} catch (error: any) {
-		logger.error(error);
-		return Promise.reject(error?.response?.data);
-	}
+	const response = await http.patch(`/groups/${id}`, data, { headers });
+	return response.data;
 };
 
 export const deleteGroup = async (
 	id: string,
 	headers?: any
 ): Promise<ApiRes<IGroup>> => {
-	try {
-		const response = await http.delete(`/groups/${id}`, { headers });
-		return Promise.resolve(response.data);
-	} catch (error: any) {
-		logger.error(error);
-		return Promise.reject(error?.response?.data);
-	}
+	const response = await http.delete(`/groups/${id}`, { headers });
+	return response.data;
 };

@@ -1,6 +1,6 @@
 import { Button, Typography } from "@/library";
 import { notify } from "@/messages";
-import { stylesConfig } from "@/utils/functions";
+import { stylesConfig } from "@/utils";
 import React, { useState } from "react";
 import styles from "./styles.module.scss";
 

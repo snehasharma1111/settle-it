@@ -1,6 +1,5 @@
 import { api } from "@/connections";
-import { logger } from "@/messages";
-import { CreateGroupData, UpdateGroupData } from "@/types/group";
+import { CreateGroupData, UpdateGroupData } from "@/types";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 export const getAllGroups = createAsyncThunk(
@@ -10,7 +9,6 @@ export const getAllGroups = createAsyncThunk(
 			const res = await api.group.getAllGroups();
 			return Promise.resolve(res.data);
 		} catch (error: any) {
-			logger.error(error);
 			return thunkApi.rejectWithValue(error.message);
 		}
 	}
@@ -23,7 +21,6 @@ export const getGroupDetails = createAsyncThunk(
 			const res = await api.group.getGroupDetails(id);
 			return Promise.resolve(res.data);
 		} catch (error: any) {
-			logger.error(error);
 			return thunkApi.rejectWithValue(error.message);
 		}
 	}
@@ -36,7 +33,6 @@ export const createGroup = createAsyncThunk(
 			const res = await api.group.createGroup(data);
 			return Promise.resolve(res.data);
 		} catch (error: any) {
-			logger.error(error);
 			return thunkApi.rejectWithValue(error.message);
 		}
 	}
@@ -49,7 +45,6 @@ export const updateGroup = createAsyncThunk(
 			const res = await api.group.updateGroup(id, data);
 			return Promise.resolve(res.data);
 		} catch (error: any) {
-			logger.error(error);
 			return thunkApi.rejectWithValue(error.message);
 		}
 	}
@@ -62,7 +57,6 @@ export const deleteGroup = createAsyncThunk(
 			const res = await api.group.deleteGroup(id);
 			return Promise.resolve(res.data);
 		} catch (error: any) {
-			logger.error(error);
 			return thunkApi.rejectWithValue(error.message);
 		}
 	}

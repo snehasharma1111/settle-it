@@ -1,12 +1,11 @@
 import { Footer, Header } from "@/components";
-import { routes } from "@/constants";
-import { frontendBaseUrl } from "@/constants/variables";
+import { frontendBaseUrl, routes } from "@/constants";
+import { Seo } from "@/layouts";
 import { useRouter } from "next/router";
 import React from "react";
 import { Toaster } from "react-hot-toast";
-import Seo from "./Seo";
 
-const Wrapper: React.FC<any> = ({ children }) => {
+export const Wrapper: React.FC<any> = ({ children }) => {
 	const router = useRouter();
 	const staticPagesPaths: Array<string> = [routes.ROOT, routes.ERROR];
 
@@ -81,5 +80,3 @@ const Wrapper: React.FC<any> = ({ children }) => {
 		</>
 	);
 };
-
-export default Wrapper;

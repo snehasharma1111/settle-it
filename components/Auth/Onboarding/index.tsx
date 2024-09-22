@@ -1,5 +1,5 @@
 import { Button, Input } from "@/library";
-import { stylesConfig } from "@/utils/functions";
+import { stylesConfig } from "@/utils";
 import React, { useState } from "react";
 import { FiCheck } from "react-icons/fi";
 import styles from "./styles.module.scss";

@@ -1,5 +1,5 @@
 import { Typography } from "@/library";
-import { stylesConfig } from "@/utils/functions";
+import { stylesConfig } from "@/utils";
 import React, { useEffect, useRef, useState } from "react";
 import { CloseIcon, EditIcon, TrashIcon } from "./assets";
 import styles from "./styles.module.scss";
@@ -7,7 +7,7 @@ import { PopupProps } from "./types";
 
 const classes = stylesConfig(styles, "modal-popup");
 
-const Popup: React.FC<PopupProps> = ({
+export const Popup: React.FC<PopupProps> = ({
 	children,
 	title,
 	onClose,
@@ -136,5 +136,3 @@ const Popup: React.FC<PopupProps> = ({
 		</>
 	);
 };
-
-export default Popup;

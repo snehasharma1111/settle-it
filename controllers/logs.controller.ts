@@ -1,13 +1,12 @@
-import { HTTP } from "@/constants";
-import { logsBaseUrl } from "@/constants/variables";
-import { LOG_LEVEL } from "@/log";
-import { ApiRequest, ApiResponse } from "@/types/api";
+/* eslint-disable no-console */
+import { HTTP, logsBaseUrl } from "@/constants";
+import { ApiRequest, ApiResponse, LOG_LEVEL } from "@/types";
 import {
 	getArray,
 	getNonEmptyString,
 	getNonNullValue,
 	safeParse,
-} from "@/utils/safety";
+} from "@/utils";
 import fs from "fs";
 
 export const getAllLogs = async (req: ApiRequest, res: ApiResponse) => {

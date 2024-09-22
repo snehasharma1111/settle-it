@@ -1,7 +1,8 @@
+import { stylesConfig } from "@/utils";
 import React from "react";
+import { Avatar } from "./single";
 import styles from "./styles.module.scss";
-import { stylesConfig } from "@/utils/functions";
-import Avatar, { IAvatarProps } from ".";
+import { IAvatarProps } from "./types";
 
 const classes = stylesConfig(styles, "avatars");
 
@@ -10,7 +11,7 @@ interface IAvatarsProps extends Omit<IAvatarProps, "src" | "alt" | "children"> {
 	stack?: boolean;
 }
 
-const Avatars: React.FC<IAvatarsProps> = ({
+export const Avatars: React.FC<IAvatarsProps> = ({
 	children,
 	stack = true,
 	...props

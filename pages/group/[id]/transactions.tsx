@@ -6,12 +6,8 @@ import { Seo } from "@/layouts";
 import { authMiddleware } from "@/middlewares";
 import PageNotFound from "@/pages/404";
 import styles from "@/styles/pages/Group.module.scss";
-import { IGroup } from "@/types/group";
-import { ITransaction } from "@/types/member";
-import { ServerSideResult } from "@/types/server";
-import { IUser } from "@/types/user";
-import { stylesConfig } from "@/utils/functions";
-import { getNonEmptyString } from "@/utils/safety";
+import { IGroup, ITransaction, IUser, ServerSideResult } from "@/types";
+import { getNonEmptyString, stylesConfig } from "@/utils";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 

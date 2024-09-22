@@ -1,8 +1,8 @@
 import { HTTP, OTP_STATUS, USER_STATUS } from "@/constants";
-import { logger } from "@/messages";
-import { authService, otpService, userService } from "@/services/api";
-import { ApiRequest, ApiResponse } from "@/types/api";
-import { genericParse, getNonEmptyString } from "@/utils/safety";
+import { logger } from "@/log";
+import { authService, otpService, userService } from "@/services";
+import { ApiRequest, ApiResponse } from "@/types";
+import { genericParse, getNonEmptyString } from "@/utils";
 
 export const requestOtpWithEmail = async (
 	req: ApiRequest,
@@ -20,15 +20,14 @@ export const requestOtpWithEmail = async (
 					status: OTP_STATUS.PENDING,
 				}
 			);
-			await otpService.send(email, otp);
 		} else {
 			await otpService.create({
 				email,
 				otp,
 				status: OTP_STATUS.PENDING,
 			});
-			await otpService.send(email, otp);
 		}
+		await otpService.send(email, otp);
 		return res
 			.status(HTTP.status.SUCCESS)
 			.json({ message: "OTP sent successfully" });

@@ -9,7 +9,7 @@ import {
 } from "@/context/slices";
 import { useDispatch, useSelector } from "react-redux";
 
-const useStore = () => {
+export const useStore = () => {
 	const dispatch = useDispatch<any>();
 
 	const expenses = useSelector(expenseSelector);
@@ -34,5 +34,3 @@ const useStore = () => {
 		...allHelpers.userHelpers,
 	};
 };
-
-export default useStore;

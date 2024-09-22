@@ -1,4 +1,4 @@
-import { stylesConfig } from "@/utils/functions";
+import { stylesConfig } from "@/utils";
 import React, { useEffect, useRef, useState } from "react";
 import { FiChevronDown } from "react-icons/fi";
 import styles from "./styles.module.scss";
@@ -6,7 +6,7 @@ import { InputDropdownOption, InputProps } from "./types";
 
 const classes = stylesConfig(styles, "input");
 
-const Input: React.FC<InputProps> = ({
+export const Input: React.FC<InputProps> = ({
 	label,
 	styles,
 	style,
@@ -144,5 +144,3 @@ const Input: React.FC<InputProps> = ({
 		</div>
 	);
 };
-
-export default Input;

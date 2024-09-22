@@ -1,17 +1,15 @@
-import { Auth as Components } from "@/components";
-import { UserDetails } from "@/components/Auth";
+import { Auth, Auth as Components } from "@/components";
 import { api } from "@/connections";
 import { routes } from "@/constants";
 import { useStore } from "@/hooks";
 import { Seo } from "@/layouts";
 import { Typography } from "@/library";
-import { logger } from "@/messages";
+import { logger } from "@/log";
 import { notify } from "@/messages";
 import { authMiddleware } from "@/middlewares";
 import styles from "@/styles/pages/Auth.module.scss";
-import { ServerSideResult } from "@/types/server";
-import { IUser } from "@/types/user";
-import { stylesConfig } from "@/utils/functions";
+import { IUser, ServerSideResult } from "@/types";
+import { stylesConfig } from "@/utils";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
@@ -68,7 +66,7 @@ const LoginPage: React.FC<LoginPageProps> = (props) => {
 		}
 	};
 
-	const saveUserDetails = async (data: UserDetails) => {
+	const saveUserDetails = async (data: Auth.UserDetails) => {
 		try {
 			setUpdatingUserDetails(true);
 			const res = await api.user.updateUser(data);

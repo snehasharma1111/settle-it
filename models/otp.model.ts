@@ -1,5 +1,5 @@
 import { OTP_STATUS } from "@/constants";
-import { T_OTP_STATUS } from "@/types/user";
+import { T_OTP_STATUS } from "@/types";
 import mongoose from "mongoose";
 
 const OtpSchema = new mongoose.Schema(

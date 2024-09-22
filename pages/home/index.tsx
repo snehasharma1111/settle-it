@@ -1,4 +1,4 @@
-import { CreateGroup, HomeHeader } from "@/components";
+import { CreateGroup, Home } from "@/components";
 import { api } from "@/connections";
 import { fallbackAssets, routes } from "@/constants";
 import { useStore } from "@/hooks";
@@ -8,10 +8,8 @@ import { notify } from "@/messages";
 import { authMiddleware } from "@/middlewares";
 import PageNotFound from "@/pages/404";
 import styles from "@/styles/pages/Home.module.scss";
-import { CreateGroupData, IGroup } from "@/types/group";
-import { ServerSideResult } from "@/types/server";
-import { IUser } from "@/types/user";
-import { stylesConfig } from "@/utils/functions";
+import { CreateGroupData, IGroup, IUser, ServerSideResult } from "@/types";
+import { stylesConfig } from "@/utils";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
@@ -54,7 +52,7 @@ const HomePage: React.FC<HomePageProps> = (props) => {
 	return (
 		<>
 			<Seo title={`${props.user.name} - Home | Settle It`} />
-			<HomeHeader />
+			<Home.Header />
 			<main className={classes("")}>
 				{(groups || props.groups).length > 0 ? (
 					<Responsive.Row>

@@ -43,7 +43,7 @@ interface ISeoProps {
 	};
 }
 
-const Seo: React.FC<ISeoProps> = ({
+export const Seo: React.FC<ISeoProps> = ({
 	title,
 	description,
 	author,
@@ -115,5 +115,3 @@ const Seo: React.FC<ISeoProps> = ({
 		</Head>
 	);
 };
-
-export default Seo;

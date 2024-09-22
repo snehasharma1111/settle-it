@@ -1,7 +1,7 @@
 import { regex } from "@/constants";
 import { Button, Input } from "@/library";
 import { notify } from "@/messages";
-import { stylesConfig } from "@/utils/functions";
+import { stylesConfig } from "@/utils";
 import React from "react";
 import { IoMailOutline } from "react-icons/io5";
 import styles from "./styles.module.scss";

@@ -1,9 +1,9 @@
-import Avatar, { Avatars } from "./Avatar";
+export * from "./Avatar";
+export * from "./Checkbox";
+export * from "./Input";
+export * from "./Popup";
+export * from "./Table";
+export * from "./Typography";
 import Button from "./Button";
-import CheckBox from "./Checkbox";
-import Input from "./Input";
-import Popup from "./Popup";
-import Table from "./Table";
-import Typography from "./Typography";
 
-export { Avatar, Avatars, Button, CheckBox, Input, Popup, Table, Typography };
+export { Button };

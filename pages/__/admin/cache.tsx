@@ -6,9 +6,8 @@ import { Button, Table, Typography } from "@/library";
 import { notify } from "@/messages";
 import { adminMiddleware } from "@/middlewares";
 import styles from "@/styles/pages/Admin.module.scss";
-import { ServerSideResult } from "@/types/server";
-import { IUser } from "@/types/user";
-import { copyToClipboard, stylesConfig } from "@/utils/functions";
+import { IUser, ServerSideResult } from "@/types";
+import { copyToClipboard, stylesConfig } from "@/utils";
 import React, { useEffect, useState } from "react";
 
 type AdminPanelCacheProps = {

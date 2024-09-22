@@ -1,55 +1,37 @@
 import { http } from "@/connections";
-import { logger } from "@/messages";
-import { ApiRes } from "@/types/api";
 import {
+	ApiRes,
 	CreateExpenseData,
 	IExpense,
+	IMember,
 	UpdateExpenseData,
-} from "@/types/expense";
-import { IMember } from "@/types/member";
+} from "@/types";
 
 export const getAllExpensesForUser = async (
 	headers?: any
 ): Promise<ApiRes<Array<IExpense>>> => {
-	try {
-		const response = await http.get("/expenses", { headers });
-		return Promise.resolve(response.data);
-	} catch (error: any) {
-		logger.error(error);
-		return Promise.reject(error?.response?.data);
-	}
+	const response = await http.get("/expenses", { headers });
+	return response.data;
 };
 
 export const getMembersOfExpense = async (
 	expenseId: string,
 	headers?: any
 ): Promise<ApiRes<Array<IMember>>> => {
-	try {
-		const response = await http.get(`/expenses/${expenseId}/members`, {
-			headers,
-		});
-		return Promise.resolve(response.data);
-	} catch (error: any) {
-		logger.error(error);
-		return Promise.reject(error?.response?.data);
-	}
+	const response = await http.get(`/expenses/${expenseId}/members`, {
+		headers,
+	});
+	return response.data;
 };
 
 export const createExpense = async (
 	data: CreateExpenseData,
 	headers?: any
 ): Promise<ApiRes<IExpense>> => {
-	try {
-		const response = await http.post(
-			`/groups/${data.groupId}/expense`,
-			data,
-			{ headers }
-		);
-		return Promise.resolve(response.data);
-	} catch (error: any) {
-		logger.error(error);
-		return Promise.reject(error?.response?.data);
-	}
+	const response = await http.post(`/groups/${data.groupId}/expense`, data, {
+		headers,
+	});
+	return response.data;
 };
 
 export const updateExpense = async (
@@ -57,41 +39,26 @@ export const updateExpense = async (
 	data: UpdateExpenseData,
 	headers?: any
 ): Promise<ApiRes<IExpense>> => {
-	try {
-		const response = await http.patch(`/expenses/${id}`, data, { headers });
-		return Promise.resolve(response.data);
-	} catch (error: any) {
-		logger.error(error);
-		return Promise.reject(error?.response?.data);
-	}
+	const response = await http.patch(`/expenses/${id}`, data, { headers });
+	return response.data;
 };
 
 export const settleExpense = async (
 	id: string,
 	headers?: any
 ): Promise<ApiRes<Array<IMember>>> => {
-	try {
-		const response = await http.patch(
-			`/expenses/${id}/settle`,
-			{},
-			{ headers }
-		);
-		return Promise.resolve(response.data);
-	} catch (error: any) {
-		logger.error(error);
-		return Promise.reject(error?.response?.data);
-	}
+	const response = await http.patch(
+		`/expenses/${id}/settle`,
+		{},
+		{ headers }
+	);
+	return response.data;
 };
 
 export const deleteExpense = async (
 	id: string,
 	headers?: any
 ): Promise<ApiRes<IExpense>> => {
-	try {
-		const response = await http.delete(`/expenses/${id}`, { headers });
-		return Promise.resolve(response.data);
-	} catch (error: any) {
-		logger.error(error);
-		return Promise.reject(error?.response?.data);
-	}
+	const response = await http.delete(`/expenses/${id}`, { headers });
+	return response.data;
 };
