@@ -4,14 +4,14 @@ import styles from "./styles.module.scss";
 
 interface ILoaderProps {}
 
-const classes = stylesConfig(styles, "loader");
+const classes = stylesConfig(styles, "loader-bar");
 
-const Loader: React.FC<ILoaderProps> = () => {
+const Bar: React.FC<ILoaderProps> = () => {
 	return (
 		<div className={classes("")}>
-			<span className={classes("-bar")} />
+			<span className={classes("-line")} />
 		</div>
 	);
 };
 
-export default Loader;
+export default Bar;

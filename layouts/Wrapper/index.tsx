@@ -93,7 +93,7 @@ export const Wrapper: React.FC<any> = ({ children }) => {
 				}}
 			/>
 			{staticPagesPaths.includes(router.pathname) ? <Header /> : null}
-			{showLoader ? <Loader /> : null}
+			{showLoader ? <Loader.Bar /> : null}
 			{children}
 			{staticPagesPaths.includes(router.pathname) ? <Footer /> : null}
 			<Toaster position="top-center" />

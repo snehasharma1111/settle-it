@@ -1,6 +1,6 @@
 @import "@/styles/config/mixins";
 
-.loader {
+.loader-bar {
 	width: 100vw;
 	margin: 0 auto;
 	height: 4px;
@@ -10,7 +10,7 @@
 	left: 0;
 	z-index: 20;
 
-	&-bar {
+	&-line {
 		position: absolute;
 		top: 0;
 		left: 0;
@@ -19,6 +19,55 @@
 		height: 100%;
 		background-color: var(--accent-color);
 		animation: move 1s linear infinite;
+	}
+}
+
+.loader-spinner {
+	--size: 40px;
+	width: var(--size);
+	height: var(--size);
+	display: flex;
+	justify-content: space-around;
+	align-items: flex-end;
+	margin: 80px 0;
+
+	&-ball {
+		width: 20px;
+		height: 20px;
+		flex: 0 0 auto;
+		border-radius: 50%;
+		animation: bounce 0.5s cubic-bezier(0.19, 0.57, 0.3, 0.98) infinite
+			alternate;
+	}
+
+	&-ball:nth-child(1) {
+		background-color: var(--theme-green);
+		animation-delay: 0.1s;
+	}
+
+	&-ball:nth-child(2) {
+		background-color: var(--theme-red);
+		animation-delay: 0.2s;
+	}
+
+	&-ball:nth-child(3) {
+		background-color: var(--theme-green-dark);
+		animation-delay: 0.3s;
+	}
+
+	&-ball:nth-child(4) {
+		background-color: var(--theme-orange);
+		animation-delay: 0.4s;
+	}
+
+	@keyframes bounce {
+		from {
+			transform: translateY(0);
+		}
+
+		to {
+			transform: translateY(-100px);
+		}
 	}
 }
 
