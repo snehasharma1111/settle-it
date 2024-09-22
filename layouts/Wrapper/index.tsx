@@ -1,17 +1,32 @@
-import { Footer, Header } from "@/components";
+import { Footer, Header, Loader } from "@/components";
 import { frontendBaseUrl, routes } from "@/constants";
 import { Seo } from "@/layouts";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Toaster } from "react-hot-toast";
 
 export const Wrapper: React.FC<any> = ({ children }) => {
 	const router = useRouter();
+	const [showLoader, setShowLoader] = useState(false);
 	const staticPagesPaths: Array<string> = [
 		routes.ROOT,
 		routes.ERROR,
 		routes.PRIVACY_POLICY,
 	];
+
+	// only show router when route is changing
+
+	useEffect(() => {
+		router.events.on("routeChangeStart", () => {
+			setShowLoader(true);
+		});
+		router.events.on("routeChangeComplete", () => {
+			setShowLoader(false);
+		});
+		router.events.on("routeChangeError", () => {
+			setShowLoader(false);
+		});
+	}, [router.events]);
 
 	return (
 		<>
@@ -78,6 +93,7 @@ export const Wrapper: React.FC<any> = ({ children }) => {
 				}}
 			/>
 			{staticPagesPaths.includes(router.pathname) ? <Header /> : null}
+			{showLoader ? <Loader /> : null}
 			{children}
 			{staticPagesPaths.includes(router.pathname) ? <Footer /> : null}
 			<Toaster position="top-center" />
