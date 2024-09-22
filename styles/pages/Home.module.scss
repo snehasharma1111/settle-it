@@ -1,6 +1,8 @@
-@import "@/styles/config/mixins.scss";
+@import "@/styles/config/mixins";
+@import "@/styles/pages/mixins";
 
-.home {
+.home,
+.privacy-policy {
 	width: 100vw;
 	min-height: 100vh;
 	display: flex;
@@ -8,6 +10,15 @@
 	align-items: center;
 	flex-flow: column;
 	gap: 36px;
+}
+
+.privacy-policy {
+	justify-content: flex-start;
+	padding: var(--head-height) 24px 24px 24px;
+
+	article {
+		@include markdown-styles;
+	}
 }
 
 .home-page {

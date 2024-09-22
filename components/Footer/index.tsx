@@ -1,6 +1,7 @@
-import { socials } from "@/constants";
+import { routes, socials } from "@/constants";
 import { stylesConfig } from "@/utils";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
 import styles from "./styles.module.scss";
@@ -23,6 +24,9 @@ const Footer: React.FC = () => {
 						height={1080}
 					/>
 				</div>
+				<nav className={classes("-navigation")}>
+					<Link href={routes.PRIVACY_POLICY}>Privacy Policy</Link>
+				</nav>
 			</div>
 			<hr className={classes("-divider")} />
 			<div className={classes("-base")}>

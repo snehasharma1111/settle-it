@@ -7,7 +7,11 @@ import { Toaster } from "react-hot-toast";
 
 export const Wrapper: React.FC<any> = ({ children }) => {
 	const router = useRouter();
-	const staticPagesPaths: Array<string> = [routes.ROOT, routes.ERROR];
+	const staticPagesPaths: Array<string> = [
+		routes.ROOT,
+		routes.ERROR,
+		routes.PRIVACY_POLICY,
+	];
 
 	return (
 		<>

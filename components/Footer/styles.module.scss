@@ -37,6 +37,22 @@
 		}
 	}
 
+	&-navigation {
+		display: flex;
+		justify-content: flex-end;
+		align-items: center;
+		gap: 24px;
+
+		a {
+			color: var(--theme-black);
+			text-decoration: none;
+
+			&:hover {
+				text-decoration: underline;
+			}
+		}
+	}
+
 	&-divider {
 		width: 100%;
 		height: 1px;
