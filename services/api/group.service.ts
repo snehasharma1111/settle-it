@@ -1,7 +1,10 @@
+import { cacheParameter } from "@/constants";
 import { logger } from "@/log";
 import { ExpenseModel, Group, GroupModel, MemberModel, User } from "@/models";
 import {
+	cache,
 	expenseService,
+	getCacheKey,
 	memberService,
 	sendEmailTemplate,
 	userService,
@@ -42,12 +45,16 @@ export const findOne = async (
 };
 
 export const findById = async (id: string): Promise<IGroup | null> => {
-	const res = await GroupModel.findById(id)
-		.populate("members createdBy")
-		.catch((error: any) => {
-			if (error.kind === "ObjectId") return null;
-			return Promise.reject(error);
-		});
+	const res = await cache.fetch(
+		getCacheKey(cacheParameter.GROUP, { id }),
+		() =>
+			GroupModel.findById(id)
+				.populate("members createdBy")
+				.catch((error: any) => {
+					if (error.kind === "ObjectId") return null;
+					throw error;
+				})
+	);
 	return parsePopulatedGroup(res);
 };
 
@@ -560,12 +567,10 @@ export const remove = async (query: Partial<Group>): Promise<IGroup | null> => {
 export const clear = async (id: string): Promise<boolean> => {
 	const group = await findById(id);
 	if (!group) return false;
-	await memberService.bulkRemove({
-		groupId: id,
-	});
-	await expenseService.removeMultiple({
-		groupId: id,
-	});
+	await Promise.all([
+		memberService.bulkRemove({ groupId: id }),
+		expenseService.removeMultiple({ groupId: id }),
+	]);
 	return true;
 };
 
@@ -600,8 +605,8 @@ export const sendInvitationToUsers = async (
 		if (!allUsers || !invitedByUser || !group)
 			return logger.error("Could not send invitation to users");
 		await Promise.all(
-			allUsers.map(async (user) => {
-				await sendEmailTemplate(
+			allUsers.map((user) => {
+				sendEmailTemplate(
 					user.email,
 					`${invitedByUser.name} has added you to ${group.name}`,
 					"USER_ADDED_TO_GROUP",

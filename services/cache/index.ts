@@ -1,4 +1,5 @@
 import { CHECK_INTERVAL, TTL_SECONDS } from "@/constants";
+import { logger } from "@/log";
 import { CacheParameter } from "@/types";
 import NodeCache from "node-cache";
 
@@ -47,13 +48,18 @@ class Cache {
 		callback: (_?: any) => Promise<T>,
 		ttl: number = TTL_SECONDS
 	): Promise<T> {
-		const cachedValue: any = this.cache.get(key);
-		if (cachedValue) {
-			return cachedValue;
+		if (key) {
+			const cachedValue: any = this.cache.get(key);
+			if (cachedValue) {
+				return cachedValue;
+			}
+			logger.debug(`Cache miss for ${key}`);
+			const newValue = await callback();
+			this.set(key, newValue, ttl);
+			return newValue;
+		} else {
+			return callback();
 		}
-		const newValue = await callback();
-		this.set(key, newValue, ttl);
-		return newValue;
 	}
 
 	invalidate(key: string) {
@@ -74,6 +80,10 @@ export const getCacheKey = (parameter: CacheParameter, data: any) => {
 	switch (parameter) {
 		case "USER":
 			return `user:${data.id}`;
+		case "GROUP":
+			return `group:${data.id}`;
+		case "EXPENSE":
+			return `expense:${data.id}`;
 		case "USER_GROUPS":
 			return `user:${data.userId}:groups`;
 		case "GROUP_EXPENSES":

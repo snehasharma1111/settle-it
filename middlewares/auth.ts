@@ -28,7 +28,8 @@ export const page: ServerSideAuthMiddleware = async (
 };
 
 export const apiRoute =
-	(next: Function) => async (req: ApiRequest, res: ApiResponse) => {
+	(next: (_: ApiRequest, __: ApiResponse) => Promise<void>) =>
+	async (req: ApiRequest, res: ApiResponse) => {
 		const token = req.cookies.token;
 		if (!token) {
 			return res

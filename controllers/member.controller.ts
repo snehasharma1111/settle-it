@@ -1,10 +1,12 @@
-import { HTTP } from "@/constants";
+import { cacheParameter, HTTP } from "@/constants";
 import { logger } from "@/log";
 import {
 	expenseService,
 	groupService,
+	cache,
 	memberService,
 	userService,
+	getCacheKey,
 } from "@/services";
 import { ApiRequest, ApiResponse } from "@/types";
 import { genericParse, getNonEmptyString } from "@/utils";
@@ -78,6 +80,14 @@ export const settleMemberInExpense = async (
 			return res
 				.status(HTTP.status.NOT_FOUND)
 				.json({ message: HTTP.message.NOT_FOUND });
+		cache.invalidate(
+			getCacheKey(cacheParameter.GROUP_EXPENSES, {
+				groupId: foundExpense.group.id,
+			})
+		);
+		cache.invalidate(
+			getCacheKey(cacheParameter.EXPENSE, { id: foundExpense.id })
+		);
 		return getMembersForExpense(req, res);
 	} catch (error: any) {
 		logger.error(error);
@@ -111,9 +121,10 @@ export const settleOwedMembersInGroup = async (
 			return res
 				.status(HTTP.status.NOT_FOUND)
 				.json({ message: HTTP.message.NOT_FOUND });
-		await memberService.settleAllBetweenUsers(foundGroup.id, userA, userB);
-		const allTransactionsForGroup =
-			await groupService.getAllTransactionsForGroup(groupId);
+		const [, allTransactionsForGroup] = await Promise.all([
+			memberService.settleAllBetweenUsers(foundGroup.id, userA, userB),
+			groupService.getAllTransactionsForGroup(groupId),
+		]);
 		// get all users in this group
 		const membersIds = Array.from(
 			new Set(
@@ -126,6 +137,17 @@ export const settleOwedMembersInGroup = async (
 		const owed = groupService.getOwedBalances(
 			allTransactionsForGroup,
 			usersMap
+		);
+		cache.invalidate(
+			getCacheKey(cacheParameter.GROUP_EXPENSES, {
+				groupId: foundGroup.id,
+			})
+		);
+		cache.invalidate(
+			getCacheKey(cacheParameter.USER_GROUPS, { userId: foundGroup.id })
+		);
+		cache.invalidate(
+			getCacheKey(cacheParameter.GROUP, { id: foundGroup.id })
 		);
 		return res
 			.status(HTTP.status.SUCCESS)

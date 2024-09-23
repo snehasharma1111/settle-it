@@ -340,6 +340,9 @@ export const updateExpense = async (req: ApiRequest, res: ApiResponse) => {
 				groupId: updatedExpense?.group.id,
 			})
 		);
+		cache.invalidate(
+			getCacheKey(cacheParameter.EXPENSE, { id: updatedExpense?.id })
+		);
 		return res.status(HTTP.status.SUCCESS).json({
 			message: HTTP.message.SUCCESS,
 			data: updatedExpense,
@@ -382,6 +385,7 @@ export const removeExpense = async (req: ApiRequest, res: ApiResponse) => {
 				groupId: foundExpense.group.id,
 			})
 		);
+		cache.del(getCacheKey(cacheParameter.EXPENSE, { id }));
 		return res.status(HTTP.status.SUCCESS).json({
 			message: HTTP.message.SUCCESS,
 			data: removedExpense,
@@ -414,6 +418,14 @@ export const settleExpense = async (req: ApiRequest, res: ApiResponse) => {
 				.status(HTTP.status.FORBIDDEN)
 				.json({ message: "Only the person who paid can settle" });
 		await memberService.settleMany({ expenseId: id });
+		cache.invalidate(
+			getCacheKey(cacheParameter.GROUP_EXPENSES, {
+				groupId: foundExpense.group.id,
+			})
+		);
+		cache.invalidate(
+			getCacheKey(cacheParameter.EXPENSE, { id: foundExpense?.id })
+		);
 		return memberControllers.getMembersForExpense(req, res);
 	} catch (error: any) {
 		logger.error(error);
@@ -467,6 +479,15 @@ export const memberPaid = async (req: ApiRequest, res: ApiResponse) => {
 				}
 			);
 		}
+		cache.invalidate(
+			getCacheKey(cacheParameter.GROUP_EXPENSES, {
+				groupId: foundExpense.group.id,
+			})
+		);
+		cache.invalidate(
+			getCacheKey(cacheParameter.EXPENSE, { id: foundExpense?.id })
+		);
+		return memberControllers.getMembersForExpense(req, res);
 	} catch (error: any) {
 		logger.error(error);
 		if (error.message && error.message.startsWith("Invalid input:")) {

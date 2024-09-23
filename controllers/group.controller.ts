@@ -17,9 +17,7 @@ export const getAllGroups = async (req: ApiRequest, res: ApiResponse) => {
 		// search for group whose members array contains loggedInUserId
 		const groups = await cache.fetch(
 			getCacheKey(cacheParameter.USER_GROUPS, { userId: loggedInUserId }),
-			() => {
-				return groupService.getGroupsUserIsPartOf(loggedInUserId);
-			}
+			() => groupService.getGroupsUserIsPartOf(loggedInUserId)
 		);
 		return res
 			.status(HTTP.status.SUCCESS)
@@ -35,7 +33,10 @@ export const getGroupDetails = async (req: ApiRequest, res: ApiResponse) => {
 	try {
 		const loggedInUserId = getNonEmptyString(req.user?.id);
 		const groupId = getNonEmptyString(req.query.id);
-		const group = await groupService.findById(groupId);
+		const group = await cache.fetch(
+			getCacheKey(cacheParameter.GROUP, { groupId }),
+			() => groupService.findById(groupId)
+		);
 		if (!group)
 			return res
 				.status(HTTP.status.NOT_FOUND)
@@ -72,9 +73,7 @@ export const getGroupExpenses = async (req: ApiRequest, res: ApiResponse) => {
 				.json({ message: HTTP.message.FORBIDDEN });
 		const expenses = await cache.fetch(
 			getCacheKey(cacheParameter.GROUP_EXPENSES, { groupId }),
-			() => {
-				return groupService.getExpensesForGroup(groupId);
-			}
+			() => groupService.getExpensesForGroup(groupId)
 		);
 		return res.status(HTTP.status.SUCCESS).json({
 			message: HTTP.message.SUCCESS,
@@ -101,9 +100,10 @@ export const getBalancesSummary = async (req: ApiRequest, res: ApiResponse) => {
 			return res
 				.status(HTTP.status.FORBIDDEN)
 				.json({ message: HTTP.message.FORBIDDEN });
-		const expenditure = await groupService.getExpenditure(groupId);
-		const allTransactionsForGroup =
-			await groupService.getAllTransactionsForGroup(groupId);
+		const [expenditure, allTransactionsForGroup] = await Promise.all([
+			groupService.getExpenditure(groupId),
+			groupService.getAllTransactionsForGroup(groupId),
+		]);
 		// get all users in this group
 		const membersIds = Array.from(
 			new Set(
@@ -161,8 +161,10 @@ export const getGroupTransactions = async (
 			return res
 				.status(HTTP.status.FORBIDDEN)
 				.json({ message: HTTP.message.FORBIDDEN });
-		const expenditure = await groupService.getExpenditure(groupId);
-		const transactions = await groupService.getAllTransactions(groupId);
+		const [expenditure, transactions] = await Promise.all([
+			groupService.getExpenditure(groupId),
+			groupService.getAllTransactionsForGroup(groupId),
+		]);
 		return res.status(HTTP.status.SUCCESS).json({
 			message: HTTP.message.SUCCESS,
 			data: {
@@ -202,7 +204,10 @@ export const createGroup = async (req: ApiRequest, res: ApiResponse) => {
 				.status(HTTP.status.BAD_REQUEST)
 				.json({ message: "Group must have at least 2 members" });
 		}
-		const foundGroup = await groupService.findOne({ name });
+		const foundGroup = await groupService.findOne({
+			name,
+			createdBy: loggedInUserId,
+		});
 		if (foundGroup)
 			return res
 				.status(HTTP.status.CONFLICT)
@@ -215,11 +220,11 @@ export const createGroup = async (req: ApiRequest, res: ApiResponse) => {
 		if (icon) newGroupBody.icon = icon;
 		if (banner) newGroupBody.banner = banner;
 		if (type) newGroupBody.type = type;
-		const createdGroup = await groupService.create(newGroupBody);
 		cache.invalidate(
 			getCacheKey(cacheParameter.USER_GROUPS, { userId: loggedInUserId })
 		);
-		await groupService.sendInvitationToUsers(
+		const createdGroup = await groupService.create(newGroupBody);
+		groupService.sendInvitationToUsers(
 			{ name: createdGroup.name, id: createdGroup.id },
 			members.filter((m) => m !== loggedInUserId),
 			loggedInUserId
@@ -295,6 +300,10 @@ export const updateGroup = async (req: ApiRequest, res: ApiResponse) => {
 		cache.invalidate(
 			getCacheKey(cacheParameter.GROUP_EXPENSES, { groupId: id })
 		);
+		cache.invalidate(
+			getCacheKey(cacheParameter.USER_GROUPS, { userId: id })
+		);
+		cache.invalidate(getCacheKey(cacheParameter.GROUP, { id }));
 		return res.status(HTTP.status.SUCCESS).json({
 			message: HTTP.message.SUCCESS,
 			data: updatedGroup,
@@ -336,6 +345,7 @@ export const deleteGroup = async (req: ApiRequest, res: ApiResponse) => {
 		cache.invalidate(
 			getCacheKey(cacheParameter.USER_GROUPS, { userId: id })
 		);
+		cache.del(getCacheKey(cacheParameter.GROUP, { id }));
 		return res.status(HTTP.status.SUCCESS).json({
 			message: HTTP.message.SUCCESS,
 			data: deletedGroup,
@@ -383,6 +393,7 @@ export const addGroupMembers = async (req: ApiRequest, res: ApiResponse) => {
 		cache.invalidate(
 			getCacheKey(cacheParameter.USER_GROUPS, { userId: id })
 		);
+		cache.invalidate(getCacheKey(cacheParameter.GROUP, { id }));
 		return res.status(HTTP.status.SUCCESS).json({
 			message: HTTP.message.SUCCESS,
 			data: updatedGroup,
@@ -432,6 +443,7 @@ export const removeGroupMembers = async (req: ApiRequest, res: ApiResponse) => {
 		cache.invalidate(
 			getCacheKey(cacheParameter.USER_GROUPS, { userId: id })
 		);
+		cache.invalidate(getCacheKey(cacheParameter.GROUP, { id }));
 		return res.status(HTTP.status.SUCCESS).json({
 			message: HTTP.message.SUCCESS,
 			data: updatedGroup,

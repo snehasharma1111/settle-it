@@ -1,5 +1,6 @@
+import { cacheParameter } from "@/constants";
 import { Expense, ExpenseModel, Group } from "@/models";
-import { expenseService, groupService } from "@/services";
+import { cache, expenseService, getCacheKey, groupService } from "@/services";
 import { IExpense, IUser } from "@/types";
 import { getNonNullValue, getObjectFromMongoResponse, omitKeys } from "@/utils";
 import { FilterQuery } from "mongoose";
@@ -28,12 +29,16 @@ export const findOne = async (
 };
 
 export const findById = async (id: string): Promise<IExpense | null> => {
-	const res = await ExpenseModel.findById(id)
-		.populate("groupId paidBy createdBy")
-		.catch((error: any) => {
-			if (error.kind === "ObjectId") return null;
-			return Promise.reject(error);
-		});
+	const res = await cache.fetch(
+		getCacheKey(cacheParameter.EXPENSE, { id }),
+		() =>
+			ExpenseModel.findById(id)
+				.populate("groupId paidBy createdBy")
+				.catch((error: any) => {
+					if (error.kind === "ObjectId") return null;
+					throw error;
+				})
+	);
 	return parsePopulatedExpense(res);
 };
 
