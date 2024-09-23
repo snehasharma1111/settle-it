@@ -23,11 +23,15 @@ export const verifyOtpWithEmail = async (
 	return response.data;
 };
 
-export const verifyUserIfLoggedIn = async (): Promise<{
+export const verifyUserIfLoggedIn = async (
+	headers?: any
+): Promise<{
 	message: string;
 	data: IUser;
 }> => {
-	const response = await http.get("/auth/verify");
+	const response = await http.get("/auth/verify", {
+		headers,
+	});
 	return response.data;
 };
 

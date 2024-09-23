@@ -1,4 +1,4 @@
-import { http } from "@/connections";
+import { api } from "@/connections";
 import { admins, HTTP } from "@/constants";
 import { logger } from "@/log";
 import { authService } from "@/services";
@@ -14,24 +14,12 @@ export const page: ServerSideAdminMiddleware = async (
 		return onLoggedOut();
 	}
 	try {
-		const res = await http.get("/auth/verify", {
-			headers: {
-				cookie: req.headers.cookie,
-			},
-		});
-		const userDetailsRes = await http.get(`/users/${res.data.data.id}`, {
-			headers: {
-				cookie: req.headers.cookie,
-			},
-		});
-		if (admins.includes(res.data.data.email)) {
-			return onAdmin(userDetailsRes.data.data, {
-				cookie: req.headers.cookie,
-			});
+		const headers = { cookie: req.headers.cookie };
+		const { data: user } = await api.auth.verifyUserIfLoggedIn(headers);
+		if (admins.includes(user.email)) {
+			return onAdmin(user, headers);
 		} else {
-			return onNonAdmin(userDetailsRes.data.data, {
-				cookie: req.headers.cookie,
-			});
+			return onNonAdmin(user, headers);
 		}
 	} catch (error: any) {
 		logger.error(error.message);

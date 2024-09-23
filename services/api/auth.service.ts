@@ -12,14 +12,9 @@ export const authenticate = async (token: string): Promise<User | null> => {
 		const userId = genericParse(getNonEmptyString, decoded.id);
 		const foundUser = await cache.fetch(
 			getCacheKey(cacheParameter.USER, { id: userId }),
-			() => {
-				return userService.findById(userId);
-			}
+			() => userService.findById(userId)
 		);
-		if (!foundUser) {
-			return null;
-		}
-		return foundUser as User;
+		return foundUser;
 	} catch (error) {
 		logger.error(error);
 		return null;

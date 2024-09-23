@@ -1,4 +1,4 @@
-import { http } from "@/connections";
+import { api } from "@/connections";
 import { HTTP } from "@/constants";
 import { logger } from "@/log";
 import { authService } from "@/services";
@@ -14,19 +14,12 @@ export const page: ServerSideAuthMiddleware = async (
 		return onLoggedOut();
 	}
 	try {
-		const res = await http.get("/auth/verify", {
-			headers: {
-				cookie: req.headers.cookie,
-			},
-		});
-		if (res.data.data.name && res.data.data.phone) {
-			return onLoggedInAndOnboarded(res.data.data, {
-				cookie: req.headers.cookie,
-			});
+		const headers = { cookie: req.headers.cookie };
+		const { data: user } = await api.auth.verifyUserIfLoggedIn(headers);
+		if (user.name && user.phone) {
+			return onLoggedInAndOnboarded(user, headers);
 		} else {
-			return onLoggedInAndNotOnboarded(res.data.data, {
-				cookie: req.headers.cookie,
-			});
+			return onLoggedInAndNotOnboarded(user, headers);
 		}
 	} catch (error: any) {
 		logger.error(error.message);
