@@ -31,10 +31,32 @@ export const getAllGroups = async (req: ApiRequest, res: ApiResponse) => {
 	}
 };
 
-export const getGroupDetailsAndExpenses = async (
-	req: ApiRequest,
-	res: ApiResponse
-) => {
+export const getGroupDetails = async (req: ApiRequest, res: ApiResponse) => {
+	try {
+		const loggedInUserId = getNonEmptyString(req.user?.id);
+		const groupId = getNonEmptyString(req.query.id);
+		const group = await groupService.findById(groupId);
+		if (!group)
+			return res
+				.status(HTTP.status.NOT_FOUND)
+				.json({ message: HTTP.message.NOT_FOUND });
+		// if logged in user is not in the members list of the group, then return forbidden
+		if (!group.members.map((u) => u.id).includes(loggedInUserId))
+			return res
+				.status(HTTP.status.FORBIDDEN)
+				.json({ message: HTTP.message.FORBIDDEN });
+		return res.status(HTTP.status.SUCCESS).json({
+			message: HTTP.message.SUCCESS,
+			data: group,
+		});
+	} catch (error) {
+		return res
+			.status(HTTP.status.INTERNAL_SERVER_ERROR)
+			.json({ message: HTTP.message.INTERNAL_SERVER_ERROR });
+	}
+};
+
+export const getGroupExpenses = async (req: ApiRequest, res: ApiResponse) => {
 	try {
 		const loggedInUserId = getNonEmptyString(req.user?.id);
 		const groupId = getNonEmptyString(req.query.id);
@@ -56,10 +78,7 @@ export const getGroupDetailsAndExpenses = async (
 		);
 		return res.status(HTTP.status.SUCCESS).json({
 			message: HTTP.message.SUCCESS,
-			data: {
-				group,
-				expenses,
-			},
+			data: expenses,
 		});
 	} catch (error) {
 		return res
@@ -107,7 +126,6 @@ export const getBalancesSummary = async (req: ApiRequest, res: ApiResponse) => {
 		return res.status(HTTP.status.SUCCESS).json({
 			message: HTTP.message.SUCCESS,
 			data: {
-				group,
 				expenditure,
 				balances,
 			},
@@ -148,7 +166,6 @@ export const getGroupTransactions = async (
 		return res.status(HTTP.status.SUCCESS).json({
 			message: HTTP.message.SUCCESS,
 			data: {
-				group,
 				expenditure,
 				transactions,
 			},

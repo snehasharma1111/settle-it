@@ -3,11 +3,12 @@ import {
 	ExpenseCard,
 	GroupMetaData,
 	GroupPlaceholder,
+	Loader,
 	UpdateGroup,
 } from "@/components";
 import { api } from "@/connections";
 import { routes } from "@/constants";
-import { useConfirmationModal, useStore } from "@/hooks";
+import { useConfirmationModal, useHttpClient, useStore } from "@/hooks";
 import { Responsive, Seo } from "@/layouts";
 import { Button } from "@/library";
 import { notify } from "@/messages";
@@ -16,7 +17,6 @@ import PageNotFound from "@/pages/404";
 import styles from "@/styles/pages/Group.module.scss";
 import {
 	CreateExpenseData,
-	IExpense,
 	IGroup,
 	IUser,
 	ServerSideResult,
@@ -32,7 +32,6 @@ const classes = stylesConfig(styles, "group");
 type GroupPageProps = {
 	user: IUser;
 	group: IGroup;
-	expenses: Array<IExpense>;
 };
 
 const GroupPage: React.FC<GroupPageProps> = (props) => {
@@ -47,79 +46,67 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 		expenses,
 		setExpenses,
 	} = useStore();
+	const client = useHttpClient();
 	const router = useRouter();
 	const [openManageGroupPopup, setOpenManageGroupPopup] = useState(false);
 	const [openAddExpensePopup, setOpenAddExpensePopup] = useState(false);
-	const [updatingGroup, setUpdatingGroup] = useState(false);
-	const [creatingExpense, setCreatingExpense] = useState(false);
-	const [deletingExpense, setDeletingExpense] = useState(false);
 	const [groupDetails, setGroupDetails] = useState<IGroup>(props.group);
 
-	useEffect(() => {
-		dispatch(setUser(props.user));
-		const groupExpenses = expenses
-			.filter((exp) => exp.group.id !== groupDetails.id)
-			.concat(props.expenses);
-		dispatch(setExpenses(groupExpenses));
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
-
-	useEffect(() => {
-		if (props.group) {
-			const group = groups.find((group) => group?.id === props.group?.id);
-			if (group) setGroupDetails(group);
-			else {
-				setGroupDetails(props.group);
-				dispatch(setGroups([...groups, props.group]));
-			}
+	const getGroupExpensesHelper = async () => {
+		try {
+			client.updateId("get-expenses");
+			const fetchedExpenses = await client.call(
+				api.group.getGroupExpenses,
+				props.group.id
+			);
+			const groupExpenses = expenses
+				.filter((exp) => exp.group.id !== groupDetails.id)
+				.concat(fetchedExpenses);
+			dispatch(setExpenses(groupExpenses));
+		} catch (error) {
+			notify.error(error);
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [groups]);
+	};
 
 	const updateGroupHelper = async (
 		id: string,
 		updatedGroupData: UpdateGroupData
 	) => {
 		try {
-			setUpdatingGroup(true);
-			const res = await dispatch(
-				updateGroup({ id, data: updatedGroupData })
-			).unwrap();
+			client.updateId("update");
+			const res = await client.dispatch(updateGroup, {
+				id,
+				data: updatedGroupData,
+			});
 			if (res) {
 				setOpenManageGroupPopup(false);
 			}
 		} catch (error) {
 			notify.error(error);
-		} finally {
-			setUpdatingGroup(false);
 		}
 	};
 
 	const deleteGroupHelper = async () => {
 		try {
-			setDeletingExpense(true);
-			const res = await dispatch(deleteGroup(groupDetails?.id)).unwrap();
+			client.updateId("delete");
+			const res = await client.dispatch(deleteGroup, groupDetails?.id);
 			if (res) {
 				router.push(routes.HOME);
 			}
 		} catch (error) {
 			notify.error(error);
-		} finally {
-			setDeletingExpense(false);
 		}
 	};
 
 	const createExpenseHelper = async (data: CreateExpenseData) => {
 		try {
-			setCreatingExpense(true);
-			const res = await dispatch(createExpense(data));
+			client.updateId("create");
+			const res = await client.dispatch(createExpense, data);
 			if (res) {
 				setOpenAddExpensePopup(false);
 			}
 		} catch (error) {
 			notify.error(error);
-		} finally {
-			setCreatingExpense(false);
 		}
 	};
 
@@ -136,8 +123,22 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 		() => {
 			deleteGroupConfirmation.closePopup();
 		},
-		deletingExpense
+		client.loading && client.id === "delete"
 	);
+
+	useEffect(() => {
+		dispatch(setUser(props.user));
+		getGroupExpensesHelper();
+		if (props.group) {
+			const group = groups.find((group) => group?.id === props.group?.id);
+			if (group) setGroupDetails(group);
+			else {
+				setGroupDetails(props.group);
+				dispatch(setGroups([...groups, props.group]));
+			}
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	if (!props.group)
 		return <PageNotFound description={(props as any).error} />;
@@ -150,9 +151,15 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 					group={groupDetails}
 					onUpdate={() => setOpenManageGroupPopup(true)}
 				/>
-				<section className={classes("-body")}>
-					{expenses.filter((exp) => exp.group.id === groupDetails.id)
-						.length === 0 ? (
+				<section
+					className={classes("-body", {
+						"-body--center":
+							client.loading && client.id === "get-expenses",
+					})}
+				>
+					{client.loading && client.id === "get-expenses" ? (
+						<Loader.Spinner />
+					) : !expenses.some((a) => a.group.id === props.group.id) ? (
 						<GroupPlaceholder
 							action={() => setOpenAddExpensePopup(true)}
 						/>
@@ -182,8 +189,7 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 						</Responsive.Row>
 					)}
 				</section>
-				{expenses.filter((exp) => exp.group.id === groupDetails.id)
-					.length > 0 ? (
+				{expenses.some((exp) => exp.group.id === props.group.id) ? (
 					<Button
 						onClick={() => setOpenAddExpensePopup(true)}
 						className={classes("-add-fab")}
@@ -204,7 +210,7 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 						setOpenManageGroupPopup(false);
 						deleteGroupConfirmation.openPopup();
 					}}
-					loading={updatingGroup}
+					loading={client.loading && client.id === "update"}
 				/>
 			) : null}
 			{openAddExpensePopup ? (
@@ -212,7 +218,7 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 					groupId={groupDetails.id}
 					onClose={() => setOpenAddExpensePopup(false)}
 					onSave={createExpenseHelper}
-					loading={creatingExpense}
+					loading={client.loading && client.id === "create"}
 				/>
 			) : null}
 			{deleteGroupConfirmation.showPopup
@@ -231,15 +237,11 @@ export const getServerSideProps = (
 		async onLoggedInAndOnboarded(user, headers) {
 			try {
 				const id = getNonEmptyString(context.query.id);
-				const groupDetailsRes = await api.group.getGroupDetails(
-					id,
-					headers
-				);
+				const { data } = await api.group.getGroupDetails(id, headers);
 				return {
 					props: {
 						user,
-						group: groupDetailsRes.data.group,
-						expenses: groupDetailsRes.data.expenses,
+						group: data,
 					},
 				};
 			} catch (error: any) {

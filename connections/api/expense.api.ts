@@ -28,7 +28,7 @@ export const createExpense = async (
 	data: CreateExpenseData,
 	headers?: any
 ): Promise<ApiRes<IExpense>> => {
-	const response = await http.post(`/groups/${data.groupId}/expense`, data, {
+	const response = await http.post(`/groups/${data.groupId}/expenses`, data, {
 		headers,
 	});
 	return response.data;

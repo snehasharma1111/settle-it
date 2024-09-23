@@ -1,8 +1,9 @@
-import { GroupMetaData, GroupPlaceholder } from "@/components";
+import { GroupMetaData, GroupPlaceholder, Loader } from "@/components";
 import { api } from "@/connections";
 import { routes } from "@/constants";
-import { useStore } from "@/hooks";
+import { useHttpClient, useStore } from "@/hooks";
 import { Seo } from "@/layouts";
+import { notify } from "@/messages";
 import { authMiddleware } from "@/middlewares";
 import PageNotFound from "@/pages/404";
 import styles from "@/styles/pages/Group.module.scss";
@@ -16,17 +17,30 @@ const classes = stylesConfig(styles, "group");
 type GroupPageProps = {
 	user: IUser;
 	group: IGroup;
-	expenditure: number;
-	transactions: Array<ITransaction>;
 };
 
 const GroupPage: React.FC<GroupPageProps> = (props) => {
 	const { setUser, dispatch, groups } = useStore();
 	const router = useRouter();
+	const client = useHttpClient();
 	const [groupDetails, setGroupDetails] = useState<IGroup>(props.group);
+	const [transactions, setTransactions] = useState<Array<ITransaction>>([]);
+
+	const getGroupTransactionsHelper = async () => {
+		try {
+			const fetchedTransactions = await client.call(
+				api.group.getTransactions,
+				props.group.id
+			);
+			setTransactions(fetchedTransactions.transactions);
+		} catch (error) {
+			notify.error(error);
+		}
+	};
 
 	useEffect(() => {
 		dispatch(setUser(props.user));
+		getGroupTransactionsHelper();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
@@ -39,62 +53,60 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 		return <PageNotFound description={(props as any).error} />;
 
 	return (
-		<>
+		<main className={classes("")}>
 			<Seo title={`${groupDetails?.name} - Transactions | Settle It`} />
-			<main className={classes("")}>
-				<GroupMetaData group={groupDetails} />
-				{props.transactions.length === 0 ? (
-					<GroupPlaceholder
-						action={() =>
-							router.push(routes.GROUP(groupDetails.id))
-						}
-					/>
-				) : (
-					<section className={classes("-body", "-body--table")}>
-						<table border={1}>
-							<thead>
-								<tr>
-									<th>S. No.</th>
-									<th>Title</th>
-									<th>From</th>
-									<th>To</th>
-									<th>Amount</th>
-									<th>Settled</th>
+			<GroupMetaData group={groupDetails} />
+			{client.loading ? (
+				<section className={classes("-body", "-body--center")}>
+					<Loader.Spinner />
+				</section>
+			) : transactions.length === 0 ? (
+				<GroupPlaceholder
+					action={() => router.push(routes.GROUP(groupDetails.id))}
+				/>
+			) : (
+				<section className={classes("-body", "-body--table")}>
+					<table border={1}>
+						<thead>
+							<tr>
+								<th>S. No.</th>
+								<th>Title</th>
+								<th>From</th>
+								<th>To</th>
+								<th>Amount</th>
+								<th>Settled</th>
+							</tr>
+						</thead>
+						<tbody>
+							{transactions.map((transaction, index) => (
+								<tr key={`transaction-${index}`}>
+									<td>{index + 1}</td>
+									<td>{transaction.title}</td>
+									<td>
+										{transaction.from.name ||
+											transaction.from.email}
+									</td>
+									<td>
+										{transaction.to.name ||
+											transaction.to.email}
+									</td>
+									<td>
+										{transaction.owed > 0
+											? transaction.owed
+											: transaction.paid}
+									</td>
+									<td>
+										{transaction.owed === 0
+											? "Yes ✅"
+											: "No ❌"}
+									</td>
 								</tr>
-							</thead>
-							<tbody>
-								{props.transactions.map(
-									(transaction, index) => (
-										<tr key={`transaction-${index}`}>
-											<td>{index + 1}</td>
-											<td>{transaction.title}</td>
-											<td>
-												{transaction.from.name ||
-													transaction.from.email}
-											</td>
-											<td>
-												{transaction.to.name ||
-													transaction.to.email}
-											</td>
-											<td>
-												{transaction.owed > 0
-													? transaction.owed
-													: transaction.paid}
-											</td>
-											<td>
-												{transaction.owed === 0
-													? "Yes ✅"
-													: "No ❌"}
-											</td>
-										</tr>
-									)
-								)}
-							</tbody>
-						</table>
-					</section>
-				)}
-			</main>
-		</>
+							))}
+						</tbody>
+					</table>
+				</section>
+			)}
+		</main>
 	);
 };
 
@@ -107,14 +119,11 @@ export const getServerSideProps = (
 		async onLoggedInAndOnboarded(user, headers) {
 			try {
 				const id = getNonEmptyString(context.query.id);
-				const groupDetailsRes = await api.group.getTransactions(
-					id,
-					headers
-				);
+				const { data } = await api.group.getGroupDetails(id, headers);
 				return {
 					props: {
 						user,
-						...groupDetailsRes.data,
+						group: data,
 					},
 				};
 			} catch (error: any) {

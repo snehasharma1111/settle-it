@@ -1,5 +1,5 @@
 import { HTTP } from "@/constants";
-import { expenseControllers } from "@/controllers";
+import { expenseControllers, groupControlllers } from "@/controllers";
 import { db } from "@/db";
 import { logger } from "@/log";
 import { authMiddleware } from "@/middlewares";
@@ -12,6 +12,10 @@ const handler: NextApiHandler = async (req: ApiRequest, res: ApiResponse) => {
 		const { method } = req;
 
 		switch (method) {
+			case "GET":
+				return authMiddleware.apiRoute(
+					groupControlllers.getGroupExpenses
+				)(req, res);
 			case "POST":
 				return authMiddleware.apiRoute(
 					expenseControllers.createNewExpense

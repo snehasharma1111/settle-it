@@ -14,7 +14,7 @@ const handler: NextApiHandler = async (req: ApiRequest, res: ApiResponse) => {
 		switch (method) {
 			case "GET":
 				return authMiddleware.apiRoute(
-					groupControlllers.getGroupDetailsAndExpenses
+					groupControlllers.getGroupDetails
 				)(req, res);
 			case "PATCH":
 				return authMiddleware.apiRoute(groupControlllers.updateGroup)(

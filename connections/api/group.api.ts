@@ -19,13 +19,16 @@ export const getAllGroups = async (
 export const getGroupDetails = async (
 	id: string,
 	headers?: any
-): Promise<
-	ApiRes<{
-		group: IGroup;
-		expenses: Array<IExpense>;
-	}>
-> => {
+): Promise<ApiRes<IGroup>> => {
 	const response = await http.get(`/groups/${id}`, { headers });
+	return response.data;
+};
+
+export const getGroupExpenses = async (
+	id: string,
+	headers?: any
+): Promise<ApiRes<Array<IExpense>>> => {
+	const response = await http.get(`/groups/${id}/expenses`, { headers });
 	return response.data;
 };
 
@@ -34,7 +37,6 @@ export const getBalancesSummary = async (
 	headers?: any
 ): Promise<
 	ApiRes<{
-		group: IGroup;
 		expenditure: number;
 		balances: IBalancesSummary;
 	}>
@@ -48,7 +50,6 @@ export const getTransactions = async (
 	headers?: any
 ): Promise<
 	ApiRes<{
-		group: IGroup;
 		expenditure: number;
 		transactions: Array<ITransaction>;
 	}>
