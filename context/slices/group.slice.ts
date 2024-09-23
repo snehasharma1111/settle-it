@@ -5,7 +5,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState: Array<IGroup> = [];
 
 export const groupSlice = createSlice({
-	name: "group",
+	name: "groups",
 	initialState,
 	reducers: {
 		setGroups: (
@@ -48,4 +48,4 @@ export const { setGroups } = groupSlice.actions;
 
 export default groupSlice.reducer;
 
-export const groupSelector = (state: { group: Array<IGroup> }) => state.group;
+export const groupSelector = (state: { groups: Array<IGroup> }) => state.groups;

@@ -9,7 +9,7 @@ export * from "./user.slice";
 const reducers = {
 	expense: expenseReducer,
 	user: authReducer,
-	group: groupReducer,
+	groups: groupReducer,
 };
 
 export default reducers;

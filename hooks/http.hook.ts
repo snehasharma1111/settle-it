@@ -5,11 +5,14 @@ import { AxiosRequestConfig } from "axios";
 import { useState } from "react";
 import { useStore } from "./store.hook";
 
-export const useHttpClient = (initialIdentifier: string = "") => {
+export const useHttpClient = <Type extends any = any>(
+	initialData: Type = {} as Type,
+	initialIdentifier: string = ""
+) => {
 	const [indentifier, setIndentifier] = useState(initialIdentifier);
 	const [loading, setLoading] = useState<boolean>(false);
 	const [error, setError] = useState<unknown>();
-	const [data, setData] = useState<any>(null);
+	const [data, setData] = useState<Type>(initialData);
 	const { dispatch: dispatchToStore } = useStore();
 
 	const client = {
@@ -104,7 +107,7 @@ export const useHttpClient = (initialIdentifier: string = "") => {
 		},
 	};
 
-	const call = async <T extends any, U extends Array<any> = []>(
+	const call = async <T extends Type, U extends Array<any> = []>(
 		callback: (..._: U) => Promise<ApiRes<T>>,
 		...args: U
 	): Promise<T> => {

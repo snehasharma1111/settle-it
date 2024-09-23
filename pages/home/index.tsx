@@ -42,7 +42,7 @@ const HomePage: React.FC<HomePageProps> = (props) => {
 	const createGroupHelper = async (newGroupData: CreateGroupData) => {
 		try {
 			setCreatingGroup(true);
-			const res = await dispatch(createGroup(newGroupData)).unwrap();
+			const res = await client.dispatch(createGroup, newGroupData);
 			if (res) {
 				setOpenCreateGroupPopup(false);
 			}

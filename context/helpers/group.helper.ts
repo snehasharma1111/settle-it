@@ -3,7 +3,7 @@ import { CreateGroupData, UpdateGroupData } from "@/types";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 export const getAllGroups = createAsyncThunk(
-	"group/getAll",
+	"groups/getAll",
 	async (_, thunkApi) => {
 		try {
 			const res = await api.group.getAllGroups();
@@ -15,7 +15,7 @@ export const getAllGroups = createAsyncThunk(
 );
 
 export const getGroupDetails = createAsyncThunk(
-	"group/getDetails",
+	"groups/getDetails",
 	async (id: string, thunkApi) => {
 		try {
 			const res = await api.group.getGroupDetails(id);
@@ -27,7 +27,7 @@ export const getGroupDetails = createAsyncThunk(
 );
 
 export const createGroup = createAsyncThunk(
-	"group/create",
+	"groups/create",
 	async (data: CreateGroupData, thunkApi) => {
 		try {
 			const res = await api.group.createGroup(data);
@@ -39,7 +39,7 @@ export const createGroup = createAsyncThunk(
 );
 
 export const updateGroup = createAsyncThunk(
-	"group/update",
+	"groups/update",
 	async ({ id, data }: { id: string; data: UpdateGroupData }, thunkApi) => {
 		try {
 			const res = await api.group.updateGroup(id, data);
@@ -51,7 +51,7 @@ export const updateGroup = createAsyncThunk(
 );
 
 export const deleteGroup = createAsyncThunk(
-	"group/delete",
+	"groups/delete",
 	async (id: string, thunkApi) => {
 		try {
 			const res = await api.group.deleteGroup(id);
