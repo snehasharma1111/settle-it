@@ -6,7 +6,7 @@ import mongoose from "mongoose";
 
 declare global {
 	var isConnected: boolean;
-	var db: mongoose.Mongoose;
+	var db: mongoose.Mongoose | null;
 	var client: any;
 }
 
@@ -30,16 +30,25 @@ export class DatabaseManager {
 			await this.ensureIndexes();
 		} catch (error) {
 			logger.error("Error connecting to MongoDB", error);
+			throw error;
 		}
 	}
 
-	async ensureIndexes() {
-		try {
-			await UserModel.createIndexes();
-			logger.info("MongoDB indexes created");
-		} catch (error) {
-			logger.error(error);
+	public async disconnect() {
+		if (!global.isConnected) {
+			logger.info("MongoDB is already disconnected");
+			return;
 		}
+		logger.info("Disconnecting from MongoDB");
+		global.db = null;
+		await mongoose.disconnect();
+		global.isConnected = false;
+		logger.info("MongoDB disconnected");
+	}
+
+	async ensureIndexes() {
+		await UserModel.createIndexes();
+		logger.info("MongoDB indexes created");
 	}
 }
 
