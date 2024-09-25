@@ -34,7 +34,7 @@ export const getGroupDetails = async (req: ApiRequest, res: ApiResponse) => {
 		const loggedInUserId = getNonEmptyString(req.user?.id);
 		const groupId = getNonEmptyString(req.query.id);
 		const group = await cache.fetch(
-			getCacheKey(cacheParameter.GROUP, { groupId }),
+			getCacheKey(cacheParameter.GROUP, { id: groupId }),
 			() => groupService.findById(groupId)
 		);
 		if (!group)
