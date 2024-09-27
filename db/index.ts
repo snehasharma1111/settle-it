@@ -82,7 +82,7 @@ export class DatabaseManager {
 	}
 
 	public async ping() {
-		if (!global.mongoose.conn) {
+		if (!global.mongoose.conn || !global.mongoose.conn.connection.db) {
 			logger.info("MongoDB is not connected");
 			return false;
 		}
