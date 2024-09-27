@@ -1,25 +1,12 @@
-import { HTTP } from "@/constants";
-import { db } from "@/db";
-import { logger } from "@/log";
+import { ApiWrapper } from "@/helpers";
 import { ApiRequest, ApiResponse } from "@/types";
 
-const handler = async (req: ApiRequest, res: ApiResponse) => {
-	try {
-		await db.connect();
-		const { method } = req;
-		switch (method) {
-			case "GET":
-				return res.status(200).json({ message: "API is healthy" });
-			default:
-				res.setHeader("Allow", ["GET"]);
-				return res.status(405).end(`Method ${method} Not Allowed`);
-		}
-	} catch (error) {
-		logger.error(error);
-		return res.status(500).json({
-			error: HTTP.message.INTERNAL_SERVER_ERROR,
-		});
-	}
+const healthCallback = (_: ApiRequest, res: ApiResponse) => {
+	return res.status(200).json({ message: "API is healthy" });
 };
+
+const api = new ApiWrapper({ GET: healthCallback }, { db: true });
+
+const handler = api.getHandler();
 
 export default handler;

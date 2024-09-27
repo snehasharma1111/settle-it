@@ -1,11 +1,11 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { IUser } from "./user";
 
-interface ApiRequest extends NextApiRequest {
+export interface ApiRequest extends NextApiRequest {
 	user?: IUser;
 }
 
-interface ApiResponse extends NextApiResponse {
+export interface ApiResponse extends NextApiResponse {
 	user?: IUser;
 }
 
@@ -20,4 +20,20 @@ export type T_RESPONSE_MESSAGES =
 	| "NOT_FOUND"
 	| "INTERNAL_SERVER_ERROR";
 
-export type { ApiRequest, ApiResponse };
+export type ApiControllers = {
+	GET?: any;
+	POST?: any;
+	PUT?: any;
+	PATCH?: any;
+	DELETE?: any;
+};
+
+export type ApiController = (_: ApiRequest, __: ApiResponse) => any;
+
+export type ApiWrapperOptions = {
+	db?: boolean;
+	auth?: boolean;
+	admin?: boolean;
+};
+
+export type T_API_METHODS = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";

@@ -1,38 +1,10 @@
-import { HTTP } from "@/constants";
 import { authControllers } from "@/controllers";
-import { db } from "@/db";
-import { logger } from "@/log";
-import { authMiddleware } from "@/middlewares";
-import { ApiRequest, ApiResponse } from "@/types";
-import { NextApiHandler } from "next";
+import { ApiWrapper } from "@/helpers";
 
-const handler: NextApiHandler = async (req: ApiRequest, res: ApiResponse) => {
-	try {
-		await db.connect();
-		const { method } = req;
-
-		switch (method) {
-			case "GET":
-				return authMiddleware.apiRoute(authControllers.verify)(
-					req,
-					res
-				);
-			default:
-				res.setHeader("Allow", ["GET"]);
-				return res
-					.status(HTTP.status.METHOD_NOT_ALLOWED)
-					.send(`Method ${method} Not Allowed`);
-		}
-	} catch (error: any) {
-		logger.error(error);
-		return res.status(HTTP.status.INTERNAL_SERVER_ERROR).json({
-			message: error.message || HTTP.message.INTERNAL_SERVER_ERROR,
-		});
-	}
-};
+const api = new ApiWrapper(
+	{ GET: authControllers.verify },
+	{ db: true, auth: true }
+);
+const handler = api.getHandler();
 
 export default handler;
-
-export const config = {
-	maxDuration: 60,
-};

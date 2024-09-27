@@ -1,37 +1,11 @@
-import { HTTP } from "@/constants";
 import { authControllers } from "@/controllers";
-import { db } from "@/db";
-import { logger } from "@/log";
-import { validationMiddleware } from "@/middlewares";
-import { ApiRequest, ApiResponse } from "@/types";
-import { NextApiHandler } from "next";
+import { ApiWrapper } from "@/helpers";
 
-const handler: NextApiHandler = async (req: ApiRequest, res: ApiResponse) => {
-	try {
-		await db.connect();
-		const { method } = req;
+const api = new ApiWrapper(
+	{ POST: authControllers.verifyOtpWithEmail },
+	{ db: true }
+);
 
-		switch (method) {
-			case "POST":
-				return validationMiddleware.email(
-					authControllers.verifyOtpWithEmail
-				)(req, res);
-			default:
-				res.setHeader("Allow", ["POST"]);
-				return res
-					.status(HTTP.status.METHOD_NOT_ALLOWED)
-					.send(`Method ${method} Not Allowed`);
-		}
-	} catch (error: any) {
-		logger.error(error);
-		return res.status(HTTP.status.INTERNAL_SERVER_ERROR).json({
-			message: error.message || HTTP.message.INTERNAL_SERVER_ERROR,
-		});
-	}
-};
+export default api.getHandler();
 
-export default handler;
-
-export const config = {
-	maxDuration: 60,
-};
+export const config = { maxDuration: 60 };
