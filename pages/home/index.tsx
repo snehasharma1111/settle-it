@@ -58,7 +58,7 @@ const HomePage: React.FC<HomePageProps> = (props) => {
 			<Seo title={`${props.user.name} - Home | Settle It`} />
 			<Home.Header />
 			<main className={classes("")}>
-				{client.loading ? (
+				{client.loading && groups.length === 0 ? (
 					<Loader.Spinner />
 				) : groups.length > 0 ? (
 					<Responsive.Row>

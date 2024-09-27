@@ -163,7 +163,7 @@ export const getGroupTransactions = async (
 				.json({ message: HTTP.message.FORBIDDEN });
 		const [expenditure, transactions] = await Promise.all([
 			groupService.getExpenditure(groupId),
-			groupService.getAllTransactionsForGroup(groupId),
+			groupService.getAllTransactions(groupId),
 		]);
 		return res.status(HTTP.status.SUCCESS).json({
 			message: HTTP.message.SUCCESS,

@@ -157,7 +157,9 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 							client.loading && client.id === "get-expenses",
 					})}
 				>
-					{client.loading && client.id === "get-expenses" ? (
+					{client.loading &&
+					client.id === "get-expenses" &&
+					!expenses.some((a) => a.group.id === props.group.id) ? (
 						<Loader.Spinner />
 					) : !expenses.some((a) => a.group.id === props.group.id) ? (
 						<GroupPlaceholder

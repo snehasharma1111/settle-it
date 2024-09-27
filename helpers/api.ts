@@ -2,6 +2,7 @@ import { apiMethods, HTTP } from "@/constants";
 import { db } from "@/db";
 import { logger } from "@/log";
 import { adminMiddleware, authMiddleware } from "@/middlewares";
+import { profiler } from "@/services";
 import {
 	ApiController,
 	ApiControllers,
@@ -121,15 +122,40 @@ export class ApiWrapper {
 
 				const { method } = req;
 				if (method === apiMethods.GET && this.GET) {
-					return this.wrapper(this.GET)(req, res);
+					return profiler(
+						this.wrapper(this.GET),
+						[this.GET.name],
+						req,
+						res
+					);
 				} else if (method === apiMethods.POST && this.POST) {
-					return this.wrapper(this.POST)(req, res);
+					return profiler(
+						this.wrapper(this.POST),
+						[this.POST.name],
+						req,
+						res
+					);
 				} else if (method === apiMethods.PUT && this.PUT) {
-					return this.wrapper(this.PUT)(req, res);
+					return profiler(
+						this.wrapper(this.PUT),
+						[this.PUT.name],
+						req,
+						res
+					);
 				} else if (method === apiMethods.PATCH && this.PATCH) {
-					return this.wrapper(this.PATCH)(req, res);
+					return profiler(
+						this.wrapper(this.PATCH),
+						[this.PATCH.name],
+						req,
+						res
+					);
 				} else if (method === apiMethods.DELETE && this.DELETE) {
-					return this.wrapper(this.DELETE)(req, res);
+					return profiler(
+						this.wrapper(this.DELETE),
+						[this.DELETE.name],
+						req,
+						res
+					);
 				} else {
 					res.setHeader("Allow", this.allowedMethods);
 					return res
