@@ -143,3 +143,16 @@ export const getEnumeration = <T extends string>(
 	}, {} as any);
 	return enumeration;
 };
+
+// Get Image Link from Drive asset
+export const getImageUrlFromDriveLink = (link: string) => {
+	// eslint-disable-next-line no-useless-escape
+	const regex = /^https:\/\/drive\.google\.com\/file\/d\/([^\/]+)(\/|$)/;
+	const match = link.match(regex);
+	if (match && match[1]) {
+		const assetUrl = `https://lh3.googleusercontent.com/d/${match[1]}=w1000`;
+		return assetUrl;
+	} else {
+		return link;
+	}
+};

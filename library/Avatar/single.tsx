@@ -1,5 +1,5 @@
 import { fallbackAssets } from "@/constants";
-import { stylesConfig } from "@/utils";
+import { getImageUrlFromDriveLink, stylesConfig } from "@/utils";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import styles from "./styles.module.scss";
@@ -22,9 +22,12 @@ export const Avatar: React.FC<IAvatarProps> = ({
 			? true
 			: false
 	);
-	const [imageUrl, setImageUrl] = useState(
-		src && (src.startsWith("https://") || src.startsWith("/")) ? src : ""
-	);
+	const imageUrl = (() => {
+		if (src && (src.startsWith("https://") || src.startsWith("/"))) {
+			return getImageUrlFromDriveLink(src);
+		}
+		return "";
+	})();
 
 	const getAvatarSize = () => {
 		switch (size) {
@@ -39,25 +42,12 @@ export const Avatar: React.FC<IAvatarProps> = ({
 		}
 	};
 
-	const getImageUrlFromDriveLink = (link: string) => {
-		// eslint-disable-next-line no-useless-escape
-		const regex = /^https:\/\/drive\.google\.com\/file\/d\/([^\/]+)(\/|$)/;
-		const match = link.match(regex);
-		if (match && match[1]) {
-			const assetUrl = `https://lh3.googleusercontent.com/d/${match[1]}=w1000`;
-			return assetUrl;
-		} else {
-			return link;
-		}
-	};
-
 	useEffect(() => {
 		setIsImageValid(
 			src && (src.startsWith("https://") || src.startsWith("/"))
 				? true
 				: false
 		);
-		setImageUrl(getImageUrlFromDriveLink(src));
 	}, [src, fallback]);
 
 	return (
