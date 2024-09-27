@@ -5,10 +5,16 @@ import { UserModel } from "@/models";
 import mongoose from "mongoose";
 
 declare global {
-	var isConnected: boolean;
-	var db: mongoose.Mongoose | null;
-	var client: any;
+	var mongoose: {
+		conn: typeof import("mongoose") | null;
+		promise: Promise<typeof import("mongoose")> | null;
+	};
 }
+
+global.mongoose = global.mongoose || {
+	conn: null,
+	promise: null,
+};
 
 export class DatabaseManager {
 	constructor() {
@@ -16,33 +22,44 @@ export class DatabaseManager {
 	}
 
 	public async connect() {
-		if (global.isConnected) {
+		if (global.mongoose.conn) {
 			logger.info("MongoDB is already connected");
 			return;
 		}
 
-		try {
-			logger.info("Connecting to MongoDB");
-			const db = await mongoose.connect(url.db);
-			logger.info("MongoDB connected");
-			global.isConnected = db.connections[0].readyState === 1;
-			global.db = db;
-			await this.ensureIndexes();
-		} catch (error) {
-			logger.error("Error connecting to MongoDB", error);
-			throw error;
+		if (!global.mongoose.promise) {
+			global.mongoose.promise = mongoose
+				.connect(url.db)
+				.then((mongooseInstance) => {
+					logger.info("MongoDB connected");
+					return mongooseInstance;
+				})
+				.catch((error) => {
+					logger.error("Error connecting to MongoDB", error);
+					throw error;
+				});
+			try {
+				logger.info("Connecting to MongoDB");
+				global.mongoose.conn = await global.mongoose.promise;
+				await this.ensureIndexes();
+			} catch (error) {
+				logger.error("Error connecting to MongoDB", error);
+				global.mongoose.conn = null;
+				global.mongoose.promise = null;
+				throw error;
+			}
 		}
 	}
 
 	public async disconnect() {
-		if (!global.isConnected) {
+		if (!global.mongoose.conn) {
 			logger.info("MongoDB is already disconnected");
 			return;
 		}
 		logger.info("Disconnecting from MongoDB");
-		global.db = null;
 		await mongoose.disconnect();
-		global.isConnected = false;
+		global.mongoose.conn = null;
+		global.mongoose.promise = null;
 		logger.info("MongoDB disconnected");
 	}
 

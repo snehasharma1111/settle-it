@@ -34,12 +34,13 @@ export const findById = async (id: string): Promise<IExpense | null> => {
 		() =>
 			ExpenseModel.findById(id)
 				.populate("groupId paidBy createdBy")
+				.then((res) => parsePopulatedExpense(res))
 				.catch((error: any) => {
 					if (error.kind === "ObjectId") return null;
 					throw error;
 				})
 	);
-	return parsePopulatedExpense(res);
+	return res;
 };
 
 export const find = async (

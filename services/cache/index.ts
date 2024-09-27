@@ -48,7 +48,12 @@ class Cache {
 		callback: (_?: any) => Promise<T>,
 		ttl: number = TTL_SECONDS
 	): Promise<T> {
-		if (key) {
+		if (
+			typeof key === "string" &&
+			key.length > 0 &&
+			key !== "undefined" &&
+			key !== "null"
+		) {
 			const cachedValue: any = this.cache.get(key);
 			if (cachedValue) {
 				return cachedValue;

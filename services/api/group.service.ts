@@ -50,12 +50,13 @@ export const findById = async (id: string): Promise<IGroup | null> => {
 		() =>
 			GroupModel.findById(id)
 				.populate("members createdBy")
+				.then((res) => parsePopulatedGroup(res))
 				.catch((error: any) => {
 					if (error.kind === "ObjectId") return null;
 					throw error;
 				})
 	);
-	return parsePopulatedGroup(res);
+	return res;
 };
 
 export const find = async (
