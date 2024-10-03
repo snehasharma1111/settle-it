@@ -43,13 +43,6 @@ const PrivacyPolicyPage: React.FC = () => {
 							Information related to the groups you join, expenses
 							you add, and how much you owe or are owed.
 						</dd>
-						<dt>Payment Information</dt>
-						<dd>
-							When settling up expenses, payment methods and
-							transaction details might be collected but are
-							handled securely through third-party payment
-							processors.
-						</dd>
 					</dl>
 				</Typography>
 				<Typography as="h3" size="xl" weight="medium">
@@ -88,9 +81,8 @@ const PrivacyPolicyPage: React.FC = () => {
 							you are part of.
 						</li>
 						<li>
-							With Payment Processors: Payment-related data
-							(payment methods and transaction details) is shared
-							with third-party payment processors.
+							With people: People can search you with your email
+							and read your name and profile picture.
 						</li>
 					</ul>
 				</Typography>
