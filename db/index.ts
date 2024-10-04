@@ -2,7 +2,6 @@
 import { url } from "@/config";
 import { logger } from "@/log";
 import { UserModel } from "@/models";
-import { sleep } from "@/utils";
 import mongoose from "mongoose";
 
 declare global {
@@ -36,18 +35,7 @@ export class DatabaseManager {
 			mongoose.set("strictQuery", true);
 			mongoose.set("debug", true);
 			global.mongoose.promise = mongoose
-				.connect(url.db, {
-					family: 4,
-					maxPoolSize: 10,
-					minPoolSize: 1,
-					connectTimeoutMS: 10000, // Timeout after 10 seconds if not connected
-					serverSelectionTimeoutMS: 5000, // Timeout for server selection
-					heartbeatFrequencyMS: 10000, // Check server every 10 seconds
-					// keepAlive: true, // Keep the connection alive
-					// keepAliveInitialDelay: 300000, // Send a keep-alive ping every 5 minutes})
-					// autoIndex: true,
-					// autoCreate: true,
-				})
+				.connect(url.db)
 				.then((mongooseInstance) => {
 					logger.info("MongoDB connected");
 					return mongooseInstance;
