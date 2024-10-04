@@ -19,6 +19,7 @@ global.mongoose = global.mongoose || {
 export class DatabaseManager {
 	private static isIntervalSet = false;
 	constructor() {
+		this.connect();
 		if (!DatabaseManager.isIntervalSet) {
 			DatabaseManager.isIntervalSet = true;
 			setInterval(() => this.ping(), 10000);
@@ -26,12 +27,12 @@ export class DatabaseManager {
 	}
 
 	public async connect() {
-		if (global.mongoose.conn) {
+		if (global.mongoose.conn && global.mongoose.conn.connection.db) {
 			logger.info("MongoDB is already connected");
 			return global.mongoose.conn;
 		}
 
-		if (!global.mongoose.promise) {
+		if (!global.mongoose.promise || !global.mongoose.conn) {
 			mongoose.set("strictQuery", true);
 			mongoose.set("debug", true);
 			global.mongoose.promise = mongoose
@@ -46,7 +47,6 @@ export class DatabaseManager {
 				});
 			try {
 				logger.info("Connecting to MongoDB");
-				// await sleep(10);
 				global.mongoose.conn = await global.mongoose.promise;
 				await this.ensureIndexes();
 				return global.mongoose.conn;
