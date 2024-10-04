@@ -34,9 +34,8 @@ export class DatabaseManager {
 
 		if (!global.mongoose.promise || !global.mongoose.conn) {
 			mongoose.set("strictQuery", true);
-			mongoose.set("debug", true);
 			global.mongoose.promise = mongoose
-				.connect(url.db)
+				.connect(url.db, { heartbeatFrequencyMS: 10000 })
 				.then((mongooseInstance) => {
 					logger.info("MongoDB connected");
 					return mongooseInstance;
