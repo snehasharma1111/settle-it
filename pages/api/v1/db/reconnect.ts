@@ -1,5 +1,5 @@
 import { db } from "@/db";
-import { ApiWrapper } from "@/helpers";
+import { ApiRouteHandler } from "@/helpers";
 import { ApiRequest, ApiResponse } from "@/types";
 const reconnectionHandler = async (_: ApiRequest, res: ApiResponse) => {
 	await db.disconnect();
@@ -7,7 +7,7 @@ const reconnectionHandler = async (_: ApiRequest, res: ApiResponse) => {
 	return res.status(200).json({ message: "Reconnected to DB" });
 };
 
-const api = new ApiWrapper({ GET: reconnectionHandler });
+const api = new ApiRouteHandler({ GET: reconnectionHandler });
 
 const handler = api.getHandler();
 

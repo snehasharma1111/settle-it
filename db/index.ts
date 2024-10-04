@@ -2,6 +2,7 @@
 import { url } from "@/config";
 import { logger } from "@/log";
 import { UserModel } from "@/models";
+import { sleep } from "@/utils";
 import mongoose from "mongoose";
 
 declare global {
@@ -19,7 +20,6 @@ global.mongoose = global.mongoose || {
 export class DatabaseManager {
 	private static isIntervalSet = false;
 	constructor() {
-		this.connect();
 		if (!DatabaseManager.isIntervalSet) {
 			DatabaseManager.isIntervalSet = true;
 			setInterval(() => this.ping(), 10000);
@@ -29,19 +29,24 @@ export class DatabaseManager {
 	public async connect() {
 		if (global.mongoose.conn) {
 			logger.info("MongoDB is already connected");
-			return;
+			return global.mongoose.conn;
 		}
 
 		if (!global.mongoose.promise) {
+			mongoose.set("strictQuery", true);
+			mongoose.set("debug", true);
 			global.mongoose.promise = mongoose
 				.connect(url.db, {
+					family: 4,
+					maxPoolSize: 10,
+					minPoolSize: 1,
 					connectTimeoutMS: 10000, // Timeout after 10 seconds if not connected
 					serverSelectionTimeoutMS: 5000, // Timeout for server selection
-					socketTimeoutMS: 45000, // Timeout for inactivity on the connection
+					heartbeatFrequencyMS: 10000, // Check server every 10 seconds
 					// keepAlive: true, // Keep the connection alive
 					// keepAliveInitialDelay: 300000, // Send a keep-alive ping every 5 minutes})
-					autoIndex: true,
-					autoCreate: true,
+					// autoIndex: true,
+					// autoCreate: true,
 				})
 				.then((mongooseInstance) => {
 					logger.info("MongoDB connected");
@@ -53,8 +58,10 @@ export class DatabaseManager {
 				});
 			try {
 				logger.info("Connecting to MongoDB");
+				// await sleep(10);
 				global.mongoose.conn = await global.mongoose.promise;
 				await this.ensureIndexes();
+				return global.mongoose.conn;
 			} catch (error) {
 				logger.error("Error connecting to MongoDB", error);
 				global.mongoose.conn = null;
@@ -81,7 +88,7 @@ export class DatabaseManager {
 		logger.info("MongoDB indexes created");
 	}
 
-	public async ping() {
+	private async ping() {
 		if (!global.mongoose.conn || !global.mongoose.conn.connection.db) {
 			logger.info("MongoDB is not connected");
 			return false;
@@ -91,7 +98,16 @@ export class DatabaseManager {
 			logger.info("MongoDB is connected");
 			return true;
 		} catch (error) {
-			logger.info("MongoDB is not connected");
+			logger.info("MongoDB ping failed");
+			return false;
+		}
+	}
+
+	public isReady() {
+		this.connect();
+		if (global.mongoose.conn) {
+			return true;
+		} else {
 			return false;
 		}
 	}

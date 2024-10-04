@@ -1,7 +1,7 @@
 import { expenseControllers } from "@/controllers";
-import { ApiWrapper } from "@/helpers";
+import { ApiRouteHandler } from "@/helpers";
 
-const api = new ApiWrapper(
+const api = new ApiRouteHandler(
 	{
 		PATCH: expenseControllers.updateExpense,
 		DELETE: expenseControllers.removeExpense,

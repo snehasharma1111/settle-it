@@ -1,7 +1,7 @@
 import { authControllers } from "@/controllers";
-import { ApiWrapper } from "@/helpers";
+import { ApiRouteHandler } from "@/helpers";
 
-const api = new ApiWrapper(
+const api = new ApiRouteHandler(
 	{ POST: authControllers.verifyOtpWithEmail },
 	{ db: true }
 );

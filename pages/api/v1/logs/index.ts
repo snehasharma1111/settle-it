@@ -1,7 +1,7 @@
 import { logsControllers } from "@/controllers";
-import { ApiWrapper } from "@/helpers";
+import { ApiRouteHandler } from "@/helpers";
 
-const api = new ApiWrapper({ GET: logsControllers.getAllLogs });
+const api = new ApiRouteHandler({ GET: logsControllers.getAllLogs });
 
 const handler = api.getHandler();
 

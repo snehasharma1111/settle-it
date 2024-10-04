@@ -1,7 +1,7 @@
 import { groupControlllers } from "@/controllers";
-import { ApiWrapper } from "@/helpers";
+import { ApiRouteHandler } from "@/helpers";
 
-const api = new ApiWrapper(
+const api = new ApiRouteHandler(
 	{
 		GET: groupControlllers.getAllGroups,
 		POST: groupControlllers.createGroup,

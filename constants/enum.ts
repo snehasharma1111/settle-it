@@ -33,6 +33,7 @@ const message = {
 	UNAUTHORIZED: "Unauthorized",
 	FORBIDDEN: "Forbidden",
 	INTERNAL_SERVER_ERROR: "Internal Server Error",
+	SERVICE_UNAVAILABLE: "Service Unavailable",
 };
 
 const status = Object.freeze({
@@ -48,6 +49,7 @@ const status = Object.freeze({
 	GONE: 410,
 	CONFLICT: 409,
 	INTERNAL_SERVER_ERROR: 500,
+	SERVICE_UNAVAILABLE: 503,
 });
 
 export const HTTP = {

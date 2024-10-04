@@ -1,8 +1,8 @@
 import { userControllers } from "@/controllers";
-import { ApiWrapper } from "@/helpers";
+import { ApiRouteHandler } from "@/helpers";
 import { validationMiddleware } from "@/middlewares";
 
-const api = new ApiWrapper(
+const api = new ApiRouteHandler(
 	{ POST: validationMiddleware.email(userControllers.inviteUser) },
 	{ db: true, auth: true }
 );

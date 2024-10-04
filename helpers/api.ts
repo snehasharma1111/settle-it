@@ -2,7 +2,6 @@ import { apiMethods, HTTP } from "@/constants";
 import { db } from "@/db";
 import { logger } from "@/log";
 import { adminMiddleware, authMiddleware } from "@/middlewares";
-import { profiler } from "@/services";
 import {
 	ApiController,
 	ApiControllers,
@@ -13,7 +12,7 @@ import {
 } from "@/types";
 import { NextApiHandler } from "next";
 
-export class ApiWrapper {
+export class ApiRouteHandler {
 	// Options for API Wrapper
 	useDatabase = false;
 	isAdmin = false;
@@ -27,16 +26,10 @@ export class ApiWrapper {
 	DELETE: ApiController | undefined;
 
 	// Allowed Methods
-	allowedMethods: Array<T_API_METHODS> = [
-		apiMethods.GET,
-		apiMethods.POST,
-		apiMethods.PUT,
-		apiMethods.PATCH,
-		apiMethods.DELETE,
-	];
+	allowedMethods: Array<T_API_METHODS>;
 
 	/**
-	 * Initializes a new instance of the ApiWrapper class.
+	 * Initializes a new instance of the ApiRouteHandler class.
 	 *
 	 * @param {ApiControllers} controllers - An object containing API controllers for different HTTP methods.
 	 * @param {ApiWrapperOptions} [options={}] - Options for the API wrapper.
@@ -48,6 +41,7 @@ export class ApiWrapper {
 		{ GET, POST, PUT, PATCH, DELETE }: ApiControllers,
 		{ db, auth, admin }: ApiWrapperOptions = {}
 	) {
+		this.allowedMethods = [];
 		if (db === true) {
 			this.useDatabase = true;
 		}
@@ -94,7 +88,7 @@ export class ApiWrapper {
 	 * @param {ApiController} controller - The controller to be wrapped with middleware.
 	 * @return {ApiController} The wrapped controller with the applied middleware.
 	 */
-	private wrapper(controller: ApiController) {
+	private wrapper(controller: ApiController): ApiController {
 		if (this.isAdmin) {
 			return adminMiddleware.apiRoute(controller);
 		} else if (this.isAuthenticated) {
@@ -110,52 +104,31 @@ export class ApiWrapper {
 	 *
 	 * @return {NextApiHandler} A Next.js API handler function.
 	 */
-	public getHandler() {
+	public getHandler(): NextApiHandler {
 		const handler: NextApiHandler = async (
 			req: ApiRequest,
 			res: ApiResponse
 		) => {
 			try {
 				if (this.useDatabase) {
-					await db.connect();
+					if (db.isReady() === false) {
+						return res
+							.status(HTTP.status.SERVICE_UNAVAILABLE)
+							.json({ message: "Database not initialized" });
+					}
 				}
 
 				const { method } = req;
 				if (method === apiMethods.GET && this.GET) {
-					return profiler(
-						this.wrapper(this.GET),
-						[this.GET.name],
-						req,
-						res
-					);
+					return this.wrapper(this.GET)(req, res);
 				} else if (method === apiMethods.POST && this.POST) {
-					return profiler(
-						this.wrapper(this.POST),
-						[this.POST.name],
-						req,
-						res
-					);
+					return this.wrapper(this.POST)(req, res);
 				} else if (method === apiMethods.PUT && this.PUT) {
-					return profiler(
-						this.wrapper(this.PUT),
-						[this.PUT.name],
-						req,
-						res
-					);
+					return this.wrapper(this.PUT)(req, res);
 				} else if (method === apiMethods.PATCH && this.PATCH) {
-					return profiler(
-						this.wrapper(this.PATCH),
-						[this.PATCH.name],
-						req,
-						res
-					);
+					return this.wrapper(this.PATCH)(req, res);
 				} else if (method === apiMethods.DELETE && this.DELETE) {
-					return profiler(
-						this.wrapper(this.DELETE),
-						[this.DELETE.name],
-						req,
-						res
-					);
+					return this.wrapper(this.DELETE)(req, res);
 				} else {
 					res.setHeader("Allow", this.allowedMethods);
 					return res

@@ -1,7 +1,7 @@
 import { adminControllers } from "@/controllers";
-import { ApiWrapper } from "@/helpers";
+import { ApiRouteHandler } from "@/helpers";
 
-const api = new ApiWrapper(
+const api = new ApiRouteHandler(
 	{ GET: adminControllers.getAllUsers },
 	{ db: true, admin: true }
 );

@@ -1,7 +1,7 @@
 import { userControllers } from "@/controllers";
-import { ApiWrapper } from "@/helpers";
+import { ApiRouteHandler } from "@/helpers";
 
-const api = new ApiWrapper(
+const api = new ApiRouteHandler(
 	{ GET: userControllers.getLoggedInUserDetails },
 	{ db: true, auth: true }
 );
