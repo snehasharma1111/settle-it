@@ -118,10 +118,7 @@ export const stylesConfig =
  * @param {string[]} keys The keys to omit.
  * @returns {Object} The new object with the omitted keys.
  */
-export const omitKeys = <T extends { [key: string]: any }>(
-	obj: T,
-	keys: string[]
-): Omit<T, (typeof keys)[number]> => {
+export const omitKeys = (obj: any, keys: string[]): any => {
 	const newObj: any = {};
 	Object.keys(obj).forEach((key) => {
 		if (!keys.includes(key)) {
