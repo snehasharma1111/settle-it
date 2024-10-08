@@ -15,7 +15,7 @@
 		display: flex;
 		justify-content: flex-start;
 		align-items: center;
-		color: var(--theme-black);
+		color: var(--theme-fg);
 	}
 
 	label:has(~ div > input:required) {
@@ -38,9 +38,17 @@
 		border-radius: 500px;
 		transition: all var(--transition-time) ease-in-out;
 
+		@include color-scheme(dark) {
+			border-color: rgba(255, 255, 255, 0.2);
+		}
+
 		&:active,
 		&:focus {
 			border: 1px solid rgba(0, 0, 0, 0.35);
+
+			@include color-scheme(dark) {
+				border-color: rgba(255, 255, 255, 0.35);
+			}
 		}
 
 		&::placeholder {
@@ -91,7 +99,7 @@
 		align-items: center;
 		right: 0;
 		transform: translate(-50%, -50%);
-		background-color: var(--theme-white);
+		background-color: var(--theme-bg);
 
 		&--dropdown svg path {
 			&:first-child {

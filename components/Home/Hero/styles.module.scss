@@ -66,6 +66,10 @@
 		bottom: 0;
 		right: 0;
 
+		@include color-scheme(dark) {
+			filter: invert(1);
+		}
+
 		@include responsive(phone) {
 			position: relative;
 			bottom: unset;

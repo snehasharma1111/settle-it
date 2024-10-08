@@ -25,8 +25,7 @@
 		&--otp {
 			justify-content: space-between;
 			border-radius: 10px;
-			border: 2px solid var(--Natural-400, #b3b9c4);
-			background: var(--Natural-100, #f7f8f9);
+			border: 1px solid var(--theme-light-grey);
 			padding: 30px 30px 20px 30px;
 
 			@include responsive(phone) {

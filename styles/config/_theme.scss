@@ -1,3 +1,5 @@
+@import "./mixins";
+
 :root,
 :root::before,
 :root::after {
@@ -23,6 +25,16 @@
 
 	--theme-bg: #f9f9f9;
 	--theme-fg: #0c1015;
+
+	@include color-scheme(light) {
+		--theme-bg: #f0f0f0;
+		--theme-fg: #333;
+	}
+
+	@include color-scheme(dark) {
+		--theme-bg: #121212;
+		--theme-fg: #fff;
+	}
 
 	--theme-green: #4aa63c;
 	--theme-green-light: #98bf45;
