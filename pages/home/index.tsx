@@ -1,13 +1,12 @@
+import { authenticatedPage } from "@/client";
 import { CreateGroup, Home, Loader } from "@/components";
 import { fallbackAssets, routes } from "@/constants";
 import { useHttpClient, useStore } from "@/hooks";
 import { Responsive, Seo } from "@/layouts";
 import { Avatar, Avatars, Button, Typography } from "@/library";
-import { notify } from "@/messages";
-import { authMiddleware } from "@/middlewares";
 import styles from "@/styles/pages/Home.module.scss";
 import { CreateGroupData, IUser, ServerSideResult } from "@/types";
-import { stylesConfig } from "@/utils";
+import { notify, stylesConfig } from "@/utils";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
@@ -162,7 +161,7 @@ export default HomePage;
 export const getServerSideProps = (
 	context: any
 ): Promise<ServerSideResult<HomePageProps>> => {
-	return authMiddleware.page(context, {
+	return authenticatedPage(context, {
 		onLoggedInAndOnboarded(user) {
 			return {
 				props: {

@@ -1,6 +1,6 @@
 import { logger } from "@/log";
+import { sendEmailTemplate } from "@/messages";
 import { Otp, OtpModel } from "@/models";
-import { sendEmailTemplate } from "@/services";
 import { getNonNullValue, getObjectFromMongoResponse } from "@/utils";
 import otpGenerator from "otp-generator";
 

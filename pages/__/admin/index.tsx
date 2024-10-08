@@ -1,10 +1,10 @@
+import { adminPage } from "@/client";
 import { Loader } from "@/components";
 import { api } from "@/connections";
 import { fallbackAssets, routes } from "@/constants";
 import { useHttpClient, useStore } from "@/hooks";
 import { Responsive, Seo } from "@/layouts";
 import { Avatar, Avatars, Button, Typography } from "@/library";
-import { adminMiddleware } from "@/middlewares";
 import styles from "@/styles/pages/Admin.module.scss";
 import { IUser, ServerSideResult } from "@/types";
 import { IGroup } from "@/types/group";
@@ -218,7 +218,7 @@ export default AdminPanel;
 export const getServerSideProps = (
 	context: any
 ): Promise<ServerSideResult<AdminPanelProps>> => {
-	return adminMiddleware.page(context, {
+	return adminPage(context, {
 		onAdmin(user) {
 			return {
 				props: { user },

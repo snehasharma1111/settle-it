@@ -1,7 +1,7 @@
 import { userControllers } from "@/controllers";
-import { ApiRouteHandler } from "@/helpers";
+import { ApiRoute } from "@/server";
 
-const api = new ApiRouteHandler(
+const api = new ApiRoute(
 	{ POST: userControllers.searchForUsers },
 	{ db: true, auth: true }
 );

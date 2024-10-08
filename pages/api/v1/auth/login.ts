@@ -1,9 +1,9 @@
+import { ApiRoute } from "@/server";
 import { authControllers } from "@/controllers";
-import { ApiRouteHandler } from "@/helpers";
-import { validationMiddleware } from "@/middlewares";
+import { validation } from "@/server";
 
-const api = new ApiRouteHandler(
-	{ POST: validationMiddleware.email(authControllers.login) },
+const api = new ApiRoute(
+	{ POST: validation.email(authControllers.login) },
 	{ db: true }
 );
 

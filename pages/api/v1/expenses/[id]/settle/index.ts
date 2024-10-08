@@ -1,7 +1,7 @@
 import { expenseControllers } from "@/controllers";
-import { ApiRouteHandler } from "@/helpers";
+import { ApiRoute } from "@/server";
 
-const api = new ApiRouteHandler(
+const api = new ApiRoute(
 	{ PATCH: expenseControllers.settleExpense },
 	{ db: true, auth: true }
 );

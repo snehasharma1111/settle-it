@@ -1,7 +1,7 @@
 import { groupControlllers } from "@/controllers";
-import { ApiRouteHandler } from "@/helpers";
+import { ApiRoute } from "@/server";
 
-const api = new ApiRouteHandler(
+const api = new ApiRoute(
 	{ GET: groupControlllers.getGroupTransactions },
 	{ db: true, auth: true }
 );

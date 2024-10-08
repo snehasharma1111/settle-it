@@ -1,7 +1,7 @@
 import { logsControllers } from "@/controllers";
-import { ApiRouteHandler } from "@/helpers";
+import { ApiRoute } from "@/server";
 
-const api = new ApiRouteHandler({ POST: logsControllers.log });
+const api = new ApiRoute({ POST: logsControllers.log });
 
 const handler = api.getHandler();
 

@@ -1,9 +1,10 @@
+import { ApiRoute } from "@/server";
 import { authControllers } from "@/controllers";
-import { ApiRouteHandler } from "@/helpers";
+import { validation } from "@/server";
 
-const api = new ApiRouteHandler(
-	{ POST: authControllers.requestOtpWithEmail },
-	{ db: true, auth: true }
+const api = new ApiRoute(
+	{ POST: validation.email(authControllers.requestOtpWithEmail) },
+	{ db: true }
 );
 const handler = api.getHandler();
 

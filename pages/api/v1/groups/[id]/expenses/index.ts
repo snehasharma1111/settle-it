@@ -1,7 +1,7 @@
 import { expenseControllers, groupControlllers } from "@/controllers";
-import { ApiRouteHandler } from "@/helpers";
+import { ApiRoute } from "@/server";
 
-const api = new ApiRouteHandler(
+const api = new ApiRoute(
 	{
 		GET: groupControlllers.getGroupExpenses,
 		POST: expenseControllers.createNewExpense,

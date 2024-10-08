@@ -1,7 +1,7 @@
 import { apiMethods, HTTP } from "@/constants";
 import { db } from "@/db";
 import { logger } from "@/log";
-import { adminMiddleware, authMiddleware } from "@/middlewares";
+import { adminRoute, authenticated } from "@/server";
 import {
 	ApiController,
 	ApiControllers,
@@ -12,7 +12,7 @@ import {
 } from "@/types";
 import { NextApiHandler } from "next";
 
-export class ApiRouteHandler {
+export class ApiRoute {
 	// Options for API Wrapper
 	useDatabase = false;
 	isAdmin = false;
@@ -90,9 +90,9 @@ export class ApiRouteHandler {
 	 */
 	private wrapper(controller: ApiController): ApiController {
 		if (this.isAdmin) {
-			return adminMiddleware.apiRoute(controller);
+			return adminRoute(controller);
 		} else if (this.isAuthenticated) {
-			return authMiddleware.apiRoute(controller);
+			return authenticated(controller);
 		} else {
 			return controller;
 		}

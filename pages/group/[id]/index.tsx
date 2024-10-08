@@ -1,3 +1,4 @@
+import { authenticatedPage } from "@/client";
 import {
 	CreateExpense,
 	ExpenseCard,
@@ -11,8 +12,6 @@ import { routes } from "@/constants";
 import { useConfirmationModal, useHttpClient, useStore } from "@/hooks";
 import { Responsive, Seo } from "@/layouts";
 import { Button } from "@/library";
-import { notify } from "@/messages";
-import { authMiddleware } from "@/middlewares";
 import PageNotFound from "@/pages/404";
 import styles from "@/styles/pages/Group.module.scss";
 import {
@@ -22,7 +21,7 @@ import {
 	ServerSideResult,
 	UpdateGroupData,
 } from "@/types";
-import { getNonEmptyString, stylesConfig } from "@/utils";
+import { getNonEmptyString, notify, stylesConfig } from "@/utils";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { FiPlus } from "react-icons/fi";
@@ -235,7 +234,7 @@ export default GroupPage;
 export const getServerSideProps = (
 	context: any
 ): Promise<ServerSideResult<GroupPageProps>> => {
-	return authMiddleware.page(context, {
+	return authenticatedPage(context, {
 		async onLoggedInAndOnboarded(user, headers) {
 			try {
 				const id = getNonEmptyString(context.query.id);

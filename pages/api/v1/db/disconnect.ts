@@ -1,5 +1,5 @@
 import { db } from "@/db";
-import { ApiRouteHandler } from "@/helpers";
+import { ApiRoute } from "@/server";
 import { ApiRequest, ApiResponse } from "@/types";
 
 const disconnectHandler = async (_: ApiRequest, res: ApiResponse) => {
@@ -7,7 +7,7 @@ const disconnectHandler = async (_: ApiRequest, res: ApiResponse) => {
 	return res.status(200).json({ message: "Disconnected from DB" });
 };
 
-const api = new ApiRouteHandler({ GET: disconnectHandler });
+const api = new ApiRoute({ GET: disconnectHandler });
 
 const handler = api.getHandler();
 

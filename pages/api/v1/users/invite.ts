@@ -1,9 +1,9 @@
+import { ApiRoute } from "@/server";
 import { userControllers } from "@/controllers";
-import { ApiRouteHandler } from "@/helpers";
-import { validationMiddleware } from "@/middlewares";
+import { validation } from "@/server";
 
-const api = new ApiRouteHandler(
-	{ POST: validationMiddleware.email(userControllers.inviteUser) },
+const api = new ApiRoute(
+	{ POST: validation.email(userControllers.inviteUser) },
 	{ db: true, auth: true }
 );
 

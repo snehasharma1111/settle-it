@@ -1,8 +1,8 @@
+import { adminPage } from "@/client";
 import { api } from "@/connections";
 import { routes } from "@/constants";
 import { useStore } from "@/hooks";
 import { Button, Typography } from "@/library";
-import { adminMiddleware } from "@/middlewares";
 import styles from "@/styles/pages/Admin.module.scss";
 import { IUser, ServerSideResult } from "@/types";
 import {
@@ -57,7 +57,7 @@ export default AdminPanelLogPage;
 export const getServerSideProps = (
 	context: any
 ): Promise<ServerSideResult<AdminPanelLogPageProps>> => {
-	return adminMiddleware.page(context, {
+	return adminPage(context, {
 		async onAdmin(user, headers) {
 			try {
 				// const fileName = context.query.id as string;

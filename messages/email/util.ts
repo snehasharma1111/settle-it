@@ -1,52 +1,8 @@
 import { googleEmailConfig } from "@/config";
 import { frontendBaseUrl } from "@/constants";
-import { logger } from "@/log";
-import { myOAuth2Client } from "@/services";
-import { createTransport } from "nodemailer";
+import { EMAIL_TEMPLATE } from "./types";
 
-export const sendEmailService = async (
-	to: string,
-	subject: string,
-	html: string
-) => {
-	try {
-		myOAuth2Client.setCredentials({
-			refresh_token: googleEmailConfig.refreshToken,
-		});
-		const accessToken = await myOAuth2Client.getAccessToken();
-		const transportOptions: any = {
-			service: "gmail",
-			// host: "smtp.gmail.com",
-			// port: 465,
-			// secure: true,
-			auth: {
-				type: "OAuth2",
-				user: googleEmailConfig.email,
-				clientId: googleEmailConfig.clientId,
-				// clientSecret: googleEmailConfig.clientSecret,
-				refreshToken: googleEmailConfig.refreshToken,
-				accessToken: accessToken.token,
-			},
-		};
-		const smtpTransport = createTransport(transportOptions);
-		const mailOptions = {
-			from: {
-				name: "Settle It!",
-				address: googleEmailConfig.email,
-			},
-			to,
-			subject,
-			html,
-		};
-		await smtpTransport.sendMail(mailOptions);
-		return Promise.resolve();
-	} catch (error: any) {
-		logger.error(error);
-		return Promise.reject(error);
-	}
-};
-
-export const getEmailTemplateHTML = (
+const getEmailTemplateHTML = (
 	title: string = "",
 	subtitle: string = "",
 	btnText: string = "",
@@ -491,12 +447,6 @@ ${
 	return template;
 };
 
-type EMAIL_TEMPLATE =
-	| "OTP"
-	| "NEW_USER_ONBOARDED"
-	| "USER_INVITED"
-	| "USER_ADDED_TO_GROUP";
-
 export const getEmailTemplate = (template: EMAIL_TEMPLATE, data: any) => {
 	switch (template) {
 		case "OTP":
@@ -528,14 +478,4 @@ export const getEmailTemplate = (template: EMAIL_TEMPLATE, data: any) => {
 		default:
 			return "";
 	}
-};
-
-export const sendEmailTemplate = async (
-	to: string,
-	subject: string,
-	template: EMAIL_TEMPLATE,
-	data: any
-) => {
-	const html = getEmailTemplate(template, data);
-	await sendEmailService(to, subject, html);
 };

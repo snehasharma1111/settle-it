@@ -1,11 +1,9 @@
 import { http } from "@/connections";
-import { IUser } from "@/types";
+import { ApiRes, IUser } from "@/types";
 
 export const requestOtpWithEmail = async (
 	email: string
-): Promise<{
-	message: string;
-}> => {
+): Promise<{ message: string }> => {
 	const response = await http.post("/auth/otp/request", {
 		email,
 	});
@@ -25,10 +23,7 @@ export const verifyOtpWithEmail = async (
 
 export const verifyUserIfLoggedIn = async (
 	headers?: any
-): Promise<{
-	message: string;
-	data: IUser;
-}> => {
+): Promise<ApiRes<IUser>> => {
 	const response = await http.get("/auth/verify", {
 		headers,
 	});
@@ -38,10 +33,7 @@ export const verifyUserIfLoggedIn = async (
 export const loginWithEmail = async (
 	email: string,
 	otp: string
-): Promise<{
-	message: string;
-	data: IUser;
-}> => {
+): Promise<ApiRes<IUser>> => {
 	const response = await http.post("/auth/login", {
 		email,
 		otp,
@@ -49,11 +41,7 @@ export const loginWithEmail = async (
 	return response.data;
 };
 
-export const logout = async (
-	headers?: any
-): Promise<{
-	message: string;
-}> => {
+export const logout = async (headers?: any): Promise<{ message: string }> => {
 	const response = await http.get("/auth/logout", {
 		headers,
 	});

@@ -1,9 +1,8 @@
 import { UpdateExpense, ViewExpense } from "@/components";
 import { useConfirmationModal, useStore } from "@/hooks";
 import { Typography } from "@/library";
-import { notify } from "@/messages";
 import { IExpense, UpdateExpenseData } from "@/types";
-import { stylesConfig } from "@/utils";
+import { notify, stylesConfig } from "@/utils";
 import moment from "moment";
 import React, { useState } from "react";
 import styles from "./styles.module.scss";

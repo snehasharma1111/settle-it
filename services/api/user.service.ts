@@ -1,6 +1,8 @@
+import { cacheParameter } from "@/constants";
 import { logger } from "@/log";
+import { sendEmailTemplate } from "@/messages";
 import { User, UserModel } from "@/models";
-import { sendEmailTemplate } from "@/services";
+import { cache, getCacheKey } from "@/services";
 import { IUser } from "@/types";
 import { getNonNullValue, getObjectFromMongoResponse } from "@/utils";
 import { FilterQuery } from "mongoose";
@@ -11,11 +13,17 @@ export const findOne = async (query: Partial<User>): Promise<User | null> => {
 };
 
 export const findById = async (id: string): Promise<User | null> => {
-	const res = await UserModel.findById(id).catch((error: any) => {
-		if (error.kind === "ObjectId") return null;
-		return Promise.reject(error);
-	});
-	return getObjectFromMongoResponse<User>(res);
+	const res = await cache.fetch(
+		getCacheKey(cacheParameter.USER, { id }),
+		() =>
+			UserModel.findById(id)
+				.then(getObjectFromMongoResponse<User>)
+				.catch((error: any) => {
+					if (error.kind === "ObjectId") return null;
+					throw error;
+				})
+	);
+	return res;
 };
 
 export const find = async (
@@ -69,7 +77,7 @@ export const invite = async (
 	invitedBy: string
 ): Promise<void> => {
 	try {
-		const invitedByUser = await UserModel.findById(invitedBy);
+		const invitedByUser = await findById(invitedBy);
 		await sendEmailTemplate(email, "Invite to Settle It", "USER_INVITED", {
 			invitedBy: {
 				email: invitedByUser?.email,

@@ -1,12 +1,12 @@
 import { cacheParameter } from "@/constants";
 import { logger } from "@/log";
+import { sendEmailTemplate } from "@/messages";
 import { ExpenseModel, Group, GroupModel, MemberModel, User } from "@/models";
 import {
 	cache,
 	expenseService,
 	getCacheKey,
 	memberService,
-	sendEmailTemplate,
 	userService,
 } from "@/services";
 import {
@@ -562,6 +562,7 @@ export const remove = async (query: Partial<Group>): Promise<IGroup | null> => {
 		: await GroupModel.findOneAndDelete(query).populate(
 				"members createdBy"
 			);
+	if (res) cache.del(getCacheKey(cacheParameter.GROUP, { id: res.id }));
 	return parsePopulatedGroup(res);
 };
 

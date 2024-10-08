@@ -1,7 +1,7 @@
 import { memberControllers } from "@/controllers";
-import { ApiRouteHandler } from "@/helpers";
+import { ApiRoute } from "@/server";
 
-const api = new ApiRouteHandler(
+const api = new ApiRoute(
 	{ PATCH: memberControllers.settleMemberInExpense },
 	{ db: true, auth: true }
 );

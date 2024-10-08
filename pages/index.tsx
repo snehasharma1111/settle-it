@@ -1,6 +1,6 @@
+import { authenticatedPage } from "@/client";
 import { Home } from "@/components";
 import { routes } from "@/constants";
-import { authMiddleware } from "@/middlewares";
 import styles from "@/styles/pages/Home.module.scss";
 import { ServerSideResult } from "@/types";
 import { stylesConfig } from "@/utils";
@@ -19,7 +19,7 @@ const HomePage: React.FC = () => {
 export default HomePage;
 
 export const getServerSideProps = (context: any): Promise<ServerSideResult> => {
-	return authMiddleware.page(context, {
+	return authenticatedPage(context, {
 		onLoggedInAndOnboarded() {
 			return {
 				redirect: {

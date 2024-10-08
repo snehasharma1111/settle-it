@@ -1,7 +1,7 @@
 import { adminControllers } from "@/controllers";
-import { ApiRouteHandler } from "@/helpers";
+import { ApiRoute } from "@/server";
 
-const api = new ApiRouteHandler(
+const api = new ApiRoute(
 	{ GET: adminControllers.getAllUsers },
 	{ db: true, admin: true }
 );

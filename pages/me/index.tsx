@@ -1,12 +1,11 @@
+import { authenticatedPage } from "@/client";
 import { fallbackAssets, routes } from "@/constants";
 import { useStore } from "@/hooks";
 import { Seo } from "@/layouts";
 import { Avatar, Button, Input, Typography } from "@/library";
-import { notify } from "@/messages";
-import { authMiddleware } from "@/middlewares";
 import styles from "@/styles/pages/Profile.module.scss";
 import { IUser, ServerSideResult } from "@/types";
-import { stylesConfig } from "@/utils";
+import { notify, stylesConfig } from "@/utils";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { FiArrowLeft, FiLogOut } from "react-icons/fi";
@@ -141,7 +140,7 @@ export default ProfilePage;
 export const getServerSideProps = (
 	context: any
 ): Promise<ServerSideResult<IProfilePageProps>> => {
-	return authMiddleware.page(context, {
+	return authenticatedPage(context, {
 		async onLoggedInAndOnboarded(user) {
 			return {
 				props: {

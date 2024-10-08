@@ -42,10 +42,6 @@ export const requestOtpWithEmail = async (
 export const verifyOtpWithEmail = async (req: ApiRequest, res: ApiResponse) => {
 	try {
 		const email = genericParse(getNonEmptyString, req.body.email);
-		if (!email)
-			return res
-				.status(HTTP.status.BAD_REQUEST)
-				.json({ message: "Email is required" });
 		const otp = genericParse(getNonEmptyString, req.body.otp);
 		if (!otp)
 			return res
@@ -91,10 +87,6 @@ export const verifyOtpWithEmail = async (req: ApiRequest, res: ApiResponse) => {
 export const login = async (req: ApiRequest, res: ApiResponse) => {
 	try {
 		const email = genericParse(getNonEmptyString, req.body.email);
-		if (!email)
-			return res
-				.status(HTTP.status.BAD_REQUEST)
-				.json({ message: "Email is required" });
 		const otp = genericParse(getNonEmptyString, req.body.otp);
 		if (!otp)
 			return res

@@ -1,7 +1,7 @@
 import { authControllers } from "@/controllers";
-import { ApiRouteHandler } from "@/helpers";
+import { ApiRoute } from "@/server";
 
-const api = new ApiRouteHandler(
+const api = new ApiRoute(
 	{ GET: authControllers.verify },
 	{ db: true, auth: true }
 );

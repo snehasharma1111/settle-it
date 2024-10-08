@@ -1,3 +1,4 @@
+import { authenticatedPage } from "@/client";
 import { Auth, Auth as Components } from "@/components";
 import { api } from "@/connections";
 import { routes } from "@/constants";
@@ -5,11 +6,9 @@ import { useStore } from "@/hooks";
 import { Seo } from "@/layouts";
 import { Typography } from "@/library";
 import { logger } from "@/log";
-import { notify } from "@/messages";
-import { authMiddleware } from "@/middlewares";
 import styles from "@/styles/pages/Auth.module.scss";
 import { IUser, ServerSideResult } from "@/types";
-import { stylesConfig } from "@/utils";
+import { notify, stylesConfig } from "@/utils";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
@@ -138,7 +137,7 @@ export default LoginPage;
 export const getServerSideProps = (
 	context: any
 ): Promise<ServerSideResult<LoginPageProps>> => {
-	return authMiddleware.page(context, {
+	return authenticatedPage(context, {
 		onLoggedInAndOnboarded() {
 			const { redirect } = context.query;
 			return {

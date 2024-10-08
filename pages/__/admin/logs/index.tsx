@@ -1,8 +1,8 @@
+import { adminPage } from "@/client";
 import { api } from "@/connections";
 import { routes } from "@/constants";
 import { useStore } from "@/hooks";
 import { Typography } from "@/library";
-import { adminMiddleware } from "@/middlewares";
 import styles from "@/styles/pages/Admin.module.scss";
 import { IUser, ServerSideResult } from "@/types";
 import { copyToClipboard, stylesConfig } from "@/utils";
@@ -51,7 +51,7 @@ export default AdminPanelLogs;
 export const getServerSideProps = (
 	context: any
 ): Promise<ServerSideResult<AdminPanelLogsProps>> => {
-	return adminMiddleware.page(context, {
+	return adminPage(context, {
 		async onAdmin(user, headers) {
 			try {
 				const res = await api.admin.getAllLogFiles(headers);

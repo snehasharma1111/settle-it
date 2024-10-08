@@ -1,7 +1,7 @@
 import { userControllers } from "@/controllers";
-import { ApiRouteHandler } from "@/helpers";
+import { ApiRoute } from "@/server";
 
-const api = new ApiRouteHandler(
+const api = new ApiRoute(
 	{ PATCH: userControllers.updateUserDetails },
 	{ db: true, auth: true }
 );

@@ -1,13 +1,12 @@
+import { adminPage } from "@/client";
 import { api } from "@/connections";
 import { routes } from "@/constants";
 import { useHttpClient, useStore } from "@/hooks";
 import { Seo } from "@/layouts";
 import { Button, Table, Typography } from "@/library";
-import { notify } from "@/messages";
-import { adminMiddleware } from "@/middlewares";
 import styles from "@/styles/pages/Admin.module.scss";
 import { IUser, ServerSideResult } from "@/types";
-import { copyToClipboard, stylesConfig } from "@/utils";
+import { copyToClipboard, notify, stylesConfig } from "@/utils";
 import React, { useEffect } from "react";
 
 type AdminPanelCacheProps = {
@@ -115,7 +114,7 @@ export default AdminPanelCache;
 export const getServerSideProps = (
 	context: any
 ): Promise<ServerSideResult<AdminPanelCacheProps>> => {
-	return adminMiddleware.page(context, {
+	return adminPage(context, {
 		onAdmin(user) {
 			return {
 				props: { user },
