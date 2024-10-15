@@ -1,42 +1,34 @@
-import mongoose from "mongoose";
+import { db, ObjectId } from "@/db";
 
-const MemberSchema = new mongoose.Schema(
-	{
-		userId: {
-			type: mongoose.Schema.Types.ObjectId,
-			required: true,
-			ref: "User",
-		},
-		groupId: {
-			type: mongoose.Schema.Types.ObjectId,
-			required: true,
-			ref: "Group",
-		},
-		expenseId: {
-			type: mongoose.Schema.Types.ObjectId,
-			required: true,
-			ref: "Expense",
-		},
-		amount: {
-			type: Number,
-			required: true,
-		},
-		owed: {
-			type: Number,
-			required: true,
-		},
-		paid: {
-			type: Number,
-			required: true,
-		},
+export const MemberModel = db.model("Member", {
+	userId: {
+		type: ObjectId,
+		required: true,
+		ref: "User",
 	},
-	{
-		timestamps: true,
-	}
-);
-
-export const MemberModel =
-	mongoose.models.Member || mongoose.model("Member", MemberSchema);
+	groupId: {
+		type: ObjectId,
+		required: true,
+		ref: "Group",
+	},
+	expenseId: {
+		type: ObjectId,
+		required: true,
+		ref: "Expense",
+	},
+	amount: {
+		type: Number,
+		required: true,
+	},
+	owed: {
+		type: Number,
+		required: true,
+	},
+	paid: {
+		type: Number,
+		required: true,
+	},
+});
 
 export type Member = {
 	id: string;

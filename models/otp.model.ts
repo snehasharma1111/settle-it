@@ -1,30 +1,23 @@
 import { OTP_STATUS } from "@/constants";
+import { db } from "@/db";
 import { T_OTP_STATUS } from "@/types";
-import mongoose from "mongoose";
 
-const OtpSchema = new mongoose.Schema(
-	{
-		email: {
-			type: String,
-			unique: true,
-			required: true,
-		},
-		otp: {
-			type: String,
-			required: true,
-		},
-		status: {
-			type: String,
-			enum: Object.values(OTP_STATUS),
-			default: OTP_STATUS.PENDING,
-		},
+export const OtpModel = db.model("Otp", {
+	email: {
+		type: String,
+		unique: true,
+		required: true,
 	},
-	{
-		timestamps: true,
-	}
-);
-
-export const OtpModel = mongoose.models.Otp || mongoose.model("Otp", OtpSchema);
+	otp: {
+		type: String,
+		required: true,
+	},
+	status: {
+		type: String,
+		enum: Object.values(OTP_STATUS),
+		default: OTP_STATUS.PENDING,
+	},
+});
 
 export type Otp = {
 	id: string;

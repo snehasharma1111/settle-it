@@ -1,43 +1,35 @@
 import { fallbackAssets } from "@/constants";
-import mongoose from "mongoose";
+import { db, ObjectId } from "@/db";
 
-const GroupSchema = new mongoose.Schema(
-	{
-		name: {
-			type: String,
-			required: true,
-		},
-		icon: {
-			type: String,
-			default: fallbackAssets.groupIcon,
-		},
-		banner: {
-			type: String,
-			default: fallbackAssets.banner,
-		},
-		type: {
-			type: String,
-			default: "Other",
-		},
-		members: [
-			{
-				type: mongoose.Schema.Types.ObjectId,
-				ref: "User",
-			},
-		],
-		createdBy: {
-			type: mongoose.Schema.Types.ObjectId,
-			required: true,
+export const GroupModel = db.model("Group", {
+	name: {
+		type: String,
+		required: true,
+	},
+	icon: {
+		type: String,
+		default: fallbackAssets.groupIcon,
+	},
+	banner: {
+		type: String,
+		default: fallbackAssets.banner,
+	},
+	type: {
+		type: String,
+		default: "Other",
+	},
+	members: [
+		{
+			type: ObjectId,
 			ref: "User",
 		},
+	],
+	createdBy: {
+		type: ObjectId,
+		required: true,
+		ref: "User",
 	},
-	{
-		timestamps: true,
-	}
-);
-
-export const GroupModel =
-	mongoose.models.Group || mongoose.model("Group", GroupSchema);
+});
 
 export type Group = {
 	id: string;

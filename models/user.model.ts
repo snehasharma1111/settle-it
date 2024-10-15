@@ -1,8 +1,9 @@
-import { USER_STATUS, fallbackAssets } from "@/constants";
+import { fallbackAssets, USER_STATUS } from "@/constants";
+import { db, ObjectId } from "@/db";
 import { T_USER_STATUS } from "@/types";
-import mongoose from "mongoose";
 
-const UserSchema = new mongoose.Schema(
+export const UserModel = db.model(
+	"User",
 	{
 		name: {
 			type: String,
@@ -31,21 +32,16 @@ const UserSchema = new mongoose.Schema(
 			default: USER_STATUS.JOINED,
 		},
 		invitedBy: {
-			type: mongoose.Schema.Types.ObjectId,
+			type: ObjectId,
 			ref: "User",
 			sparse: true,
 		},
 	},
-	{
-		timestamps: true,
+	{ createIndexes: true, timestamps: true },
+	(schema) => {
+		schema.index({ name: "text", email: "text", phone: "text" });
 	}
 );
-
-UserSchema.index({ name: "text", email: "text", phone: "text" });
-
-const UserModel = mongoose.models.User || mongoose.model("User", UserSchema);
-
-export { UserModel };
 
 export type User = {
 	id: string;

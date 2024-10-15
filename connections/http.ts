@@ -15,7 +15,7 @@ class HttpWrapper {
 		this.http = http;
 		this.retryConfig = {
 			retryCount: 3,
-			retryDelay: 3,
+			retryDelay: 2,
 		};
 	}
 

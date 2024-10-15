@@ -1,44 +1,36 @@
-import mongoose from "mongoose";
+import { db, ObjectId } from "@/db";
 
-const ExpenseSchema = new mongoose.Schema(
-	{
-		title: {
-			type: String,
-			required: true,
-		},
-		amount: {
-			type: Number,
-			required: true,
-		},
-		groupId: {
-			type: mongoose.Schema.Types.ObjectId,
-			required: true,
-			ref: "Group",
-		},
-		paidBy: {
-			type: mongoose.Schema.Types.ObjectId,
-			required: true,
-			ref: "User",
-		},
-		createdBy: {
-			type: mongoose.Schema.Types.ObjectId,
-			required: true,
-			ref: "User",
-		},
-		description: {
-			type: String,
-		},
-		paidOn: {
-			type: Date,
-		},
+export const ExpenseModel = db.model("Expense", {
+	title: {
+		type: String,
+		required: true,
 	},
-	{
-		timestamps: true,
-	}
-);
-
-export const ExpenseModel =
-	mongoose.models.Expense || mongoose.model("Expense", ExpenseSchema);
+	amount: {
+		type: Number,
+		required: true,
+	},
+	groupId: {
+		type: ObjectId,
+		required: true,
+		ref: "Group",
+	},
+	paidBy: {
+		type: ObjectId,
+		required: true,
+		ref: "User",
+	},
+	createdBy: {
+		type: ObjectId,
+		required: true,
+		ref: "User",
+	},
+	description: {
+		type: String,
+	},
+	paidOn: {
+		type: Date,
+	},
+});
 
 export type Expense = {
 	id: string;
