@@ -17,11 +17,12 @@ global.mongoose = global.mongoose || {
 
 class DatabaseManager {
 	private static isIntervalSet = false;
+	private static intervalId: any = null;
 	constructor() {
 		this.connect();
 		if (!DatabaseManager.isIntervalSet) {
 			DatabaseManager.isIntervalSet = true;
-			setInterval(() => this.ping(), 10000);
+			DatabaseManager.intervalId = setInterval(() => this.ping(), 10000);
 		}
 	}
 
@@ -33,7 +34,7 @@ class DatabaseManager {
 		}
 		try {
 			global.mongoose.conn.connection.db.command({ ping: 1 });
-			logger.info("MongoDB is connected");
+			logger.info("MongoDB ping succeeded");
 			return true;
 		} catch (error) {
 			logger.info("MongoDB ping failed");
@@ -77,6 +78,7 @@ class DatabaseManager {
 			logger.info("MongoDB is already disconnected");
 			return;
 		}
+		clearInterval(DatabaseManager.intervalId);
 		logger.info("Disconnecting from MongoDB");
 		await mongoose.disconnect();
 		global.mongoose.conn = null;
@@ -116,6 +118,13 @@ class DatabaseManager {
 
 	public isReady() {
 		return this.ping();
+	}
+
+	public status() {
+		if (!global.mongoose.conn || !global.mongoose.conn.connection.db) {
+			return false;
+		}
+		return true;
 	}
 }
 
