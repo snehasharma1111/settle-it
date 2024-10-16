@@ -1,9 +1,8 @@
 import { api } from "@/connections";
 import { fallbackAssets, regex } from "@/constants";
-import { useDebounce } from "@/hooks";
+import { useDebounce, useHttpClient } from "@/hooks";
 import { Responsive } from "@/layouts";
 import { Avatar, Avatars, Button, Input, Typography } from "@/library";
-import { logger } from "@/log";
 import { IUser } from "@/types";
 import { notify, stylesConfig } from "@/utils";
 import Image from "next/image";
@@ -114,23 +113,18 @@ const CreateGroupMembers: React.FC<ICreateGroupMembersProps> = ({
 	selectedMembers,
 	setSelectedMembers,
 }) => {
-	const [searching, setSearching] = useState(false);
 	const [searchResults, setSearchResults] = useState<Array<IUser>>([]);
+	const { loading: searching, call: searchApiCall } = useHttpClient<
+		Array<IUser>
+	>([]);
 	const [searchStr, debouncedSearchStr, setSearchStr] = useDebounce<string>(
 		"",
 		1000
 	);
 
 	const handleSearch = async (searchStr: any) => {
-		try {
-			setSearching(true);
-			const res = await api.user.searchForUsers(searchStr);
-			setSearchResults(res.data);
-		} catch (error) {
-			logger.error(error);
-		} finally {
-			setSearching(false);
-		}
+		const res = await searchApiCall(api.user.searchForUsers, searchStr);
+		setSearchResults(res);
 	};
 
 	const handleSelectUser = (user: IUser) => {
@@ -153,6 +147,7 @@ const CreateGroupMembers: React.FC<ICreateGroupMembersProps> = ({
 		} else {
 			setSearchResults([]);
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [debouncedSearchStr]);
 
 	return (
