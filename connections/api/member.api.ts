@@ -2,11 +2,20 @@ import { http } from "@/connections";
 import { ApiRes, IMember, IOwedRecord } from "@/types";
 
 export const settleMemberInExpense = async (
-	expenseId: string,
-	memberId: string
+	{
+		groupId,
+		expenseId,
+		memberId,
+	}: {
+		groupId: string;
+		expenseId: string;
+		memberId: string;
+	},
+	headers?: any
 ): Promise<ApiRes<Array<IMember>>> => {
 	const response = await http.patch(
-		`/expenses/${expenseId}/settle/${memberId}`
+		`/groups/${groupId}/expenses/${expenseId}/settle/${memberId}`,
+		{ headers }
 	);
 	return response.data;
 };

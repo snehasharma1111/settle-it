@@ -106,5 +106,6 @@ export const http = new HttpWrapper(
 		headers: {
 			"Content-Type": "application/json",
 		},
+		withCredentials: true,
 	})
 );

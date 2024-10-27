@@ -9,7 +9,7 @@ export const updateUser = createAsyncThunk(
 			const res = await api.user.updateUser(data);
 			return Promise.resolve(res.data);
 		} catch (error: any) {
-			return thunkApi.rejectWithValue(error.message);
+			return thunkApi.rejectWithValue(error);
 		}
 	}
 );

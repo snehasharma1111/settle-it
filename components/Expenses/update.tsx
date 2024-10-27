@@ -99,7 +99,10 @@ const UpdateExpense: React.FC<IUpdateExpenseProps> = ({
 		const getMembersForExpense = async () => {
 			setGettingMembers(true);
 			try {
-				const res = await api.expense.getMembersOfExpense(id);
+				const res = await api.expense.getMembersOfExpense({
+					groupId,
+					expenseId: id,
+				});
 				setFields({
 					...fields,
 					members: res.data.map((member) => ({

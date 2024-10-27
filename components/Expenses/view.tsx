@@ -37,10 +37,11 @@ const ExpenseMember: React.FC<ExpenseMemberProps> = ({
 	const settleMember = async () => {
 		try {
 			setSettling(true);
-			const updatedMembersRes = await api.members.settleMemberInExpense(
-				expense.id,
-				id
-			);
+			const updatedMembersRes = await api.members.settleMemberInExpense({
+				groupId: expense.group.id,
+				expenseId: expense.id,
+				memberId: id,
+			});
 			onUpdateMembers(updatedMembersRes.data);
 		} catch (error) {
 			notify.error(error);
@@ -171,7 +172,10 @@ const ViewExpense: React.FC<IViewExpenseProps> = ({
 	const settleExpense = async () => {
 		try {
 			setSettlingExpense(true);
-			const updatedMembersRes = await api.expense.settleExpense(id);
+			const updatedMembersRes = await api.expense.settleExpense({
+				groupId: expense!.group.id,
+				expenseId: id,
+			});
 			setMembers(updatedMembersRes.data);
 			notify.success("This expense has been settled");
 		} catch (error) {
@@ -185,7 +189,10 @@ const ViewExpense: React.FC<IViewExpenseProps> = ({
 		const getMembersForExpense = async () => {
 			setGettingMembers(true);
 			try {
-				const res = await api.expense.getMembersOfExpense(id);
+				const res = await api.expense.getMembersOfExpense({
+					groupId: expense!.group.id,
+					expenseId: id,
+				});
 				setMembers(res.data);
 			} catch (error) {
 				notify.error(error);
@@ -193,8 +200,10 @@ const ViewExpense: React.FC<IViewExpenseProps> = ({
 				setGettingMembers(false);
 			}
 		};
-		getMembersForExpense();
-	}, [id]);
+		if (expense) {
+			getMembersForExpense();
+		}
+	}, [expense, id]);
 
 	if (!expense) return null;
 

@@ -4,12 +4,12 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 
 export const getAllExpensesForUser = createAsyncThunk(
 	"expense/getAll",
-	async (_, thunkApi) => {
+	async (body: { groupId: string }, thunkApi) => {
 		try {
-			const res = await api.expense.getAllExpensesForUser();
+			const res = await api.expense.getAllExpensesForUser(body);
 			return Promise.resolve(res.data);
 		} catch (error: any) {
-			return thunkApi.rejectWithValue(error.message);
+			return thunkApi.rejectWithValue(error);
 		}
 	}
 );
@@ -21,31 +21,34 @@ export const createExpense = createAsyncThunk(
 			const res = await api.expense.createExpense(data);
 			return Promise.resolve(res.data);
 		} catch (error: any) {
-			return thunkApi.rejectWithValue(error.message);
+			return thunkApi.rejectWithValue(error);
 		}
 	}
 );
 
 export const updateExpense = createAsyncThunk(
 	"expense/update",
-	async ({ id, data }: { id: string; data: UpdateExpenseData }, thunkApi) => {
+	async (
+		body: { groupId: string; expenseId: string; data: UpdateExpenseData },
+		thunkApi
+	) => {
 		try {
-			const res = await api.expense.updateExpense(id, data);
+			const res = await api.expense.updateExpense(body);
 			return Promise.resolve(res.data);
 		} catch (error: any) {
-			return thunkApi.rejectWithValue(error.message);
+			return thunkApi.rejectWithValue(error);
 		}
 	}
 );
 
 export const removeExpense = createAsyncThunk(
 	"expense/remove",
-	async (id: string, thunkApi) => {
+	async (body: { groupId: string; expenseId: string }, thunkApi) => {
 		try {
-			const res = await api.expense.deleteExpense(id);
+			const res = await api.expense.deleteExpense(body);
 			return Promise.resolve(res.data);
 		} catch (error: any) {
-			return thunkApi.rejectWithValue(error.message);
+			return thunkApi.rejectWithValue(error);
 		}
 	}
 );

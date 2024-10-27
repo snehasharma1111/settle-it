@@ -1,5 +1,5 @@
 import { UpdateExpense, ViewExpense } from "@/components";
-import { useConfirmationModal, useStore } from "@/hooks";
+import { useConfirmationModal, useHttpClient, useStore } from "@/hooks";
 import { Typography } from "@/library";
 import { IExpense, UpdateExpenseData } from "@/types";
 import { notify, stylesConfig } from "@/utils";
@@ -20,7 +20,8 @@ const Expense: React.FC<IExpenseProps> = ({
 	amount,
 	group,
 }) => {
-	const { dispatch, updateExpense, removeExpense } = useStore();
+	const { updateExpense, removeExpense } = useStore();
+	const client = useHttpClient();
 	const [openViewExpensePopup, setOpenViewExpensePopup] = useState(false);
 	const [openEditExpensePopup, setOpenEditExpensePopup] = useState(false);
 	const [updating, setUpdating] = useState(false);
@@ -29,7 +30,11 @@ const Expense: React.FC<IExpenseProps> = ({
 	const updateExpenseHelper = async (data: UpdateExpenseData) => {
 		setUpdating(true);
 		try {
-			await dispatch(updateExpense({ id, data })).unwrap();
+			await client.dispatch(updateExpense, {
+				groupId: group.id,
+				expenseId: id,
+				data,
+			});
 			setOpenEditExpensePopup(false);
 			setOpenViewExpensePopup(true);
 		} catch (error) {
@@ -42,7 +47,10 @@ const Expense: React.FC<IExpenseProps> = ({
 	const deleteExpenseHelper = async () => {
 		setDeleting(true);
 		try {
-			await dispatch(removeExpense(id)).unwrap();
+			await client.dispatch(removeExpense, {
+				groupId: group.id,
+				expenseId: id,
+			});
 			setOpenEditExpensePopup(false);
 			setOpenViewExpensePopup(false);
 		} catch (error) {

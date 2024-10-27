@@ -8,19 +8,21 @@ import {
 } from "@/types";
 
 export const getAllExpensesForUser = async (
+	{ groupId }: { groupId: string },
 	headers?: any
 ): Promise<ApiRes<Array<IExpense>>> => {
-	const response = await http.get("/expenses", { headers });
+	const response = await http.get(`/groups/${groupId}/expenses`, { headers });
 	return response.data;
 };
 
 export const getMembersOfExpense = async (
-	expenseId: string,
+	{ groupId, expenseId }: { groupId: string; expenseId: string },
 	headers?: any
 ): Promise<ApiRes<Array<IMember>>> => {
-	const response = await http.get(`/expenses/${expenseId}/members`, {
-		headers,
-	});
+	const response = await http.get(
+		`/groups/${groupId}/expenses/${expenseId}/members`,
+		{ headers }
+	);
 	return response.data;
 };
 
@@ -35,20 +37,27 @@ export const createExpense = async (
 };
 
 export const updateExpense = async (
-	id: string,
-	data: UpdateExpenseData,
+	{
+		groupId,
+		expenseId,
+		data,
+	}: { groupId: string; expenseId: string; data: UpdateExpenseData },
 	headers?: any
 ): Promise<ApiRes<IExpense>> => {
-	const response = await http.patch(`/expenses/${id}`, data, { headers });
+	const response = await http.patch(
+		`/groups/${groupId}/expenses/${expenseId}`,
+		data,
+		{ headers }
+	);
 	return response.data;
 };
 
 export const settleExpense = async (
-	id: string,
+	{ groupId, expenseId }: { groupId: string; expenseId: string },
 	headers?: any
 ): Promise<ApiRes<Array<IMember>>> => {
 	const response = await http.patch(
-		`/expenses/${id}/settle`,
+		`/groups/${groupId}/expenses/${expenseId}/settle`,
 		{},
 		{ headers }
 	);
@@ -56,9 +65,12 @@ export const settleExpense = async (
 };
 
 export const deleteExpense = async (
-	id: string,
+	{ groupId, expenseId }: { groupId: string; expenseId: string },
 	headers?: any
 ): Promise<ApiRes<IExpense>> => {
-	const response = await http.delete(`/expenses/${id}`, { headers });
+	const response = await http.delete(
+		`/groups/${groupId}/expenses/${expenseId}`,
+		{ headers }
+	);
 	return response.data;
 };
