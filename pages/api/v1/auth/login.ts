@@ -1,12 +1,15 @@
 import { http } from "@/connections";
+import { logger } from "@/log";
 import { ApiRequest, ApiResponse } from "@/types";
 import { NextApiHandler } from "next";
 
 const handler: NextApiHandler = async (req: ApiRequest, res: ApiResponse) => {
 	try {
+		logger.debug("Proxying to server", req.method, req.body);
 		const response = await http.post("/auth/login", req.body, {
 			headers: req.headers,
 		});
+		logger.debug("Response from server", response);
 		const token = response.headers["x-auth-token"];
 		res.setHeader(
 			"Set-Cookie",
@@ -14,6 +17,7 @@ const handler: NextApiHandler = async (req: ApiRequest, res: ApiResponse) => {
 		);
 		return res.status(response.status).json(response.data);
 	} catch (error: any) {
+		logger.error("Error from server", error);
 		return res.status(error.response.status).json(error.response.data);
 	}
 };
