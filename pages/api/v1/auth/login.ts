@@ -9,7 +9,12 @@ const handler: NextApiHandler = async (req: ApiRequest, res: ApiResponse) => {
 		const response = await http.post("/auth/login", req.body, {
 			headers: req.headers,
 		});
-		logger.debug("Response from server", response);
+		logger.debug(
+			"Response from server",
+			response.data,
+			response.headers,
+			response.status
+		);
 		const token = response.headers["x-auth-token"];
 		res.setHeader(
 			"Set-Cookie",
@@ -17,7 +22,13 @@ const handler: NextApiHandler = async (req: ApiRequest, res: ApiResponse) => {
 		);
 		return res.status(response.status).json(response.data);
 	} catch (error: any) {
-		logger.error("Error from server", error);
+		logger.error(
+			"Error from server",
+			error,
+			error.message,
+			error.response,
+			error.data
+		);
 		return res.status(error.response.status).json(error.response.data);
 	}
 };
