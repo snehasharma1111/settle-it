@@ -128,4 +128,5 @@ export const apiFunction = axios.create({
 	headers: {
 		"Content-Type": "application/json",
 	},
+	withCredentials: true,
 });
