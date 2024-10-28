@@ -16,7 +16,11 @@ const TempPage: React.FC = () => {
 		<main>
 			<button
 				onClick={() => {
-					hit("http://localhost:4000/api/health");
+					hit("https://settle-it.onrender.com/api/health").then(
+						() => {
+							hit("https://settleit.vercel.app/api/health");
+						}
+					);
 				}}
 			>
 				Hit Health API
