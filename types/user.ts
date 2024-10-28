@@ -1,4 +1,4 @@
-import { User } from "@/models";
+import { User } from "./models";
 
 export type T_USER_STATUS = "JOINED" | "INVITED";
 export type T_OTP_STATUS = "PENDING" | "VERIFIED" | "EXPIRED";

@@ -1,4 +1,4 @@
-import { Group } from "@/models";
+import { Group } from "./models";
 import { IUser } from "./user";
 
 export type IGroup = Omit<Group, "members" | "createdBy"> & {

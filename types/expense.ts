@@ -1,5 +1,5 @@
-import { Expense } from "@/models";
 import { IGroup } from "./group";
+import { Expense } from "./models";
 import { IUser } from "./user";
 
 export type IExpense = Omit<Expense, "groupId" | "paidBy" | "createdBy"> & {

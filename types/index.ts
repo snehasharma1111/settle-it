@@ -1,5 +1,4 @@
 export * from "./api";
-export * from "./cache";
 export * from "./expense";
 export * from "./files";
 export * from "./godown";

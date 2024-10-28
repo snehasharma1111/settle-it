@@ -1,6 +1,6 @@
-import { Member } from "@/models";
 import { IExpense } from "./expense";
 import { IGroup } from "./group";
+import { Member } from "./models";
 import { IUser } from "./user";
 
 export type IMember = Omit<Member, "userId" | "groupId" | "expenseId"> & {
