@@ -65,6 +65,8 @@ class HttpWrapper {
 	): Promise<R> {
 		try {
 			let response!: R;
+			logger.debug(method, url, data, config);
+			const startTime = new Date().getTime();
 			if (method === apiMethods.GET) {
 				response = await this.http.get(url, config);
 			} else if (method === apiMethods.POST) {
@@ -76,6 +78,8 @@ class HttpWrapper {
 			} else if (method === apiMethods.DELETE) {
 				response = await this.http.delete(url, config);
 			}
+			const endTime = new Date().getTime();
+			logger.debug(`Request took ${endTime - startTime}ms`);
 			return response;
 		} catch (error: any) {
 			if (error.response.status === 503) {
