@@ -1,4 +1,4 @@
-import { apiMethods, backendBaseUrl } from "@/constants";
+import { apiFunctionBaseUrl, apiMethods, backendBaseUrl } from "@/constants";
 import { logger } from "@/log";
 import { T_API_METHODS } from "@/types";
 import { sleep } from "@/utils";
@@ -111,5 +111,14 @@ export const http = new HttpWrapper(
 			"Content-Type": "application/json",
 		},
 		withCredentials: true,
+	})
+);
+
+export const apiFunction = new HttpWrapper(
+	axios.create({
+		baseURL: apiFunctionBaseUrl,
+		headers: {
+			"Content-Type": "application/json",
+		},
 	})
 );
