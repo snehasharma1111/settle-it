@@ -4,10 +4,12 @@ import { ApiRequest, ApiResponse } from "@/types";
 import axios from "axios";
 import { NextApiHandler } from "next";
 
-const handler: NextApiHandler = async (_: ApiRequest, res: ApiResponse) => {
+const handler: NextApiHandler = async (req: ApiRequest, res: ApiResponse) => {
 	try {
+		const headers = { cookie: req.headers.cookie };
 		const response = await axios.get(
-			"https://settle-it.onrender.com/api/health"
+			"https://settle-it.onrender.com/api/health",
+			{ headers }
 		);
 		return res.status(response.status).json(response.data);
 	} catch (err: any) {
