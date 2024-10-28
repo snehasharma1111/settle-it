@@ -82,7 +82,7 @@ class HttpWrapper {
 			logger.debug(`Request took ${endTime - startTime}ms`);
 			return response;
 		} catch (error: any) {
-			if (error.response.status === 503) {
+			if (error?.response?.status === 503) {
 				if (this.retryConfig.retryCount > 0) {
 					this.retryConfig.retryCount--;
 					await sleep(this.retryConfig.retryDelay);

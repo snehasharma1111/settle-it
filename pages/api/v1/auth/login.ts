@@ -1,4 +1,5 @@
 import { http } from "@/connections";
+import { HTTP } from "@/constants";
 import { logger } from "@/log";
 import { ApiRequest, ApiResponse } from "@/types";
 import { NextApiHandler } from "next";
@@ -29,7 +30,15 @@ const handler: NextApiHandler = async (req: ApiRequest, res: ApiResponse) => {
 			error.response,
 			error.data
 		);
-		return res.status(error.response.status).json(error.response.data);
+		return res
+			.status(
+				error?.response?.status || HTTP.status.INTERNAL_SERVER_ERROR
+			)
+			.json(
+				error?.response?.data || {
+					message: HTTP.message.INTERNAL_SERVER_ERROR,
+				}
+			);
 	}
 };
 
