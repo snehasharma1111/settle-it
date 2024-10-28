@@ -7,6 +7,7 @@ import { NextApiHandler } from "next";
 const handler: NextApiHandler = async (req: ApiRequest, res: ApiResponse) => {
 	try {
 		const headers = { cookie: req.headers.cookie };
+		logger.debug("health headers", headers);
 		const response = await axios.get(
 			"https://settle-it.onrender.com/api/health",
 			{ headers }
