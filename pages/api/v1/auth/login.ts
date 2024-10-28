@@ -7,9 +7,7 @@ import { NextApiHandler } from "next";
 const handler: NextApiHandler = async (req: ApiRequest, res: ApiResponse) => {
 	try {
 		logger.debug("Proxying to server", req.method, req.body);
-		const response = await http.post("/auth/login", req.body, {
-			headers: req.headers,
-		});
+		const response = await http.post("/auth/login", req.body);
 		logger.debug(
 			"Response from server",
 			response.data,
