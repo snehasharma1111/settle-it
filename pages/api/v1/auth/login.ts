@@ -17,7 +17,7 @@ const handler: NextApiHandler = async (req: ApiRequest, res: ApiResponse) => {
 		const token = response.headers["x-auth-token"];
 		res.setHeader(
 			"Set-Cookie",
-			`token=${token}; HttpOnly; Path=/; Max-Age=${30 * 24 * 60 * 60 * 1000}; SameSite=None; Secure=true; Partitioned=true`
+			`token=${token}; HttpOnly; Path=/; Max-Age=${30 * 24 * 60 * 60 * 1000}; SameSite=None; Secure=true;`
 		);
 		return res.status(response.status).json(response.data);
 	} catch (error: any) {
