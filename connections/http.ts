@@ -114,11 +114,18 @@ export const http = new HttpWrapper(
 	})
 );
 
-export const apiFunction = new HttpWrapper(
-	axios.create({
-		baseURL: apiFunctionBaseUrl,
-		headers: {
-			"Content-Type": "application/json",
-		},
-	})
-);
+// export const apiFunction = new HttpWrapper(
+// 	axios.create({
+// 		baseURL: apiFunctionBaseUrl,
+// 		headers: {
+// 			"Content-Type": "application/json",
+// 		},
+// 	})
+// );
+
+export const apiFunction = axios.create({
+	baseURL: apiFunctionBaseUrl,
+	headers: {
+		"Content-Type": "application/json",
+	},
+});
