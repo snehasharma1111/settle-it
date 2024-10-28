@@ -248,7 +248,7 @@ export const getServerSideProps = (
 			} catch (error: any) {
 				return {
 					props: {
-						error: error.message,
+						error: error.response.data.message,
 					},
 				};
 			}
