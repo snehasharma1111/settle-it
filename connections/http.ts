@@ -65,24 +65,6 @@ class HttpWrapper {
 	): Promise<R> {
 		try {
 			let response!: R;
-			if (typeof document !== "undefined") {
-				const getCookie = (name: string) => {
-					const cookieValue = document.cookie.match(
-						`(^|;)\\s*${name}\\s*=\\s*([^;]+)`
-					);
-					return cookieValue ? cookieValue.pop() : null;
-				};
-
-				const token = getCookie("token");
-
-				if (token) {
-					const headers = {
-						"Content-Type": "application/json",
-						cookie: `token=${token}`,
-					};
-					config = { ...config, headers };
-				}
-			}
 			logger.debug(method, url, data, config);
 			const startTime = new Date().getTime();
 			if (method === apiMethods.GET) {
