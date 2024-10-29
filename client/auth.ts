@@ -8,6 +8,7 @@ export const authenticatedPage: ServerSideAuthMiddleware = async (
 	{ onLoggedInAndNotOnboarded, onLoggedInAndOnboarded, onLoggedOut }
 ) => {
 	const { req } = context;
+	logger.debug("ssr cookies", req.headers.cookie, req.cookies);
 	const cookies = req.cookies;
 	if (!cookies.token) {
 		return onLoggedOut();
