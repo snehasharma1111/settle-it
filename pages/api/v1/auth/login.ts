@@ -19,7 +19,7 @@ const handler: NextApiHandler = async (req: ApiRequest, res: ApiResponse) => {
 			"Set-Cookie",
 			`token=${token}; HttpOnly; Path=/; Max-Age=${30 * 24 * 60 * 60 * 1000}; SameSite=None; Secure=true;`
 		); */
-		res.setHeader("Set-Cookie", `token=${token}; HttpOnly; Path=/;`);
+		res.setHeader("Set-Cookie", `token=${token}; Path=/;`);
 		return res.status(response.status).json(response.data);
 	} catch (error: any) {
 		logger.error(
