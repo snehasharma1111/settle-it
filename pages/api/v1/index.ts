@@ -54,6 +54,11 @@ const handler: NextApiHandler = async (req: ApiRequest, res: ApiResponse) => {
 				"Set-Cookie",
 				`token=${token}; HttpOnly; Path=/; Max-Age=${30 * 24 * 60 * 60 * 1000}; SameSite=None; Secure=true;`
 			);
+		} else if (endpoint === "/auth/logout") {
+			res.setHeader(
+				"Set-Cookie",
+				"token=; HttpOnly; Path=/; Max-Age=-1; SameSite=None; Secure=true;"
+			);
 		}
 		return res.status(response.status).json(response.data);
 	} catch (err: any) {
