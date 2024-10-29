@@ -1,4 +1,4 @@
-import { apiFunction, http } from "@/connections";
+import { http } from "@/connections";
 import { ApiRes, IUser } from "@/types";
 
 export const requestOtpWithEmail = async (
@@ -34,7 +34,7 @@ export const loginWithEmail = async (
 	email: string,
 	otp: string
 ): Promise<ApiRes<IUser>> => {
-	const response = await apiFunction.post("/auth/login", {
+	const response = await http.post("/auth/login", {
 		email,
 		otp,
 	});
@@ -42,7 +42,7 @@ export const loginWithEmail = async (
 };
 
 export const logout = async (headers?: any): Promise<{ message: string }> => {
-	const response = await apiFunction.get("/auth/logout", {
+	const response = await http.get("/auth/logout", {
 		headers,
 	});
 	return response.data;

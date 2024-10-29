@@ -1,4 +1,4 @@
-import { apiFunctionBaseUrl, apiMethods, backendBaseUrl } from "@/constants";
+import { apiMethods, backendBaseUrl, serverBaseUrl } from "@/constants";
 import { logger } from "@/log";
 import { T_API_METHODS } from "@/types";
 import { sleep } from "@/utils";
@@ -65,18 +65,33 @@ class HttpWrapper {
 	): Promise<R> {
 		try {
 			let response!: R;
+			if (config) {
+				if (config.headers) {
+					config.headers["x-endpoint"] = url;
+				} else {
+					config.headers = {
+						"x-endpoint": url,
+					};
+				}
+			} else {
+				config = {
+					headers: {
+						"x-endpoint": url,
+					},
+				};
+			}
 			logger.debug(method, url, data, config);
 			const startTime = new Date().getTime();
 			if (method === apiMethods.GET) {
-				response = await this.http.get(url, config);
+				response = await this.http.get("", config);
 			} else if (method === apiMethods.POST) {
-				response = await this.http.post(url, data, config);
+				response = await this.http.post("", data, config);
 			} else if (method === apiMethods.PUT) {
-				response = await this.http.put(url, data, config);
+				response = await this.http.put("", data, config);
 			} else if (method === apiMethods.PATCH) {
-				response = await this.http.patch(url, data, config);
+				response = await this.http.patch("", data, config);
 			} else if (method === apiMethods.DELETE) {
-				response = await this.http.delete(url, config);
+				response = await this.http.delete("", config);
 			}
 			const endTime = new Date().getTime();
 			logger.debug(`Request took ${endTime - startTime}ms`);
@@ -114,17 +129,8 @@ export const http = new HttpWrapper(
 	})
 );
 
-// export const apiFunction = new HttpWrapper(
-// 	axios.create({
-// 		baseURL: apiFunctionBaseUrl,
-// 		headers: {
-// 			"Content-Type": "application/json",
-// 		},
-// 	})
-// );
-
-export const apiFunction = axios.create({
-	baseURL: apiFunctionBaseUrl,
+export const server = axios.create({
+	baseURL: serverBaseUrl,
 	headers: {
 		"Content-Type": "application/json",
 	},

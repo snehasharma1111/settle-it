@@ -2,7 +2,7 @@ import { url } from "@/config";
 
 export const frontendBaseUrl: string = url.frontend;
 export const backendBaseUrl: string = url.backend;
-export const apiFunctionBaseUrl: string = url.apiFunction;
+export const serverBaseUrl: string = url.server;
 export const logsBaseUrl: string = "logs";
 
 export const fallbackAssets = Object.freeze({
