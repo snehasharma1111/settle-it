@@ -121,7 +121,7 @@ class HttpWrapper {
 
 export const http = new HttpWrapper(
 	axios.create({
-		baseURL: backendBaseUrl,
+		baseURL: backendBaseUrl + "/api/v1",
 		headers: {
 			"Content-Type": "application/json",
 		},
@@ -130,7 +130,7 @@ export const http = new HttpWrapper(
 );
 
 export const server = axios.create({
-	baseURL: serverBaseUrl,
+	baseURL: serverBaseUrl + "/api/v1",
 	headers: {
 		"Content-Type": "application/json",
 	},

@@ -8,7 +8,7 @@ const handler: NextApiHandler = async (req: ApiRequest, res: ApiResponse) => {
 	try {
 		const headers = { cookie: req.headers.cookie };
 		logger.debug("health headers", headers);
-		const response = await axios.get(`${serverBaseUrl}/api/health`, {
+		const response = await axios.get(`${serverBaseUrl}/api/heartbeat`, {
 			headers,
 		});
 		return res.status(response.status).json(response.data);
