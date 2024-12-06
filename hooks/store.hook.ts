@@ -1,3 +1,4 @@
+import { getSideBarLinks } from "@/constants";
 import * as allHelpers from "@/context/helpers";
 import {
 	expenseSelector,
@@ -47,6 +48,7 @@ export const useStore = () => {
 	const syncUserState = (user: IUser) => {
 		dispatch(userSlice.actions.setUser(user));
 		dispatch(uiSlice.actions.setIsLoggedIn(true));
+		dispatch(uiSlice.actions.setSideBarLinks(getSideBarLinks(true)));
 	};
 
 	const syncEverything = async () => {
@@ -67,6 +69,14 @@ export const useStore = () => {
 	const toggleAppTheme = () => {
 		localStorage.setItem("theme", ui.theme === "light" ? "dark" : "light");
 		dispatch(uiSlice.actions.toggleTheme());
+	};
+
+	const openSidebar = () => {
+		dispatch(uiSlice.actions.setOpenSidebar(true));
+	};
+
+	const closeSideBar = () => {
+		dispatch(uiSlice.actions.setOpenSidebar(false));
 	};
 
 	const initStore = async (user?: IUser) => {
@@ -101,6 +111,8 @@ export const useStore = () => {
 		syncNetworkStatus,
 		syncUserState,
 		toggleAppTheme,
+		openSidebar,
+		closeSideBar,
 		initStore,
 	};
 };

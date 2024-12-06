@@ -1,13 +1,21 @@
-import { Action, AppNetworkStatus, AppTheme, UiSlice } from "@/types";
+import { getSideBarLinks } from "@/constants";
+import {
+	Action,
+	AppNetworkStatus,
+	AppTheme,
+	Navigation,
+	UiSlice,
+} from "@/types";
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState: UiSlice = {
 	vh: 0,
 	theme: "light",
-	openSidebar: false,
+	isSidebarOpen: false,
 	networkStatus: "online",
 	isLoggedIn: false,
 	isSyncing: false,
+	sideBarLinks: getSideBarLinks(false),
 };
 
 export const uiSlice = createSlice({
@@ -28,10 +36,10 @@ export const uiSlice = createSlice({
 			}
 		},
 		setOpenSidebar: (state, action: Action<boolean>) => {
-			state.openSidebar = action.payload;
+			state.isSidebarOpen = action.payload;
 		},
 		toggleSidebar: (state) => {
-			state.openSidebar = !state.openSidebar;
+			state.isSidebarOpen = !state.isSidebarOpen;
 		},
 		setNetworkStatus: (state, action: Action<AppNetworkStatus>) => {
 			state.networkStatus = action.payload;
@@ -41,6 +49,9 @@ export const uiSlice = createSlice({
 		},
 		setIsSyncing: (state, action: Action<boolean>) => {
 			state.isSyncing = action.payload;
+		},
+		setSideBarLinks: (state, action: Action<Array<Navigation>>) => {
+			state.sideBarLinks = action.payload;
 		},
 	},
 });
@@ -52,6 +63,8 @@ export const {
 	toggleSidebar,
 	setNetworkStatus,
 	setIsLoggedIn,
+	setIsSyncing,
+	setSideBarLinks,
 } = uiSlice.actions;
 
 export default uiSlice.reducer;

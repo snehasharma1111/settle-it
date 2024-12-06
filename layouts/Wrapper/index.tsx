@@ -1,4 +1,4 @@
-import { Footer, Header, Loader } from "@/components";
+import { Footer, Header, Loader, SideBar } from "@/components";
 import { frontendBaseUrl, routes } from "@/constants";
 import { useStore } from "@/hooks";
 import { Seo } from "@/layouts";
@@ -14,7 +14,8 @@ interface WrapperProps {
 
 export const Wrapper: React.FC<WrapperProps> = ({ children, user }) => {
 	const router = useRouter();
-	const { initStore } = useStore();
+	const { initStore, syncNetworkStatus, isSidebarOpen, closeSideBar } =
+		useStore();
 	const [showLoader, setShowLoader] = useState(false);
 	const staticPagesPaths: Array<string> = [
 		routes.ROOT,
@@ -38,8 +39,15 @@ export const Wrapper: React.FC<WrapperProps> = ({ children, user }) => {
 
 	useEffect(() => {
 		initStore(user);
+		setInterval(() => {
+			syncNetworkStatus();
+		}, 10000);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
+
+	useEffect(() => {
+		closeSideBar();
+	}, [router.pathname]);
 
 	return (
 		<>
@@ -106,6 +114,7 @@ export const Wrapper: React.FC<WrapperProps> = ({ children, user }) => {
 				}}
 			/>
 			{staticPagesPaths.includes(router.pathname) ? <Header /> : null}
+			{isSidebarOpen ? <SideBar /> : null}
 			{showLoader ? <Loader.Bar /> : null}
 			{children}
 			{staticPagesPaths.includes(router.pathname) ? <Footer /> : null}

@@ -12,7 +12,7 @@
 
 import { IExpense } from "./expense";
 import { IGroup } from "./group";
-import { AppNetworkStatus, AppTheme } from "./ui";
+import { AppNetworkStatus, AppTheme, Navigation } from "./ui";
 import { IUser } from "./user";
 
 export type Action<T> = {
@@ -25,9 +25,10 @@ export type GroupSlice = Array<IGroup>;
 export type UiSlice = {
 	vh: number;
 	theme: AppTheme;
-	openSidebar: boolean;
+	isSidebarOpen: boolean;
 	networkStatus: AppNetworkStatus;
 	isLoggedIn: boolean;
 	isSyncing: boolean;
+	sideBarLinks: Array<Navigation>;
 };
 export type UserSlice = IUser;

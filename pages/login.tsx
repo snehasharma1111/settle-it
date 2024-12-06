@@ -23,7 +23,7 @@ interface LoginPageProps {
 }
 
 const LoginPage: React.FC<LoginPageProps> = (props) => {
-	const { setUser, dispatch } = useStore();
+	const { setUser, syncUserState } = useStore();
 	const router = useRouter();
 	const [authFrame, setAuthFrame] = useState<T_Auth_Frame>(props.frame);
 	const [email, setEmail] = useState("");
@@ -49,7 +49,7 @@ const LoginPage: React.FC<LoginPageProps> = (props) => {
 			setVerifyingOtp(true);
 			await api.auth.verifyOtpWithEmail(email, otp);
 			const res = await api.auth.loginWithEmail(email, otp);
-			dispatch(setUser(res.data));
+			syncUserState(res.data);
 			if (res.data.name) {
 				const redirectUrl =
 					router.query.redirect?.toString() ?? routes.HOME;
@@ -80,9 +80,6 @@ const LoginPage: React.FC<LoginPageProps> = (props) => {
 	};
 
 	useEffect(() => {
-		if (props.user) {
-			dispatch(setUser(props.user));
-		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [props.user]);
 
