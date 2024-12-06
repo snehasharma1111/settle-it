@@ -2,11 +2,23 @@ import { api } from "@/connections";
 import { CreateExpenseData, UpdateExpenseData } from "@/types";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-export const getAllExpensesForUser = createAsyncThunk(
+export const getAllExpenses = createAsyncThunk(
+	"expense/get",
+	async (_, thunkApi) => {
+		try {
+			const res = await api.expense.getAllUserExpense();
+			return Promise.resolve(res.data);
+		} catch (error: any) {
+			return thunkApi.rejectWithValue(error);
+		}
+	}
+);
+
+export const getAllExpensesForGroup = createAsyncThunk(
 	"expense/getAll",
 	async (body: { groupId: string }, thunkApi) => {
 		try {
-			const res = await api.expense.getAllExpensesForUser(body);
+			const res = await api.expense.getAllExpensesForGroup(body);
 			return Promise.resolve(res.data);
 		} catch (error: any) {
 			return thunkApi.rejectWithValue(error);

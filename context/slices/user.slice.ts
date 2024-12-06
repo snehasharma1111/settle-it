@@ -1,9 +1,9 @@
 import { USER_STATUS } from "@/constants";
 import { authHelpers, userHelpers } from "@/context/helpers";
-import { IUser } from "@/types";
+import { IUser, UserSlice } from "@/types";
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState: IUser = {
+const initialState: UserSlice = {
 	id: "",
 	name: "",
 	email: "",
@@ -57,4 +57,4 @@ export const { setUser, logout } = userSlice.actions;
 
 export default userSlice.reducer;
 
-export const userSelector = (state: { user: IUser }) => state.user;
+export const userSelector = (state: { user: UserSlice }) => state.user;

@@ -1,5 +1,6 @@
-import { routes } from "@/constants";
-import { Button } from "@/library";
+import { fallbackAssets, routes } from "@/constants";
+import { useStore } from "@/hooks";
+import { Avatar, Button, IconButton, MaterialIcon } from "@/library";
 import { stylesConfig } from "@/utils";
 import Image from "next/image";
 import Link from "next/link";
@@ -14,6 +15,16 @@ const classes = stylesConfig(styles, "header");
 
 const Header: React.FC<IHeaderProps> = () => {
 	const router = useRouter();
+	const {
+		user,
+		toggleSidebar,
+		isLoggedIn,
+		isSyncing,
+		syncEverything,
+		theme,
+		toggleAppTheme,
+		dispatch,
+	} = useStore();
 	const lastScrollTop = useRef<any>(0);
 	const [isNavbarVisible, setIsNavbarVisible] = useState(true);
 
@@ -22,6 +33,10 @@ const Header: React.FC<IHeaderProps> = () => {
 		if (pageYOffset > lastScrollTop.current) setIsNavbarVisible(false);
 		else if (pageYOffset < lastScrollTop.current) setIsNavbarVisible(true);
 		lastScrollTop.current = pageYOffset;
+	};
+
+	const toggleSideBar = () => {
+		dispatch(toggleSidebar());
 	};
 
 	useEffect(() => {
@@ -41,23 +56,63 @@ const Header: React.FC<IHeaderProps> = () => {
 					: "0 calc(-1 * var(--head-height))",
 			}}
 		>
-			<Link href="/">
-				<Image
-					className={classes("-logo")}
-					src="/logo-full.png"
-					alt="logo"
-					width={512}
-					height={512}
+			<div className={classes("-left")}>
+				<div className={classes("-left-burger")}>
+					<IconButton
+						className="header-left-burger__button icon"
+						onClick={toggleSideBar}
+						icon={<MaterialIcon icon="menu" />}
+					/>
+				</div>
+				<Link className={classes("-left-logo")} href="/">
+					<Image
+						className={classes("-left-logo__image")}
+						src="/logo-full.png"
+						alt="logo"
+						width={512}
+						height={512}
+					/>
+				</Link>
+			</div>
+			<div className={classes("-right")}>
+				<IconButton
+					onClick={toggleAppTheme}
+					icon={
+						<MaterialIcon
+							icon={
+								theme === "light" ? "dark_mode" : "light_mode"
+							}
+						/>
+					}
 				/>
-			</Link>
-			<Button
-				onClick={() => {
-					router.push(routes.LOGIN);
-				}}
-				icon={<FiLogIn />}
-			>
-				Login
-			</Button>
+				{isLoggedIn ? (
+					<IconButton
+						onClick={syncEverything}
+						className={classes("-sync", {
+							"-sync--loading": isSyncing,
+						})}
+						icon={<MaterialIcon icon="sync" />}
+					/>
+				) : null}
+				{isLoggedIn ? (
+					<Avatar
+						src={user.avatar || fallbackAssets.avatar}
+						alt={user.name || "User"}
+						size={48}
+						onClick={() => router.push("/me")}
+						className={classes("-avatar")}
+					/>
+				) : (
+					<Button
+						onClick={() => {
+							router.push(routes.LOGIN);
+						}}
+						icon={<FiLogIn />}
+					>
+						Login
+					</Button>
+				)}
+			</div>
 		</header>
 	);
 };

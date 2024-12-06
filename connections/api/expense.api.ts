@@ -7,7 +7,14 @@ import {
 	UpdateExpenseData,
 } from "@/types";
 
-export const getAllExpensesForUser = async (
+export const getAllUserExpense = async (
+	headers?: any
+): Promise<ApiRes<Array<IExpense>>> => {
+	const response = await http.get("/expenses", { headers });
+	return response.data;
+};
+
+export const getAllExpensesForGroup = async (
 	{ groupId }: { groupId: string },
 	headers?: any
 ): Promise<ApiRes<Array<IExpense>>> => {

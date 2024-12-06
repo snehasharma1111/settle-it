@@ -1,12 +1,20 @@
 import { Footer, Header, Loader } from "@/components";
 import { frontendBaseUrl, routes } from "@/constants";
+import { useStore } from "@/hooks";
 import { Seo } from "@/layouts";
+import { IUser } from "@/types";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { Toaster } from "react-hot-toast";
 
-export const Wrapper: React.FC<any> = ({ children }) => {
+interface WrapperProps {
+	children: React.ReactNode;
+	user?: IUser;
+}
+
+export const Wrapper: React.FC<WrapperProps> = ({ children, user }) => {
 	const router = useRouter();
+	const { initStore } = useStore();
 	const [showLoader, setShowLoader] = useState(false);
 	const staticPagesPaths: Array<string> = [
 		routes.ROOT,
@@ -27,6 +35,11 @@ export const Wrapper: React.FC<any> = ({ children }) => {
 			setShowLoader(false);
 		});
 	}, [router.events]);
+
+	useEffect(() => {
+		initStore(user);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	return (
 		<>

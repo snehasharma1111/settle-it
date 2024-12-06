@@ -1,5 +1,5 @@
 import { authenticatedPage } from "@/client";
-import { CreateGroup, Home, Loader } from "@/components";
+import { CreateGroup, Header, Loader } from "@/components";
 import { fallbackAssets, routes } from "@/constants";
 import { useHttpClient, useStore } from "@/hooks";
 import { Responsive, Seo } from "@/layouts";
@@ -20,7 +20,7 @@ type HomePageProps = {
 
 const HomePage: React.FC<HomePageProps> = (props) => {
 	const client = useHttpClient();
-	const { setUser, dispatch, getAllGroups, createGroup, groups } = useStore();
+	const { getAllGroups, createGroup, groups } = useStore();
 	const [openCreateGroupPopup, setOpenCreateGroupPopup] = useState(false);
 	const [creatingGroup, setCreatingGroup] = useState(false);
 
@@ -33,7 +33,6 @@ const HomePage: React.FC<HomePageProps> = (props) => {
 	};
 
 	useEffect(() => {
-		dispatch(setUser(props.user));
 		getGroups();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
@@ -55,7 +54,7 @@ const HomePage: React.FC<HomePageProps> = (props) => {
 	return (
 		<>
 			<Seo title={`${props.user.name} - Home | Settle It`} />
-			<Home.Header />
+			<Header />
 			<main className={classes("")}>
 				{client.loading && groups.length === 0 ? (
 					<Loader.Spinner />
@@ -163,11 +162,7 @@ export const getServerSideProps = (
 ): Promise<ServerSideResult<HomePageProps>> => {
 	return authenticatedPage(context, {
 		onLoggedInAndOnboarded(user) {
-			return {
-				props: {
-					user,
-				},
-			};
+			return { props: { user } };
 		},
 		onLoggedInAndNotOnboarded() {
 			return {

@@ -23,7 +23,7 @@ html {
 		font-size: 14px;
 	}
 
-	@include responsive(desktop) {
+	/* @include responsive(desktop) {
 		font-size: 16px;
 	}
 
@@ -33,7 +33,7 @@ html {
 
 	@include responsive(extra-large-desktop) {
 		font-size: 20px;
-	}
+	} */
 }
 
 body {
@@ -47,7 +47,8 @@ body {
 	position: relative;
 }
 
-body.light {
+body.light,
+body[data-theme="light"] {
 	--bgcolor: #f9f9f9;
 	--bgcolor-100: #e1e1e1;
 	--bgcolor-400: #d2d2d2;
@@ -58,12 +59,16 @@ body.light {
 	--tcolor-400: #272727;
 	--tcolor-700: #1d1d1d;
 
+	--theme-bg: #f9f9f9;
+	--theme-fg: #121212;
+
 	--back-shadow: rgba(0, 0, 0, 0.2);
 	--back-shadow-dark: rgba(0, 0, 0, 0.25);
 	--back-shadow-light: rgba(0, 0, 0, 0.1);
 }
 
-body.dark {
+body.dark,
+body[data-theme="dark"] {
 	--bgcolor: #121212;
 	--bgcolor-100: #333333;
 	--bgcolor-400: #272727;
@@ -73,6 +78,9 @@ body.dark {
 	--tcolor-100: #e1e1e1;
 	--tcolor-400: #d2d2d2;
 	--tcolor-700: #c3c3c3;
+
+	--theme-bg: #0c1015;
+	--theme-fg: #f9f9f9;
 
 	--back-shadow: rgba(255, 255, 255, 0.2);
 	--back-shadow-dark: rgba(255, 255, 255, 0.25);

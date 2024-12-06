@@ -14,3 +14,18 @@ export interface IButtonProps
 	icon?: React.ReactNode;
 	iconPosition?: "left" | "right";
 }
+
+/* export type IconButtonProps = Omit<
+	IButtonProps,
+	"children" | "iconPosition" | "loading" | "theme" | "variant"
+>;
+ */
+
+export type IconButtonProps = React.DetailedHTMLProps<
+	React.ButtonHTMLAttributes<HTMLButtonElement>,
+	HTMLButtonElement
+> & {
+	className?: string;
+	size?: "small" | "medium" | "large";
+	icon: React.ReactNode;
+};

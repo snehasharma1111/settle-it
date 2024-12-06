@@ -58,6 +58,24 @@
 			@content;
 		}
 	}
+
+	@if $mode ==light {
+		body:not([data-theme]) & {
+			@content;
+		}
+	}
+
+	@if $mode ==light {
+		body[data-theme="light"] & {
+			@content;
+		}
+	} @else if $mode ==dark {
+		body[data-theme="dark"] & {
+			@content;
+		}
+	} @else {
+		@content;
+	}
 }
 
 @mixin theme($theme) {

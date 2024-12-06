@@ -10,6 +10,7 @@
 	align-items: center;
 	flex-flow: column;
 	gap: 36px;
+	padding-top: var(--head-height);
 }
 
 .privacy-policy {
@@ -28,6 +29,7 @@
 	align-items: center;
 	flex-direction: column;
 	padding: 0 8px;
+	padding-top: var(--head-height);
 
 	&-group {
 		width: 100%;
