@@ -9,4 +9,6 @@
 	border-radius: 32px;
 	background-color: var(--theme-bg);
 	overflow-y: auto;
+	overflow-x: hidden;
+	z-index: 60;
 }

@@ -36,18 +36,6 @@ html {
 	} */
 }
 
-body {
-	font-family: var(--font-google-sans);
-	overflow-x: hidden;
-	background-color: var(--accent-color-200);
-	// background-color: var(--theme-bg);
-	color: var(--theme-fg);
-	letter-spacing: 0.025rem;
-	word-spacing: 0.25rem;
-	line-height: 1.25rem;
-	position: relative;
-}
-
 body.light,
 body[data-theme="light"] {
 	--bgcolor: #f9f9f9;
@@ -86,6 +74,27 @@ body[data-theme="dark"] {
 	--back-shadow: rgba(255, 255, 255, 0.2);
 	--back-shadow-dark: rgba(255, 255, 255, 0.25);
 	--back-shadow-light: rgba(255, 255, 255, 0.1);
+}
+
+body {
+	font-family: var(--font-google-sans);
+	overflow-x: hidden;
+	background-color: var(--accent-color-200);
+	color: var(--theme-fg);
+	letter-spacing: 0.025rem;
+	word-spacing: 0.25rem;
+	line-height: 1.25rem;
+	position: relative;
+
+	&.light,
+	&[data-theme="light"] {
+		background-color: var(--accent-color-200);
+	}
+
+	&.dark,
+	&[data-theme="dark"] {
+		background-color: var(--bgcolor-400);
+	}
 }
 
 @font-face {

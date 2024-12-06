@@ -3,7 +3,7 @@
 
 .home,
 .privacy-policy {
-	width: 100vw;
+	width: 100%;
 	min-height: 100vh;
 	display: flex;
 	justify-content: center;
@@ -52,6 +52,7 @@
 
 		@include theme(dark) {
 			background-color: var(--accent-color-heavy);
+
 			&:hover {
 				opacity: 0.8;
 			}
@@ -111,6 +112,10 @@
 		border-radius: 8px;
 		cursor: pointer;
 
+		@include responsive(phone) {
+			aspect-ratio: 2 / 1;
+		}
+
 		&:hover {
 			background-color: var(--accent-color-500);
 		}
@@ -118,6 +123,7 @@
 		@include theme(dark) {
 			background-color: var(--transparent);
 			border-color: var(--accent-color-400);
+
 			&:hover {
 				background-color: var(--accent-color-400);
 			}

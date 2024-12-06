@@ -18,20 +18,27 @@ const classes = stylesConfig(styles, "wrapper");
 
 export const Wrapper: React.FC<WrapperProps> = ({ children, user }) => {
 	const router = useRouter();
-	const { initStore, syncNetworkStatus, closeSideBar, isLoggedIn } =
-		useStore();
+	const { initStore, syncNetworkStatus, isLoggedIn } = useStore();
 	const [showLoader, setShowLoader] = useState(false);
 	const pagesSupportingHeader: Array<string> = [
 		routes.ROOT,
 		routes.ERROR,
 		routes.PRIVACY_POLICY,
 		routes.HOME,
-		routes.GROUP(""),
+		routes.GROUP("[id]"),
+		routes.GROUP_SUMMARY("[id]"),
+		routes.GROUP_TRANSACTIONS("[id]"),
 	];
 	const pagesSupportingFooter: Array<string> = [
 		routes.ROOT,
 		routes.ERROR,
 		routes.PRIVACY_POLICY,
+	];
+	const pagesSupportingContainer: Array<string> = [
+		routes.HOME,
+		routes.GROUP("[id]"),
+		routes.GROUP_SUMMARY("[id]"),
+		routes.GROUP_TRANSACTIONS("[id]"),
 	];
 
 	// only show router when route is changing
@@ -49,16 +56,13 @@ export const Wrapper: React.FC<WrapperProps> = ({ children, user }) => {
 	}, [router.events]);
 
 	useEffect(() => {
+		console.log(router.pathname);
 		initStore(user);
 		setInterval(() => {
 			syncNetworkStatus();
 		}, 10000);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
-
-	useEffect(() => {
-		closeSideBar();
-	}, [router.pathname]);
 
 	return (
 		<>
@@ -127,9 +131,19 @@ export const Wrapper: React.FC<WrapperProps> = ({ children, user }) => {
 			{pagesSupportingHeader.includes(router.pathname) ? (
 				<Header />
 			) : null}
-			{isLoggedIn ? <SideBar /> : null}
+			{pagesSupportingContainer.includes(router.pathname) ? (
+				<SideBar />
+			) : null}
 			{showLoader ? <Loader.Bar /> : null}
-			<main className={isLoggedIn ? classes("") : ""}>{children}</main>
+			<main
+				className={
+					pagesSupportingContainer.includes(router.pathname)
+						? classes("")
+						: ""
+				}
+			>
+				{children}
+			</main>
 			{pagesSupportingFooter.includes(router.pathname) ? (
 				<Footer />
 			) : null}

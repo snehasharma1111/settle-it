@@ -6,7 +6,7 @@
 	position: fixed;
 	top: var(--head-height);
 	left: 0;
-	z-index: 9;
+	z-index: 50;
 	display: flex;
 	justify-content: flex-start;
 	align-items: center;
@@ -45,7 +45,6 @@
 		align-items: center;
 		border-radius: 32px;
 		padding: 0.2rem 0 0.2rem 0.6rem;
-		background-color: var(--back-shadow-light);
 		color: inherit;
 		text-decoration: none;
 		cursor: pointer;
@@ -59,10 +58,18 @@
 		}
 
 		&:hover {
-			background-color: var(--accent-color-500);
+			background-color: var(--back-shadow-light);
 
 			body.dark & {
 				color: var(--black);
+			}
+		}
+
+		&--active {
+			background-color: var(--accent-color-500);
+
+			@include theme(dark) {
+				background-color: var(--accent-color-300);
 			}
 		}
 
@@ -79,5 +86,21 @@
 				font-size: 1.25rem;
 			}
 		}
+	}
+
+	&--collapsed &-list__item {
+		justify-content: center;
+	}
+
+	&--collapsed &-link {
+		width: 3rem;
+		height: 3rem;
+		border-radius: 500px;
+		justify-content: center;
+		padding: 0.4rem;
+	}
+
+	&--collapsed &-link__title {
+		display: none;
 	}
 }

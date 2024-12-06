@@ -11,7 +11,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState: UiSlice = {
 	vh: 0,
 	theme: "light",
-	isSidebarExpanded: false,
+	isSidebarExpanded: true,
 	networkStatus: "online",
 	isLoggedIn: false,
 	isSyncing: false,
@@ -36,9 +36,31 @@ export const uiSlice = createSlice({
 			}
 		},
 		setOpenSidebar: (state, action: Action<boolean>) => {
+			if (action.payload === true) {
+				document.body.style.setProperty(
+					"--side-width",
+					"var(--side-width-expanded)"
+				);
+			} else {
+				document.body.style.setProperty(
+					"--side-width",
+					"var(--side-width-collapsed)"
+				);
+			}
 			state.isSidebarExpanded = action.payload;
 		},
 		toggleSidebar: (state) => {
+			if (state.isSidebarExpanded) {
+				document.body.style.setProperty(
+					"--side-width",
+					"var(--side-width-collapsed)"
+				);
+			} else {
+				document.body.style.setProperty(
+					"--side-width",
+					"var(--side-width-expanded)"
+				);
+			}
 			state.isSidebarExpanded = !state.isSidebarExpanded;
 		},
 		setNetworkStatus: (state, action: Action<AppNetworkStatus>) => {

@@ -7,6 +7,13 @@
 	--side-width: 22%;
 	--head-height: 4.5rem;
 
+	--side-width-collapsed: 5.5rem;
+	--side-width-expanded: 22%;
+
+	@include responsive(phone) {
+		--side-width-expanded: 5.5rem;
+	}
+
 	--font-poppins: Poppins, system-ui, -apple-system, BlinkMacSystemFont,
 		"Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 	--font-montserrat: "Montserrat", system-ui, -apple-system,
@@ -47,7 +54,7 @@
 	--back-shadow-dark: rgba(0, 0, 0, 0.25);
 	--back-shadow-light: rgba(0, 0, 0, 0.1);
 
-	@include color-scheme(light) {
+	@include theme(light) {
 		--theme-bg: #f9f9f9;
 		--theme-fg: #121212;
 
@@ -66,7 +73,7 @@
 		--back-shadow-light: rgba(0, 0, 0, 0.1);
 	}
 
-	@include color-scheme(dark) {
+	@include theme(dark) {
 		--theme-bg: #0c1015;
 		--theme-fg: #f9f9f9;
 
