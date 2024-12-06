@@ -1,0 +1,12 @@
+@import "@/styles/config/mixins";
+
+.wrapper {
+	position: fixed;
+	top: var(--head-height);
+	left: var(--side-width);
+	width: calc(100% - var(--side-width) - 1rem);
+	height: calc(100vh - var(--head-height) - 1rem);
+	border-radius: 32px;
+	background-color: var(--theme-bg);
+	overflow-y: auto;
+}

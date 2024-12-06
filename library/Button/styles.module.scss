@@ -158,17 +158,45 @@
 	@include init-button();
 	width: 2.5rem;
 	height: 2.5rem;
-	display: inline-flex;
-	justify-content: center;
-	align-items: center;
 	position: relative;
 	padding: 1rem;
-	cursor: pointer;
 	border-radius: 500px;
 	color: var(--tcolor);
 
 	.material-symbols-outlined {
 		font-size: 1.5rem;
+	}
+
+	&--size {
+		&--small {
+			width: 2rem;
+			height: 2rem;
+			padding: 0.5rem;
+
+			.material-symbols-outlined {
+				font-size: 1rem;
+			}
+		}
+
+		&--medium {
+			width: 2.5rem;
+			height: 2.5rem;
+			padding: 1rem;
+
+			.material-symbols-outlined {
+				font-size: 1.5rem;
+			}
+		}
+
+		&--large {
+			width: 3rem;
+			height: 3rem;
+			padding: 1.5rem;
+
+			.material-symbols-outlined {
+				font-size: 2rem;
+			}
+		}
 	}
 
 	&:hover {
@@ -177,7 +205,6 @@
 
 	span {
 		z-index: 5;
-		font-size: 1.25rem;
 	}
 
 	svg {

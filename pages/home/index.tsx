@@ -1,5 +1,5 @@
 import { authenticatedPage } from "@/client";
-import { CreateGroup, Header, Loader } from "@/components";
+import { CreateGroup, Loader } from "@/components";
 import { fallbackAssets, routes } from "@/constants";
 import { useHttpClient, useStore } from "@/hooks";
 import { Responsive, Seo } from "@/layouts";
@@ -54,7 +54,6 @@ const HomePage: React.FC<HomePageProps> = (props) => {
 	return (
 		<>
 			<Seo title={`${props.user.name} - Home | Settle It`} />
-			<Header />
 			<main className={classes("")}>
 				{client.loading && groups.length === 0 ? (
 					<Loader.Spinner />
@@ -62,7 +61,7 @@ const HomePage: React.FC<HomePageProps> = (props) => {
 					<Responsive.Row>
 						<Responsive.Col
 							key="add-group-tile"
-							xlg={25}
+							xlg={33}
 							lg={33}
 							md={50}
 							sm={50}
@@ -83,7 +82,7 @@ const HomePage: React.FC<HomePageProps> = (props) => {
 						{groups.map((group) => (
 							<Responsive.Col
 								key={group.id}
-								xlg={25}
+								xlg={33}
 								lg={33}
 								md={50}
 								sm={50}
@@ -113,6 +112,7 @@ const HomePage: React.FC<HomePageProps> = (props) => {
 											size="xl"
 											as="h2"
 											weight="medium"
+											className={classes("-group__name")}
 										>
 											{group.name}
 										</Typography>

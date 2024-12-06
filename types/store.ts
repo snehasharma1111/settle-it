@@ -25,7 +25,7 @@ export type GroupSlice = Array<IGroup>;
 export type UiSlice = {
 	vh: number;
 	theme: AppTheme;
-	isSidebarOpen: boolean;
+	isSidebarExpanded: boolean;
 	networkStatus: AppNetworkStatus;
 	isLoggedIn: boolean;
 	isSyncing: boolean;

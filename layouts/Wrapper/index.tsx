@@ -3,21 +3,32 @@ import { frontendBaseUrl, routes } from "@/constants";
 import { useStore } from "@/hooks";
 import { Seo } from "@/layouts";
 import { IUser } from "@/types";
+import { stylesConfig } from "@/utils";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { Toaster } from "react-hot-toast";
+import styles from "./styles.module.scss";
 
 interface WrapperProps {
 	children: React.ReactNode;
 	user?: IUser;
 }
 
+const classes = stylesConfig(styles, "wrapper");
+
 export const Wrapper: React.FC<WrapperProps> = ({ children, user }) => {
 	const router = useRouter();
-	const { initStore, syncNetworkStatus, isSidebarOpen, closeSideBar } =
+	const { initStore, syncNetworkStatus, closeSideBar, isLoggedIn } =
 		useStore();
 	const [showLoader, setShowLoader] = useState(false);
-	const staticPagesPaths: Array<string> = [
+	const pagesSupportingHeader: Array<string> = [
+		routes.ROOT,
+		routes.ERROR,
+		routes.PRIVACY_POLICY,
+		routes.HOME,
+		routes.GROUP(""),
+	];
+	const pagesSupportingFooter: Array<string> = [
 		routes.ROOT,
 		routes.ERROR,
 		routes.PRIVACY_POLICY,
@@ -113,11 +124,15 @@ export const Wrapper: React.FC<WrapperProps> = ({ children, user }) => {
 					siteName: "Settle It!",
 				}}
 			/>
-			{staticPagesPaths.includes(router.pathname) ? <Header /> : null}
-			{isSidebarOpen ? <SideBar /> : null}
+			{pagesSupportingHeader.includes(router.pathname) ? (
+				<Header />
+			) : null}
+			{isLoggedIn ? <SideBar /> : null}
 			{showLoader ? <Loader.Bar /> : null}
-			{children}
-			{staticPagesPaths.includes(router.pathname) ? <Footer /> : null}
+			<main className={isLoggedIn ? classes("") : ""}>{children}</main>
+			{pagesSupportingFooter.includes(router.pathname) ? (
+				<Footer />
+			) : null}
 			<Toaster position="top-center" />
 		</>
 	);

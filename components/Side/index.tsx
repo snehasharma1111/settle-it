@@ -10,33 +10,25 @@ interface ISideBarProps {}
 const classes = stylesConfig(styles, "side-bar");
 
 const SideBar: React.FC<ISideBarProps> = () => {
-	const { closeSideBar, sideBarLinks } = useStore();
+	const { sideBarLinks, isSidebarExpanded } = useStore();
 	return (
-		<section className={classes("")}>
-			<div
-				className={classes("-overlay")}
-				onClick={() => closeSideBar()}
-			></div>
-			<aside className={classes("-bar")} data-aos="fade-right">
-				<nav className={classes("-nav")}>
-					<ul className={classes("-list")}>
-						{sideBarLinks.map((item, index) => (
-							<li className={classes("-list__item")} key={index}>
-								<Link
-									href={item.route}
-									className={classes("-link")}
-								>
-									<MaterialIcon icon={item.icon} />
-									<Typography size="lg">
-										{item.title}
-									</Typography>
-								</Link>
-							</li>
-						))}
-					</ul>
-				</nav>
-			</aside>
-		</section>
+		<aside className={classes("")} data-aos="fade-right">
+			<nav className={classes("-nav")}>
+				<ul className={classes("-list")}>
+					{sideBarLinks.map((item, index) => (
+						<li className={classes("-list__item")} key={index}>
+							<Link
+								href={item.route}
+								className={classes("-link")}
+							>
+								<MaterialIcon icon={item.icon} />
+								<Typography size="md">{item.title}</Typography>
+							</Link>
+						</li>
+					))}
+				</ul>
+			</nav>
+		</aside>
 	);
 };
 

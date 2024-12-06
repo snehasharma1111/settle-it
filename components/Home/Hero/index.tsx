@@ -15,37 +15,43 @@ const HomeHero: React.FC<IHomeHeroProps> = () => {
 	const router = useRouter();
 	return (
 		<section className={classes("")}>
-			<div className={classes("-content")}>
-				<Typography
-					className={classes("-content__heading")}
-					size="head-1"
-					weight="bold"
-				>
-					Settle It ✨
-				</Typography>
-				<Typography
-					className={classes("-content__subheading")}
-					size="xl"
-				>
-					Blend in the fun and let us handle your expenses.
-				</Typography>
-				<Typography
-					className={classes("-content__description")}
-					size="s"
-				>
-					Settle It is a free, open source expense manager. You can
-					track and manage your expenses with ease.
-				</Typography>
-				<Button
-					size="large"
-					icon={<AiOutlineArrowRight />}
-					iconPosition="right"
-					onClick={() => {
-						router.push(routes.LOGIN);
-					}}
-				>
-					Get Started Today
-				</Button>
+			<div className={classes("-container")}>
+				<div className={classes("-logo")}>
+					<Image
+						className={classes("-container__logo")}
+						src="/favicon-transparent.svg"
+						alt="logo"
+						width={512}
+						height={512}
+					/>
+				</div>
+				<div className={classes("-content")}>
+					<Typography
+						className={classes("-container__heading")}
+						size="head-1"
+						weight="bold"
+						as="h1"
+					>
+						Settle It ✨
+					</Typography>
+					<Typography
+						className={classes("-container__subheading")}
+						size="xl"
+						as="p"
+					>
+						Blend in the fun and let us handle your expenses.
+					</Typography>
+					<Button
+						size="large"
+						icon={<AiOutlineArrowRight />}
+						iconPosition="right"
+						onClick={() => {
+							router.push(routes.LOGIN);
+						}}
+					>
+						Get Started Today
+					</Button>
+				</div>
 			</div>
 			<Image
 				src="/images/chaotic-parade.png"

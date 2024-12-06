@@ -57,14 +57,20 @@ const Header: React.FC<IHeaderProps> = () => {
 			}}
 		>
 			<div className={classes("-left")}>
-				<div className={classes("-left-burger")}>
-					<IconButton
-						className="header-left-burger__button icon"
-						onClick={toggleSideBar}
-						icon={<MaterialIcon icon="menu" />}
-					/>
-				</div>
-				<Link className={classes("-left-logo")} href="/">
+				{isLoggedIn ? (
+					<div className={classes("-left-burger")}>
+						<IconButton
+							className={classes("-left-burger__button")}
+							onClick={toggleSideBar}
+							icon={<MaterialIcon icon="menu" />}
+							size="large"
+						/>
+					</div>
+				) : null}
+				<Link
+					className={classes("-left-logo")}
+					href={isLoggedIn ? routes.HOME : routes.ROOT}
+				>
 					<Image
 						className={classes("-left-logo__image")}
 						src="/logo-full.png"

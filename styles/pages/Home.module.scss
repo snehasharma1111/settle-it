@@ -10,12 +10,12 @@
 	align-items: center;
 	flex-flow: column;
 	gap: 36px;
-	padding-top: var(--head-height);
 }
 
 .privacy-policy {
 	justify-content: flex-start;
-	padding: var(--head-height) 24px 24px 24px;
+	padding: 24px;
+	padding-top: var(--head-height);
 
 	article {
 		@include markdown-styles;
@@ -28,8 +28,7 @@
 	justify-content: flex-start;
 	align-items: center;
 	flex-direction: column;
-	padding: 0 8px;
-	padding-top: var(--head-height);
+	padding: 1rem;
 
 	&-group {
 		width: 100%;
@@ -45,6 +44,7 @@
 		user-select: none;
 		color: var(--theme-fg);
 		text-decoration: none;
+		overflow: hidden;
 
 		&:hover {
 			background-color: var(--accent-color-500);
@@ -64,14 +64,23 @@
 			object-fit: cover;
 			max-height: 100px;
 			border-radius: inherit;
+			flex: 0 1 auto;
 		}
 
 		& > div {
+			width: 100%;
 			display: flex;
 			justify-content: flex-start;
 			align-items: flex-start;
 			flex-direction: column;
 			gap: 12px;
+		}
+
+		&__name {
+			width: 100%;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+			overflow: hidden;
 		}
 	}
 
