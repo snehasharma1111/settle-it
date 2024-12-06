@@ -37,11 +37,14 @@ html {
 }
 
 body {
-	font-family: var(--font-poppins);
+	font-family: var(--font-google-sans);
 	overflow-x: hidden;
-	background-image: url("https://www.transparenttextures.com/patterns/inspiration-geometry.png");
 	background-color: var(--theme-bg);
 	color: var(--theme-fg);
+	letter-spacing: 0.025rem;
+	word-spacing: 0.25rem;
+	line-height: 1.25rem;
+	position: relative;
 }
 
 body.light {
@@ -74,6 +77,37 @@ body.dark {
 	--back-shadow: rgba(255, 255, 255, 0.2);
 	--back-shadow-dark: rgba(255, 255, 255, 0.25);
 	--back-shadow-light: rgba(255, 255, 255, 0.1);
+}
+
+@font-face {
+	font-family: "Google Sans";
+	src: url("/fonts/Google-Sans/GoogleSans-Regular.eot");
+	src:
+		url("/fonts/Google-Sans/GoogleSans-Regular.eot?#iefix")
+			format("embedded-opentype"),
+		url("/fonts/Google-Sans/GoogleSans-Regular.woff2") format("woff2"),
+		url("/fonts/Google-Sans/GoogleSans-Regular.woff") format("woff"),
+		url("/fonts/Google-Sans/GoogleSans-Regular.ttf") format("truetype"),
+		url("/fonts/Google-Sans/GoogleSans-Regular.svg#GoogleSans-Regular")
+			format("svg");
+	font-weight: normal;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Chococooky";
+	src: url("/fonts/Choco-cooky/Choco-cooky.eot");
+	src:
+		url("/fonts/Choco-cooky/Choco-cooky.eot?#iefix")
+			format("embedded-opentype"),
+		url("/fonts/Choco-cooky/Choco-cooky.woff2") format("woff2"),
+		url("/fonts/Choco-cooky/Choco-cooky.woff") format("woff"),
+		url("/fonts/Choco-cooky/Choco-cooky.ttf") format("truetype"),
+		url("/fonts/Choco-cooky/Choco-cooky.svg#Choco-cooky") format("svg");
+	font-weight: normal;
+	font-style: normal;
+	font-display: swap;
 }
 
 .dispn {
