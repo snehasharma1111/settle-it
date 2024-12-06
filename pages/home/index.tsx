@@ -3,7 +3,7 @@ import { CreateGroup, Header, Loader } from "@/components";
 import { fallbackAssets, routes } from "@/constants";
 import { useHttpClient, useStore } from "@/hooks";
 import { Responsive, Seo } from "@/layouts";
-import { Avatar, Avatars, Button, Typography } from "@/library";
+import { Avatar, Avatars, Button, MaterialIcon, Typography } from "@/library";
 import styles from "@/styles/pages/Home.module.scss";
 import { CreateGroupData, IUser, ServerSideResult } from "@/types";
 import { notify, stylesConfig } from "@/utils";
@@ -60,6 +60,26 @@ const HomePage: React.FC<HomePageProps> = (props) => {
 					<Loader.Spinner />
 				) : groups.length > 0 ? (
 					<Responsive.Row>
+						<Responsive.Col
+							key="add-group-tile"
+							xlg={25}
+							lg={33}
+							md={50}
+							sm={50}
+							xsm={100}
+							style={{
+								padding: "8px",
+								height: "unset",
+								flex: "0 1 auto",
+							}}
+						>
+							<div
+								className={classes("-tile")}
+								onClick={() => setOpenCreateGroupPopup(true)}
+							>
+								<MaterialIcon icon="add" />
+							</div>
+						</Responsive.Col>
 						{groups.map((group) => (
 							<Responsive.Col
 								key={group.id}
@@ -72,7 +92,6 @@ const HomePage: React.FC<HomePageProps> = (props) => {
 									padding: "8px",
 									height: "unset",
 									flex: "0 1 auto",
-									margin: "6px auto",
 								}}
 							>
 								<Link

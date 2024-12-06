@@ -1,23 +1,24 @@
-import React, { forwardRef } from "react";
-import { IButtonProps } from "./types";
 import { stylesConfig } from "@/utils";
+import React, { forwardRef } from "react";
 import styles from "./styles.module.scss";
+import { ButtonSize, ButtonTheme, ButtonVariant, IButtonProps } from "./types";
 
 const classNames = stylesConfig(styles);
 
-const BUTON_SIZES: { [key: string]: string } = {
+const BUTON_SIZES: Record<ButtonSize, string> = {
 	small: "btn--size--small",
 	medium: "btn--size--medium",
 	large: "btn--size--large",
 };
 
-const BUTTON_VARIANTS: { [key: string]: string } = {
+const BUTTON_VARIANTS: Record<ButtonVariant, string> = {
 	filled: "btn--variant--filled",
 	outlined: "btn--variant--outlined",
 	text: "btn--variant--text",
 };
 
-const BUTTON_THEMES: { [key: string]: string } = {
+const BUTTON_THEMES: Record<ButtonTheme, string> = {
+	default: "btn--theme--default",
 	success: "btn--theme--success",
 	error: "btn--theme--error",
 	warning: "btn--theme--warning",
@@ -32,7 +33,7 @@ const Button: React.ForwardRefRenderFunction<
 		children,
 		className,
 		variant = "filled",
-		theme = "success",
+		theme = "default",
 		size = "medium",
 		loading = false,
 		icon,

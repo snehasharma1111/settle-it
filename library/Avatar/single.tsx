@@ -15,6 +15,7 @@ export const Avatar: React.FC<IAvatarProps> = ({
 	className,
 	onClick,
 	size = "medium",
+	isClickable,
 	...props
 }) => {
 	const [isImageValid, setIsImageValid] = useState(
@@ -53,8 +54,10 @@ export const Avatar: React.FC<IAvatarProps> = ({
 	return (
 		<div
 			className={
-				classes("avatar", `avatar-shape--${shape}`) +
-				` ${className ?? ""}`
+				classes("avatar", `avatar-shape--${shape}`, {
+					"avatar--clickable":
+						typeof onClick === "function" || isClickable === true,
+				}) + ` ${className ?? ""}`
 			}
 			onClick={onClick}
 			title={alt}

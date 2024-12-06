@@ -19,6 +19,10 @@
 	border: 1px solid transparent;
 
 	&--theme {
+		&--default {
+			--button-theme: var(--accent-color-heavy);
+		}
+
 		&--success {
 			--button-theme: var(--theme-green);
 		}

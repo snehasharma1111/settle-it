@@ -40,14 +40,21 @@
 		display: flex;
 		justify-content: flex-start;
 		align-items: center;
-		border: 1px solid var(--theme-green);
 		cursor: pointer;
+		border: 1px solid var(--accent-color-heavy);
 		user-select: none;
 		color: var(--theme-fg);
 		text-decoration: none;
 
 		&:hover {
-			background-color: rgba(74, 166, 60, 0.1);
+			background-color: var(--accent-color-500);
+		}
+
+		@include theme(dark) {
+			background-color: var(--accent-color-heavy);
+			&:hover {
+				opacity: 0.8;
+			}
 		}
 
 		& > img {
@@ -81,6 +88,30 @@
 			width: 300px;
 			height: auto;
 			object-fit: contain;
+		}
+	}
+
+	&-tile {
+		width: 100%;
+		height: 100%;
+		background-color: var(--accent-color-300);
+		border: 1.5px dashed var(--accent-color-heavy);
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		border-radius: 8px;
+		cursor: pointer;
+
+		&:hover {
+			background-color: var(--accent-color-500);
+		}
+
+		@include theme(dark) {
+			background-color: var(--transparent);
+			border-color: var(--accent-color-400);
+			&:hover {
+				background-color: var(--accent-color-400);
+			}
 		}
 	}
 

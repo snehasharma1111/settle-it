@@ -16,7 +16,7 @@
 	flex: 0 0 auto;
 	aspect-ratio: 1 / 1;
 
-	&:hover {
+	&--clickable:hover {
 		box-shadow: 0 0 0 4px var(--back-shadow-light);
 	}
 
