@@ -1,4 +1,4 @@
-import { api } from "@/connections";
+import { AuthApi } from "@/connections";
 import { admins } from "@/constants";
 import { logger } from "@/log";
 import { ServerSideAdminMiddleware, ServerSideAuthMiddleware } from "@/types";
@@ -15,7 +15,7 @@ export const authenticatedPage: ServerSideAuthMiddleware = async (
 	}
 	try {
 		const headers = { cookie: req.headers.cookie };
-		const { data: user } = await api.auth.verifyUserIfLoggedIn(headers);
+		const { data: user } = await AuthApi.verifyUserIfLoggedIn(headers);
 		if (user.name && user.phone) {
 			return onLoggedInAndOnboarded(user, headers);
 		} else {
@@ -38,7 +38,7 @@ export const adminPage: ServerSideAdminMiddleware = async (
 	}
 	try {
 		const headers = { cookie: req.headers.cookie };
-		const { data: user } = await api.auth.verifyUserIfLoggedIn(headers);
+		const { data: user } = await AuthApi.verifyUserIfLoggedIn(headers);
 		if (admins.includes(user.email)) {
 			return onAdmin(user, headers);
 		} else {

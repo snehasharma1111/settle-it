@@ -1,4 +1,4 @@
-import { api } from "@/connections";
+import { ExpenseApi, MemberApi } from "@/connections";
 import { fallbackAssets } from "@/constants";
 import { useStore } from "@/hooks";
 import { Responsive } from "@/layouts";
@@ -37,7 +37,7 @@ const ExpenseMember: React.FC<ExpenseMemberProps> = ({
 	const settleMember = async () => {
 		try {
 			setSettling(true);
-			const updatedMembersRes = await api.members.settleMemberInExpense({
+			const updatedMembersRes = await MemberApi.settleMemberInExpense({
 				groupId: expense.group.id,
 				expenseId: expense.id,
 				memberId: id,
@@ -172,7 +172,7 @@ const ViewExpense: React.FC<IViewExpenseProps> = ({
 	const settleExpense = async () => {
 		try {
 			setSettlingExpense(true);
-			const updatedMembersRes = await api.expense.settleExpense({
+			const updatedMembersRes = await ExpenseApi.settleExpense({
 				groupId: expense!.group.id,
 				expenseId: id,
 			});
@@ -189,7 +189,7 @@ const ViewExpense: React.FC<IViewExpenseProps> = ({
 		const getMembersForExpense = async () => {
 			setGettingMembers(true);
 			try {
-				const res = await api.expense.getMembersOfExpense({
+				const res = await ExpenseApi.getMembersOfExpense({
 					groupId: expense!.group.id,
 					expenseId: id,
 				});

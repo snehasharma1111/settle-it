@@ -1,5 +1,5 @@
 import { adminPage } from "@/client";
-import { api } from "@/connections";
+import { AdminApi } from "@/connections";
 import { routes } from "@/constants";
 import { useStore } from "@/hooks";
 import { Button, Typography } from "@/library";
@@ -64,7 +64,7 @@ export const getServerSideProps = (
 				const fileName = getNonNullValue(
 					safeParse(getNonEmptyString, context.query.id)
 				);
-				const res = await api.admin.getLogFileByName(fileName, headers);
+				const res = await AdminApi.getLogFileByName(fileName, headers);
 				return {
 					props: {
 						user,

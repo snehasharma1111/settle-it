@@ -1,6 +1,6 @@
 import { authenticatedPage } from "@/client";
 import { Auth, Auth as Components } from "@/components";
-import { api } from "@/connections";
+import { AuthApi, UserApi } from "@/connections";
 import { routes } from "@/constants";
 import { useStore } from "@/hooks";
 import { Seo } from "@/layouts";
@@ -34,7 +34,7 @@ const LoginPage: React.FC<LoginPageProps> = (props) => {
 	const requestOtpWithEmail = async () => {
 		try {
 			setRequestingOtp(true);
-			await api.auth.requestOtpWithEmail(email);
+			await AuthApi.requestOtpWithEmail(email);
 			setAuthFrame("otp-verification");
 		} catch (error: any) {
 			logger.error(error);
@@ -47,8 +47,8 @@ const LoginPage: React.FC<LoginPageProps> = (props) => {
 	const verifyOtp = async (otp: string) => {
 		try {
 			setVerifyingOtp(true);
-			await api.auth.verifyOtpWithEmail(email, otp);
-			const res = await api.auth.loginWithEmail(email, otp);
+			await AuthApi.verifyOtpWithEmail(email, otp);
+			const res = await AuthApi.loginWithEmail(email, otp);
 			syncUserState(res.data);
 			if (res.data.name) {
 				const redirectUrl =
@@ -68,7 +68,7 @@ const LoginPage: React.FC<LoginPageProps> = (props) => {
 	const saveUserDetails = async (data: Auth.UserDetails) => {
 		try {
 			setUpdatingUserDetails(true);
-			const res = await api.user.updateUser(data);
+			const res = await UserApi.updateUser(data);
 			setUser(res.data);
 			router.push(routes.HOME);
 		} catch (error: any) {

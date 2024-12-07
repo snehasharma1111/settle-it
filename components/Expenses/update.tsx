@@ -1,4 +1,4 @@
-import { api } from "@/connections";
+import { ExpenseApi } from "@/connections";
 import { useStore } from "@/hooks";
 import { Responsive } from "@/layouts";
 import { Button, Input, Popup } from "@/library";
@@ -99,7 +99,7 @@ const UpdateExpense: React.FC<IUpdateExpenseProps> = ({
 		const getMembersForExpense = async () => {
 			setGettingMembers(true);
 			try {
-				const res = await api.expense.getMembersOfExpense({
+				const res = await ExpenseApi.getMembersOfExpense({
 					groupId,
 					expenseId: id,
 				});

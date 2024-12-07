@@ -1,6 +1,6 @@
-export * as admin from "./admin.api";
-export * as auth from "./auth.api";
-export * as expense from "./expense.api";
-export * as group from "./group.api";
-export * as members from "./member.api";
-export * as user from "./user.api";
+export * from "./admin.api";
+export * from "./auth.api";
+export * from "./expense.api";
+export * from "./group.api";
+export * from "./member.api";
+export * from "./user.api";

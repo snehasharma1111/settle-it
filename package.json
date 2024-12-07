@@ -15,6 +15,7 @@
 		"format": "prettier --write .",
 		"format:check": "prettier --check .",
 		"prepare": "husky install",
+		"clean": "rm -rf .next/ && rm -rf dist/ && rm -rf .cache/ && rm -rf .yarn/ && rm -rf coverage/",
 		"test": "jest --passWithNoTests",
 		"test:watch": "jest --watch --passWithNoTests",
 		"test:coverage": "jest --coverage --passWithNoTests"

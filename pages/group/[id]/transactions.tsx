@@ -1,6 +1,6 @@
 import { authenticatedPage } from "@/client";
 import { GroupMetaData, GroupPlaceholder, Loader } from "@/components";
-import { api } from "@/connections";
+import { GroupApi } from "@/connections";
 import { routes } from "@/constants";
 import { useHttpClient, useStore } from "@/hooks";
 import { Seo } from "@/layouts";
@@ -28,7 +28,7 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 	const getGroupTransactionsHelper = async () => {
 		try {
 			const fetchedTransactions = await client.call(
-				api.group.getTransactions,
+				GroupApi.getTransactions,
 				props.group.id
 			);
 			setTransactions(fetchedTransactions.transactions);
@@ -118,7 +118,7 @@ export const getServerSideProps = (
 		async onLoggedInAndOnboarded(user, headers) {
 			try {
 				const id = getNonEmptyString(context.query.id);
-				const { data } = await api.group.getGroupDetails(id, headers);
+				const { data } = await GroupApi.getGroupDetails(id, headers);
 				return {
 					props: {
 						user,

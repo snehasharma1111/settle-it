@@ -7,7 +7,7 @@ import {
 	Loader,
 	UpdateGroup,
 } from "@/components";
-import { api } from "@/connections";
+import { GroupApi } from "@/connections";
 import { routes } from "@/constants";
 import { useConfirmationModal, useHttpClient, useStore } from "@/hooks";
 import { Responsive, Seo } from "@/layouts";
@@ -55,7 +55,7 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 		try {
 			client.updateId("get-expenses");
 			const fetchedExpenses = await client.call(
-				api.group.getGroupExpenses,
+				GroupApi.getGroupExpenses,
 				props.group.id
 			);
 			const groupExpenses = expenses
@@ -238,7 +238,7 @@ export const getServerSideProps = (
 		async onLoggedInAndOnboarded(user, headers) {
 			try {
 				const id = getNonEmptyString(context.query.id);
-				const { data } = await api.group.getGroupDetails(id, headers);
+				const { data } = await GroupApi.getGroupDetails(id, headers);
 				return {
 					props: {
 						user,

@@ -6,7 +6,7 @@ import {
 	Loader,
 	OwedRecords,
 } from "@/components";
-import { api } from "@/connections";
+import { GroupApi } from "@/connections";
 import { routes } from "@/constants";
 import { useHttpClient, useStore } from "@/hooks";
 import { Seo } from "@/layouts";
@@ -44,7 +44,7 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 		try {
 			client.updateId("get-summary");
 			const fetchedSummary = await client.call(
-				api.group.getBalancesSummary,
+				GroupApi.getBalancesSummary,
 				props.group.id
 			);
 			setBalances(fetchedSummary.balances);
@@ -143,7 +143,7 @@ export const getServerSideProps = (
 		async onLoggedInAndOnboarded(user, headers) {
 			try {
 				const id = getNonEmptyString(context.query.id);
-				const { data } = await api.group.getGroupDetails(id, headers);
+				const { data } = await GroupApi.getGroupDetails(id, headers);
 				return {
 					props: {
 						user,

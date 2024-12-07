@@ -1,4 +1,4 @@
-import { api } from "@/connections";
+import { UserApi } from "@/connections";
 import { fallbackAssets, regex } from "@/constants";
 import { useDebounce, useHttpClient } from "@/hooks";
 import { Responsive } from "@/layouts";
@@ -32,7 +32,7 @@ const MembersPlaceholder: React.FC<MembersPlaceholderProps> = ({
 	const inviteMember = async () => {
 		try {
 			setInviting(true);
-			const res = await api.user.inviteUser(searchStr);
+			const res = await UserApi.inviteUser(searchStr);
 			onInvited(res.data);
 		} catch (error) {
 			notify.error(error);
@@ -123,7 +123,7 @@ const CreateGroupMembers: React.FC<ICreateGroupMembersProps> = ({
 	);
 
 	const handleSearch = async (searchStr: any) => {
-		const res = await searchApiCall(api.user.searchForUsers, searchStr);
+		const res = await searchApiCall(UserApi.searchForUsers, searchStr);
 		setSearchResults(res);
 	};
 
