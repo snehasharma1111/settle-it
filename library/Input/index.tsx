@@ -12,7 +12,11 @@ export const Input: React.FC<InputProps> = ({
 	style,
 	className,
 	dropdown,
-	size = "medium",
+	leftIcon,
+	rightIcon,
+	error,
+	errorMessage,
+	size,
 	...props
 }) => {
 	const inputRef = useRef<any>(null);
@@ -55,10 +59,15 @@ export const Input: React.FC<InputProps> = ({
 					if (selectedOption) {
 						dropdown.onSelect(selectedOption);
 						inputRef.current.blur();
+						setOptionsToRender(dropdown?.options || []);
 					}
 				} else if (e.key === "Escape") {
 					e.preventDefault();
 					inputRef.current.blur();
+					setOptionsToRender(dropdown?.options || []);
+				} else if (e.key === "Tab") {
+					inputRef.current.blur();
+					setOptionsToRender(dropdown?.options || []);
 				}
 			}
 		};
@@ -76,6 +85,11 @@ export const Input: React.FC<InputProps> = ({
 				</label>
 			) : null}
 			<div className={classes("__input-container")}>
+				{leftIcon && !dropdown?.enabled ? (
+					<div className={classes("__icon", "__icon--left")}>
+						{leftIcon}
+					</div>
+				) : null}
 				<input
 					className={classes("__input", `__input-size--${size}`)}
 					ref={inputRef}
@@ -83,6 +97,13 @@ export const Input: React.FC<InputProps> = ({
 						...styles?.input,
 						...style,
 					}}
+					onInvalid={(e) => {
+						e.currentTarget.setCustomValidity(errorMessage + "");
+					}}
+					onInput={(e) => {
+						e.currentTarget.setCustomValidity("");
+					}}
+					title={error ? errorMessage : ""}
 					onChange={(() => {
 						if (dropdown?.enabled) {
 							return (e) => {
@@ -104,15 +125,18 @@ export const Input: React.FC<InputProps> = ({
 					})()}
 					{...props}
 				/>
+				{rightIcon && !dropdown?.enabled ? (
+					<div className={classes("__icon", "__icon--right")}>
+						{rightIcon}
+					</div>
+				) : null}
 				{dropdown?.enabled ? (
 					<div
-						className={classes("__icon", "__icon--dropdown")}
-						style={{
-							top:
-								inputRef.current?.offsetTop +
-								inputRef.current?.clientHeight / 2 +
-								"px",
-						}}
+						className={classes(
+							"__icon",
+							"__icon--right",
+							"__icon--dropdown"
+						)}
 						onClick={() => {
 							inputRef.current.focus();
 						}}
