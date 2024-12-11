@@ -1,6 +1,40 @@
 @import "@/styles/config/mixins";
 @import "@/styles/config/animations";
 
+.expense {
+	width: 100%;
+	padding: 1rem;
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	cursor: pointer;
+	border-bottom: 1px solid var(--theme-light-grey);
+
+	&:hover {
+		background-color: var(--theme-bg-hover);
+	}
+
+	&-data {
+		max-width: 60%;
+		display: flex;
+		justify-content: flex-start;
+		align-items: flex-start;
+		gap: 12px;
+	}
+
+	&-date {
+		width: 12ch;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		overflow: hidden;
+		flex: 0 0 auto;
+	}
+
+	&-amount {
+		text-align: right;
+	}
+}
+
 .create-expense,
 .update-expense {
 	width: 100%;
@@ -76,8 +110,7 @@
 	}
 }
 
-.view-expense-card,
-.expense {
+.view-expense-card {
 	width: calc(100% - 6px);
 	height: 100%;
 	display: flex;

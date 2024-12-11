@@ -83,18 +83,19 @@ const Expense: React.FC<IExpenseProps> = ({
 				className={classes("")}
 				onClick={() => setOpenViewExpensePopup(true)}
 			>
-				<div className={classes("-details")}>
+				<div className={classes("-data")}>
+					<Typography className={classes("-date")}>
+						{moment(paidOn ?? createdAt).format("MMM DD, YYYY")}
+					</Typography>
 					<Typography className={classes("-title")}>
 						{title}
 					</Typography>
-					<Typography size="sm">
-						{moment(paidOn ?? createdAt).format("MMM DD, YYYY")}
-					</Typography>
 				</div>
-				<div className={classes("-paid")}>
+				<Typography className={classes("-amount")}>
 					{paidBy.name || paidBy.email.slice(0, 7) + "..."}
-					<Typography size="sm">paid {amount}</Typography>
-				</div>
+					{" paid "}
+					{amount}
+				</Typography>
 			</div>
 			{openViewExpensePopup ? (
 				<ViewExpense
