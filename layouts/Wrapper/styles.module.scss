@@ -11,4 +11,18 @@
 	overflow-y: auto;
 	overflow-x: hidden;
 	z-index: 60;
+
+	@include responsive(phone) {
+		left: 0;
+		width: 100%;
+		border-radius: 0;
+
+		@include theme(light) {
+			background-color: var(--accent-color-200);
+		}
+
+		@include theme(dark) {
+			background-color: var(--bgcolor-400);
+		}
+	}
 }

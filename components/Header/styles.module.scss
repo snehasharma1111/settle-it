@@ -25,10 +25,6 @@
 		&-burger {
 			margin-left: 0.5rem;
 			font-size: 2rem;
-
-			@include responsive(phone) {
-				display: none;
-			}
 		}
 
 		&-logo {

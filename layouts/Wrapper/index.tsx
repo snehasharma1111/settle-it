@@ -1,6 +1,6 @@
 import { Footer, Header, Loader, SideBar } from "@/components";
 import { frontendBaseUrl, routes } from "@/constants";
-import { useStore } from "@/hooks";
+import { useDevice, useStore } from "@/hooks";
 import { Seo } from "@/layouts";
 import { IUser } from "@/types";
 import { stylesConfig } from "@/utils";
@@ -18,7 +18,8 @@ const classes = stylesConfig(styles, "wrapper");
 
 export const Wrapper: React.FC<WrapperProps> = ({ children, user }) => {
 	const router = useRouter();
-	const { initStore, syncNetworkStatus, isLoggedIn } = useStore();
+	const { type: device } = useDevice();
+	const { initStore, syncNetworkStatus, closeSideBar } = useStore();
 	const [showLoader, setShowLoader] = useState(false);
 	const pagesSupportingHeader: Array<string> = [
 		routes.ROOT,
@@ -56,13 +57,19 @@ export const Wrapper: React.FC<WrapperProps> = ({ children, user }) => {
 	}, [router.events]);
 
 	useEffect(() => {
-		console.log(router.pathname);
 		initStore(user);
 		setInterval(() => {
 			syncNetworkStatus();
 		}, 10000);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
+
+	useEffect(() => {
+		if (device === "mobile") {
+			closeSideBar();
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [device, router.pathname]);
 
 	return (
 		<>
