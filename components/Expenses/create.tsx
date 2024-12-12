@@ -1,6 +1,6 @@
 import { useStore } from "@/hooks";
 import { Responsive } from "@/layouts";
-import { Button, Input, Popup } from "@/library";
+import { Button, Input, Pane } from "@/library";
 import { CreateExpenseData } from "@/types";
 import { stylesConfig } from "@/utils";
 import React, { useState } from "react";
@@ -70,12 +70,7 @@ const CreateExpense: React.FC<ICreateExpenseProps> = ({
 	if (!group) return null;
 
 	return (
-		<Popup
-			onClose={onClose}
-			title="Add Expense"
-			className={classes("")}
-			height="800px"
-		>
+		<Pane onClose={onClose} title="Add Expense" className={classes("")}>
 			<form className={classes("-form")} onSubmit={handleSubmit}>
 				<Responsive.Row>
 					<Responsive.Col xlg={33} lg={33} md={50} sm={100} xsm={100}>
@@ -204,7 +199,7 @@ const CreateExpense: React.FC<ICreateExpenseProps> = ({
 					Create
 				</Button>
 			</form>
-		</Popup>
+		</Pane>
 	);
 };
 

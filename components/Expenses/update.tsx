@@ -1,7 +1,7 @@
 import { ExpenseApi } from "@/connections";
 import { useStore } from "@/hooks";
 import { Responsive } from "@/layouts";
-import { Button, Input, Popup } from "@/library";
+import { Button, Input, Pane } from "@/library";
 import { UpdateExpenseData } from "@/types";
 import { getNonNullValue, notify, stylesConfig } from "@/utils";
 import React, { useEffect, useState } from "react";
@@ -129,11 +129,10 @@ const UpdateExpense: React.FC<IUpdateExpenseProps> = ({
 	if (!group) return null;
 
 	return (
-		<Popup
+		<Pane
 			onClose={onClose}
 			title={`Update Expense - ${originalExpense.title}`}
 			className={classes("")}
-			height="800px"
 		>
 			{gettingMembers ? (
 				<Responsive.Row>
@@ -313,7 +312,7 @@ const UpdateExpense: React.FC<IUpdateExpenseProps> = ({
 					</Button>
 				</form>
 			)}
-		</Popup>
+		</Pane>
 	);
 };
 

@@ -148,6 +148,10 @@
 	&:focus {
 		display: flex;
 	}
+
+	@include theme(dark) {
+		box-shadow: var(--shadow-elevation-4dp-dark);
+	}
 }
 
 @mixin dropdown-option {

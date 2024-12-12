@@ -2,7 +2,7 @@ import { ExpenseApi, MemberApi } from "@/connections";
 import { fallbackAssets } from "@/constants";
 import { useStore } from "@/hooks";
 import { Responsive } from "@/layouts";
-import { Avatar, Button, Popup, Typography } from "@/library";
+import { Avatar, Button, Pane, Typography } from "@/library";
 import { IExpense, IMember } from "@/types";
 import { notify, stylesConfig } from "@/utils";
 import moment from "moment";
@@ -208,7 +208,7 @@ const ViewExpense: React.FC<IViewExpenseProps> = ({
 	if (!expense) return null;
 
 	return (
-		<Popup
+		<Pane
 			onClose={onClose}
 			onEdit={
 				expense.createdBy.id === loggedInUser.id ||
@@ -223,7 +223,7 @@ const ViewExpense: React.FC<IViewExpenseProps> = ({
 					: undefined
 			}
 			title={expense.title}
-			width="500px"
+			width="40%"
 		>
 			<div className={classes("")}>
 				<div className={classes("-card")}>
@@ -305,7 +305,7 @@ const ViewExpense: React.FC<IViewExpenseProps> = ({
 					</div>
 				)}
 			</div>
-		</Popup>
+		</Pane>
 	);
 };
 

@@ -1,7 +1,7 @@
 import { fallbackAssets } from "@/constants";
 import { useStore } from "@/hooks";
 import { Responsive } from "@/layouts";
-import { Avatars, Button, Input, Popup, Typography } from "@/library";
+import { Avatars, Button, Input, Pane, Typography } from "@/library";
 import { CreateGroupData, IUser } from "@/types";
 import { notify, stylesConfig } from "@/utils";
 import React, { useState } from "react";
@@ -56,12 +56,7 @@ const CreateGroup: React.FC<ICreateGroupProps> = ({
 	};
 
 	return (
-		<Popup
-			onClose={onClose}
-			className={classes("")}
-			title="Create Group"
-			height={manageMembers ? "1080px" : "600px"}
-		>
+		<Pane onClose={onClose} className={classes("")} title="Create Group">
 			<form className={classes("-form")} onSubmit={handleSubmit}>
 				{manageMembers ? (
 					<Responsive.Row>
@@ -229,7 +224,7 @@ const CreateGroup: React.FC<ICreateGroupProps> = ({
 					</Responsive.Row>
 				)}
 			</form>
-		</Popup>
+		</Pane>
 	);
 };
 

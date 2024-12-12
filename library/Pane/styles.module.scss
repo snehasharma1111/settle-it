@@ -1,0 +1,154 @@
+@import "@/styles/config/mixins";
+
+.modal-pane {
+	position: fixed;
+	top: 0;
+	right: 0;
+	z-index: 998;
+	min-width: min(95vw, 400px);
+	height: 100vh;
+	border-radius: 32px 0 0 32px;
+	animation: slide-left 0.3s ease-in-out forwards;
+	display: flex;
+	justify-content: flex-start;
+	align-items: flex-start;
+	flex-direction: column;
+	background-color: var(--theme-bg);
+	overflow-y: auto;
+	box-shadow: var(--shadow-elevation-4dp);
+	@include hide-scrollbar();
+
+	@include theme(dark) {
+		box-shadow: var(--shadow-elevation-4dp-dark);
+	}
+
+	&-header {
+		width: 100%;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		gap: 20px;
+		padding: 20px 30px;
+		border-bottom: 0.5px solid var(--theme-light-grey);
+		position: sticky;
+		top: 0;
+		left: 0;
+		z-index: 6;
+		background-color: var(--theme-bg);
+
+		& > *:first-child {
+			display: flex;
+			justify-content: flex-start;
+			align-items: center;
+			gap: 8px;
+
+			svg {
+				width: 20px;
+				height: 20px;
+			}
+		}
+
+		&-actions {
+			display: flex;
+			justify-content: flex-end;
+			align-items: center;
+			gap: 8px;
+		}
+
+		&-edit,
+		&-delete,
+		&-close {
+			@include init-button();
+			width: 24px;
+			height: 24px;
+		}
+
+		&-edit,
+		&-delete {
+			padding: 2px;
+		}
+	}
+
+	&--info &-header {
+		& > *:first-child {
+			path {
+				fill: var(--blue);
+			}
+		}
+	}
+
+	&--success &-header {
+		& > *:first-child {
+			path {
+				fill: var(--green);
+			}
+		}
+	}
+
+	&--warning &-header {
+		& > *:first-child {
+			path {
+				fill: var(--orange);
+			}
+		}
+	}
+
+	&--danger &-header {
+		& > *:first-child {
+			path {
+				fill: var(--red);
+			}
+		}
+	}
+
+	&-body {
+		width: 100%;
+		padding: 20px;
+		display: flex;
+		flex: 1 1 0;
+
+		@include responsive(phone) {
+			padding: 4px;
+		}
+	}
+
+	&-overlay {
+		width: 100%;
+		height: 100vh;
+		position: fixed;
+		top: 0;
+		left: 0;
+		background: rgba(0, 0, 0, 0.6);
+		z-index: 997;
+	}
+
+	&--closing {
+		animation: slide-right 0.3s ease-in-out forwards;
+	}
+
+	&:active,
+	&:focus {
+		border: none;
+		outline: none;
+	}
+}
+
+@keyframes slide-left {
+	0% {
+		transform: translateX(100%);
+	}
+
+	100% {
+		transform: translateX(0);
+	}
+}
+
+@keyframes slide-right {
+	0% {
+		transform: translateX(0);
+	}
+
+	100% {
+		transform: translateX(100%);
+	}
+}

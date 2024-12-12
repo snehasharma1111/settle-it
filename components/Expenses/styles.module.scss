@@ -99,9 +99,16 @@
 			background-color: rgba(0, 0, 0, 0.025);
 		}
 
+		&-name {
+			white-space: nowrap;
+			text-overflow: ellipsis;
+			overflow: hidden;
+		}
+
 		&-amount {
-			width: fit-content;
+			width: 8.5ch;
 			margin-left: auto;
+			flex: 0 0 auto;
 		}
 	}
 

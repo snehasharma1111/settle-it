@@ -78,7 +78,9 @@ const ExpenseMembers: React.FC<IExpenseMembersProps> = ({
 						alt={member.name || member.email}
 						size={32}
 					/>
-					<Typography>{member.name || member.email}</Typography>
+					<Typography className={classes("-member-name")}>
+						{member.name || member.email}
+					</Typography>
 					<Input
 						name="amount"
 						type="number"
