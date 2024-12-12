@@ -1,5 +1,5 @@
 import { adminPage } from "@/client";
-import { api } from "@/connections";
+import { AdminApi } from "@/connections";
 import { routes } from "@/constants";
 import { useHttpClient, useStore } from "@/hooks";
 import { Seo } from "@/layouts";
@@ -23,8 +23,8 @@ const AdminPanelCache: React.FC<AdminPanelCacheProps> = (props) => {
 	const clearCache = async () => {
 		try {
 			await Promise.all([
-				removeData(api.admin.clearCacheData),
-				getData(api.admin.getAllCacheData),
+				removeData(AdminApi.clearCacheData),
+				getData(AdminApi.getAllCacheData),
 			]);
 			notify.success("Cache cleared successfully.");
 		} catch (error) {
@@ -34,7 +34,7 @@ const AdminPanelCache: React.FC<AdminPanelCacheProps> = (props) => {
 
 	useEffect(() => {
 		if (!user) dispatch(setUser(props.user));
-		getData(api.admin.getAllCacheData);
+		getData(AdminApi.getAllCacheData);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 	return cacheData ? (

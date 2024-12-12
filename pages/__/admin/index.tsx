@@ -1,6 +1,6 @@
 import { adminPage } from "@/client";
 import { Loader } from "@/components";
-import { api } from "@/connections";
+import { AdminApi } from "@/connections";
 import { fallbackAssets, routes } from "@/constants";
 import { useHttpClient, useStore } from "@/hooks";
 import { Responsive, Seo } from "@/layouts";
@@ -35,8 +35,8 @@ const AdminPanel: React.FC<AdminPanelProps> = (props) => {
 	useEffect(() => {
 		if (!user) dispatch(setUser(props.user));
 		Promise.all([
-			callUsersApi(api.admin.getAllUsers),
-			callGroupsApi(api.admin.getAllGroups),
+			callUsersApi(AdminApi.getAllUsers),
+			callGroupsApi(AdminApi.getAllGroups),
 		]);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
