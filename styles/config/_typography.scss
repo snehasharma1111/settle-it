@@ -23,6 +23,7 @@ $font-weights: ("light", "regular", "medium", "semi-bold", "bold");
 
 @mixin typography($name: "Poppins", $size: "md", $weight: "regular") {
 	// font families
+	transition: all 0s ease-in-out;
 
 	@if $name == "Montserrat" or $name == "montserrat" or $name == "m" {
 		font-family: var(--font-montserrat);

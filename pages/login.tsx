@@ -1,6 +1,6 @@
 import { authenticatedPage } from "@/client";
 import { Auth, Auth as Components } from "@/components";
-import { api } from "@/connections";
+import { AuthApi, UserApi } from "@/connections";
 import { routes } from "@/constants";
 import { useStore } from "@/hooks";
 import { Seo } from "@/layouts";
@@ -23,7 +23,7 @@ interface LoginPageProps {
 }
 
 const LoginPage: React.FC<LoginPageProps> = (props) => {
-	const { setUser, dispatch } = useStore();
+	const { setUser, syncUserState } = useStore();
 	const router = useRouter();
 	const [authFrame, setAuthFrame] = useState<T_Auth_Frame>(props.frame);
 	const [email, setEmail] = useState("");
@@ -34,7 +34,7 @@ const LoginPage: React.FC<LoginPageProps> = (props) => {
 	const requestOtpWithEmail = async () => {
 		try {
 			setRequestingOtp(true);
-			await api.auth.requestOtpWithEmail(email);
+			await AuthApi.requestOtpWithEmail(email);
 			setAuthFrame("otp-verification");
 		} catch (error: any) {
 			logger.error(error);
@@ -47,9 +47,9 @@ const LoginPage: React.FC<LoginPageProps> = (props) => {
 	const verifyOtp = async (otp: string) => {
 		try {
 			setVerifyingOtp(true);
-			await api.auth.verifyOtpWithEmail(email, otp);
-			const res = await api.auth.loginWithEmail(email, otp);
-			dispatch(setUser(res.data));
+			await AuthApi.verifyOtpWithEmail(email, otp);
+			const res = await AuthApi.loginWithEmail(email, otp);
+			syncUserState(res.data);
 			if (res.data.name) {
 				const redirectUrl =
 					router.query.redirect?.toString() ?? routes.HOME;
@@ -68,7 +68,7 @@ const LoginPage: React.FC<LoginPageProps> = (props) => {
 	const saveUserDetails = async (data: Auth.UserDetails) => {
 		try {
 			setUpdatingUserDetails(true);
-			const res = await api.user.updateUser(data);
+			const res = await UserApi.updateUser(data);
 			setUser(res.data);
 			router.push(routes.HOME);
 		} catch (error: any) {
@@ -80,9 +80,6 @@ const LoginPage: React.FC<LoginPageProps> = (props) => {
 	};
 
 	useEffect(() => {
-		if (props.user) {
-			dispatch(setUser(props.user));
-		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [props.user]);
 

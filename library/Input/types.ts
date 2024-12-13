@@ -23,4 +23,8 @@ export interface InputProps
 		onSearch?: (_: string) => void;
 	};
 	size?: "small" | "medium" | "large";
+	error?: boolean;
+	errorMessage?: string;
+	leftIcon?: React.ReactNode;
+	rightIcon?: React.ReactNode;
 }

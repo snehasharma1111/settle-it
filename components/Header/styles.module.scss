@@ -3,35 +3,42 @@
 .header {
 	width: 100%;
 	height: var(--head-height);
-	padding: 8px 60px;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 	position: fixed;
 	top: 0;
 	left: 0;
-	z-index: 150;
-	background-image: linear-gradient(
-		to right bottom,
-		rgba(255, 255, 255, 0.4),
-		rgba(255, 255, 255, 0.1)
-	);
-	backdrop-filter: blur(20px);
-
-	@include color-scheme(dark) {
-		background-image: linear-gradient(
-			to right bottom,
-			rgba(0, 0, 0, 0.4),
-			rgba(0, 0, 0, 0.1)
-		);
-	}
-
-	@include responsive(phone) {
-		padding: 16px;
-	}
+	z-index: 50;
 
 	&--visible {
-		box-shadow: 0 1px 20px -1px rgba(0, 0, 0, 0.1);
+		border-bottom-color: var(--back-shadow-light);
+	}
+
+	&-left {
+		height: 100%;
+		display: flex;
+		justify-content: space-evenly;
+		align-items: center;
+		padding-left: 0.75rem;
+
+		&-burger {
+			margin-left: 0.5rem;
+			font-size: 2rem;
+		}
+
+		&-logo {
+			height: 100%;
+			font-size: 1.75rem;
+			padding: 0.5rem 0;
+			margin-left: 1rem;
+
+			&__image {
+				width: auto;
+				height: 100%;
+				object-fit: cover;
+			}
+		}
 	}
 
 	a {
@@ -47,5 +54,44 @@
 		object-fit: contain;
 		cursor: pointer;
 		user-select: none;
+	}
+
+	&-right {
+		padding: 0 1.5rem;
+		display: flex;
+		justify-content: flex-end;
+		align-items: center;
+
+		@include responsive(phone) {
+			padding: 0 0.5rem;
+		}
+
+		button {
+			margin: 0 0.5rem;
+		}
+	}
+
+	&-avatar {
+		margin-left: 1rem;
+	}
+
+	&-sync {
+		&--loading {
+			animation: spin 2s infinite linear;
+		}
+	}
+}
+
+@keyframes spin {
+	0% {
+		transform: rotate(0deg);
+	}
+
+	50% {
+		transform: rotate(-180deg);
+	}
+
+	100% {
+		transform: rotate(-360deg);
 	}
 }

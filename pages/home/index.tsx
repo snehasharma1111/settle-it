@@ -1,9 +1,9 @@
 import { authenticatedPage } from "@/client";
-import { CreateGroup, Home, Loader } from "@/components";
+import { CreateGroup, Loader } from "@/components";
 import { fallbackAssets, routes } from "@/constants";
 import { useHttpClient, useStore } from "@/hooks";
 import { Responsive, Seo } from "@/layouts";
-import { Avatar, Avatars, Button, Typography } from "@/library";
+import { Avatar, Avatars, Button, MaterialIcon, Typography } from "@/library";
 import styles from "@/styles/pages/Home.module.scss";
 import { CreateGroupData, IUser, ServerSideResult } from "@/types";
 import { notify, stylesConfig } from "@/utils";
@@ -20,7 +20,7 @@ type HomePageProps = {
 
 const HomePage: React.FC<HomePageProps> = (props) => {
 	const client = useHttpClient();
-	const { setUser, dispatch, getAllGroups, createGroup, groups } = useStore();
+	const { getAllGroups, createGroup, groups } = useStore();
 	const [openCreateGroupPopup, setOpenCreateGroupPopup] = useState(false);
 	const [creatingGroup, setCreatingGroup] = useState(false);
 
@@ -33,7 +33,6 @@ const HomePage: React.FC<HomePageProps> = (props) => {
 	};
 
 	useEffect(() => {
-		dispatch(setUser(props.user));
 		getGroups();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
@@ -55,16 +54,35 @@ const HomePage: React.FC<HomePageProps> = (props) => {
 	return (
 		<>
 			<Seo title={`${props.user.name} - Home | Settle It`} />
-			<Home.Header />
 			<main className={classes("")}>
 				{client.loading && groups.length === 0 ? (
 					<Loader.Spinner />
 				) : groups.length > 0 ? (
 					<Responsive.Row>
+						<Responsive.Col
+							key="add-group-tile"
+							xlg={33}
+							lg={33}
+							md={50}
+							sm={50}
+							xsm={100}
+							style={{
+								padding: "8px",
+								height: "unset",
+								flex: "0 1 auto",
+							}}
+						>
+							<div
+								className={classes("-tile")}
+								onClick={() => setOpenCreateGroupPopup(true)}
+							>
+								<MaterialIcon icon="add" />
+							</div>
+						</Responsive.Col>
 						{groups.map((group) => (
 							<Responsive.Col
 								key={group.id}
-								xlg={25}
+								xlg={33}
 								lg={33}
 								md={50}
 								sm={50}
@@ -73,7 +91,6 @@ const HomePage: React.FC<HomePageProps> = (props) => {
 									padding: "8px",
 									height: "unset",
 									flex: "0 1 auto",
-									margin: "6px auto",
 								}}
 							>
 								<Link
@@ -95,6 +112,7 @@ const HomePage: React.FC<HomePageProps> = (props) => {
 											size="xl"
 											as="h2"
 											weight="medium"
+											className={classes("-group__name")}
 										>
 											{group.name}
 										</Typography>
@@ -163,11 +181,7 @@ export const getServerSideProps = (
 ): Promise<ServerSideResult<HomePageProps>> => {
 	return authenticatedPage(context, {
 		onLoggedInAndOnboarded(user) {
-			return {
-				props: {
-					user,
-				},
-			};
+			return { props: { user } };
 		},
 		onLoggedInAndNotOnboarded() {
 			return {

@@ -16,6 +16,10 @@
 	flex: 0 0 auto;
 	aspect-ratio: 1 / 1;
 
+	&--clickable:hover {
+		box-shadow: 0 0 0 4px var(--back-shadow-light);
+	}
+
 	&-shape {
 		&--circle {
 			border-radius: 50%;

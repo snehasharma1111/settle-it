@@ -1,0 +1,63 @@
+@import "@/styles/config/mixins";
+
+.distribution {
+	width: 100%;
+
+	&-header {
+		width: 100%;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+
+		& > *:last-child {
+			width: 15ch;
+		}
+	}
+
+	&-members {
+		width: 100%;
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
+		flex-direction: column;
+	}
+
+	&-member {
+		width: 100%;
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
+		gap: 8px;
+		padding: 12px;
+		border-radius: 4px;
+
+		&:hover {
+			background-color: rgba(0, 0, 0, 0.025);
+		}
+
+		&-name {
+			white-space: nowrap;
+			text-overflow: ellipsis;
+			overflow: hidden;
+		}
+
+		&-amount {
+			width: 8.5ch;
+			margin-left: auto;
+			flex: 0 0 auto;
+
+			&--fraction {
+				width: 5ch;
+				text-align: center;
+			}
+		}
+
+		&-fraction {
+			margin-left: auto;
+			display: flex;
+			justify-content: flex-end;
+			align-items: center;
+			gap: 2px;
+		}
+	}
+}

@@ -48,18 +48,6 @@
 	}
 }
 
-@mixin color-scheme($mode) {
-	@if $mode ==light {
-		@media (prefers-color-scheme: light) {
-			@content;
-		}
-	} @else if $mode ==dark {
-		@media (prefers-color-scheme: dark) {
-			@content;
-		}
-	}
-}
-
 @mixin theme($theme) {
 	// if body has no data-theme attribute, then apply the styles
 
@@ -152,7 +140,7 @@
 	border-radius: 8px;
 	overflow: hidden;
 	overflow-y: auto;
-	background-color: var(--theme-white);
+	background-color: var(--theme-bg);
 	color: var(--color-black);
 	@include hide-scrollbar();
 
@@ -160,14 +148,18 @@
 	&:focus {
 		display: flex;
 	}
+
+	@include theme(dark) {
+		box-shadow: var(--shadow-elevation-4dp-dark);
+	}
 }
 
 @mixin dropdown-option {
 	width: 100%;
 	padding: 10px 8px;
 	transition: all var(--transition-time) ease-in-out;
-	background-color: var(--theme-white);
-	color: var(--color-black);
+	background-color: var(--theme-bg);
+	color: var(--theme-fg);
 	white-space: nowrap;
 	cursor: pointer;
 	user-select: none;
@@ -175,8 +167,8 @@
 	&:hover,
 	&:active,
 	&:focus {
-		background-color: var(--theme-bg);
-		color: var(--color-black);
+		background-color: var(--theme-bg-hover);
+		color: var(--theme-fg-hover);
 	}
 }
 

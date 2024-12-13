@@ -1,4 +1,4 @@
-import { api } from "@/connections";
+import { MemberApi } from "@/connections";
 import { useStore } from "@/hooks";
 import { Button, Typography } from "@/library";
 import { IOwedRecord } from "@/types";
@@ -31,7 +31,7 @@ const GroupOwedDataPerson: React.FC<GroupOwedDataPersonProps> = ({
 	const settleTwoUsers = async (userA: string, userB: string) => {
 		try {
 			setSettling(true);
-			const res = await api.members.settleOwedMembersInGroup(
+			const res = await MemberApi.settleOwedMembersInGroup(
 				groupId,
 				userA,
 				userB

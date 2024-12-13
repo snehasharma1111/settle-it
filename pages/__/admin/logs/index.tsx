@@ -1,5 +1,5 @@
 import { adminPage } from "@/client";
-import { api } from "@/connections";
+import { AdminApi } from "@/connections";
 import { routes } from "@/constants";
 import { useStore } from "@/hooks";
 import { Typography } from "@/library";
@@ -54,7 +54,7 @@ export const getServerSideProps = (
 	return adminPage(context, {
 		async onAdmin(user, headers) {
 			try {
-				const res = await api.admin.getAllLogFiles(headers);
+				const res = await AdminApi.getAllLogFiles(headers);
 				return {
 					props: {
 						user,

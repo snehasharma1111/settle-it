@@ -1,8 +1,8 @@
-import { api } from "@/connections";
+import { ExpenseApi, MemberApi } from "@/connections";
 import { fallbackAssets } from "@/constants";
 import { useStore } from "@/hooks";
 import { Responsive } from "@/layouts";
-import { Avatar, Button, Popup, Typography } from "@/library";
+import { Avatar, Button, Pane, Typography } from "@/library";
 import { IExpense, IMember } from "@/types";
 import { notify, stylesConfig } from "@/utils";
 import moment from "moment";
@@ -37,7 +37,7 @@ const ExpenseMember: React.FC<ExpenseMemberProps> = ({
 	const settleMember = async () => {
 		try {
 			setSettling(true);
-			const updatedMembersRes = await api.members.settleMemberInExpense({
+			const updatedMembersRes = await MemberApi.settleMemberInExpense({
 				groupId: expense.group.id,
 				expenseId: expense.id,
 				memberId: id,
@@ -172,7 +172,7 @@ const ViewExpense: React.FC<IViewExpenseProps> = ({
 	const settleExpense = async () => {
 		try {
 			setSettlingExpense(true);
-			const updatedMembersRes = await api.expense.settleExpense({
+			const updatedMembersRes = await ExpenseApi.settleExpense({
 				groupId: expense!.group.id,
 				expenseId: id,
 			});
@@ -189,7 +189,7 @@ const ViewExpense: React.FC<IViewExpenseProps> = ({
 		const getMembersForExpense = async () => {
 			setGettingMembers(true);
 			try {
-				const res = await api.expense.getMembersOfExpense({
+				const res = await ExpenseApi.getMembersOfExpense({
 					groupId: expense!.group.id,
 					expenseId: id,
 				});
@@ -208,7 +208,7 @@ const ViewExpense: React.FC<IViewExpenseProps> = ({
 	if (!expense) return null;
 
 	return (
-		<Popup
+		<Pane
 			onClose={onClose}
 			onEdit={
 				expense.createdBy.id === loggedInUser.id ||
@@ -223,7 +223,7 @@ const ViewExpense: React.FC<IViewExpenseProps> = ({
 					: undefined
 			}
 			title={expense.title}
-			width="500px"
+			width="40%"
 		>
 			<div className={classes("")}>
 				<div className={classes("-card")}>
@@ -305,7 +305,7 @@ const ViewExpense: React.FC<IViewExpenseProps> = ({
 					</div>
 				)}
 			</div>
-		</Popup>
+		</Pane>
 	);
 };
 

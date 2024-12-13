@@ -1,15 +1,7 @@
-import CreateGroup from "./create";
-import GroupMetaData from "./meta";
-import OwedRecords from "./owed";
-import GroupPlaceholder from "./placeholder";
-import GroupSummary from "./summary";
-import UpdateGroup from "./update";
-
-export {
-	CreateGroup,
-	GroupMetaData,
-	GroupPlaceholder,
-	GroupSummary,
-	OwedRecords,
-	UpdateGroup,
-};
+export { default as CreateGroup } from "./create";
+export { default as GroupHome } from "./home";
+export { default as GroupMetaData } from "./meta";
+export { default as OwedRecords } from "./owed";
+export { default as GroupPlaceholder } from "./placeholder";
+export { default as GroupSummary } from "./summary";
+export { default as UpdateGroup } from "./update";

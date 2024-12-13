@@ -1,16 +1,16 @@
 import { authenticatedPage } from "@/client";
 import {
 	CreateExpense,
-	ExpenseCard,
+	GroupHome,
 	GroupMetaData,
 	GroupPlaceholder,
 	Loader,
 	UpdateGroup,
 } from "@/components";
-import { api } from "@/connections";
+import { GroupApi } from "@/connections";
 import { routes } from "@/constants";
 import { useConfirmationModal, useHttpClient, useStore } from "@/hooks";
-import { Responsive, Seo } from "@/layouts";
+import { Seo } from "@/layouts";
 import { Button } from "@/library";
 import PageNotFound from "@/pages/404";
 import styles from "@/styles/pages/Group.module.scss";
@@ -55,7 +55,7 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 		try {
 			client.updateId("get-expenses");
 			const fetchedExpenses = await client.call(
-				api.group.getGroupExpenses,
+				GroupApi.getGroupExpenses,
 				props.group.id
 			);
 			const groupExpenses = expenses
@@ -165,29 +165,11 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 							action={() => setOpenAddExpensePopup(true)}
 						/>
 					) : (
-						<Responsive.Row>
-							{expenses
-								.filter(
-									(exp) => exp.group.id === groupDetails.id
-								)
-								.map((expense) => (
-									<Responsive.Col
-										key={`expense-${expense.id}`}
-										xlg={25}
-										lg={33}
-										md={50}
-										sm={50}
-										xsm={100}
-										style={{
-											height: "unset",
-											flex: "0 1 auto",
-											margin: "6px auto",
-										}}
-									>
-										<ExpenseCard {...expense} />
-									</Responsive.Col>
-								))}
-						</Responsive.Row>
+						<GroupHome
+							expenses={expenses.filter(
+								(exp) => exp.group.id === groupDetails.id
+							)}
+						/>
 					)}
 				</section>
 				{expenses.some((exp) => exp.group.id === props.group.id) ? (
@@ -238,7 +220,7 @@ export const getServerSideProps = (
 		async onLoggedInAndOnboarded(user, headers) {
 			try {
 				const id = getNonEmptyString(context.query.id);
-				const { data } = await api.group.getGroupDetails(id, headers);
+				const { data } = await GroupApi.getGroupDetails(id, headers);
 				return {
 					props: {
 						user,

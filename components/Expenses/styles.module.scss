@@ -1,6 +1,58 @@
 @import "@/styles/config/mixins";
 @import "@/styles/config/animations";
 
+.expense {
+	width: 100%;
+	padding: 1rem;
+	display: flex;
+	justify-content: flex-start;
+	align-items: flex-start;
+	gap: 12px;
+	cursor: pointer;
+	border-bottom: 1px solid var(--theme-light-grey);
+
+	@include responsive(phone) {
+		display: grid;
+		grid-auto-flow: row;
+		grid-template-columns: 1fr 2fr;
+		grid-template-areas: "expense-card-date expense-card-amount" "expense-card-title expense-card-title";
+	}
+
+	&:hover {
+		background-color: var(--theme-bg-hover);
+	}
+
+	&-date {
+		width: 12ch;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		overflow: hidden;
+		flex: 0 0 auto;
+
+		@include responsive(phone) {
+			grid-area: expense-card-date;
+		}
+	}
+
+	&-title {
+		max-width: 60%;
+
+		@include responsive(phone) {
+			max-width: unset;
+			grid-area: expense-card-title;
+		}
+	}
+
+	&-amount {
+		text-align: right;
+		margin-left: auto;
+
+		@include responsive(phone) {
+			grid-area: expense-card-amount;
+		}
+	}
+}
+
 .create-expense,
 .update-expense {
 	width: 100%;
@@ -47,9 +99,16 @@
 			background-color: rgba(0, 0, 0, 0.025);
 		}
 
+		&-name {
+			white-space: nowrap;
+			text-overflow: ellipsis;
+			overflow: hidden;
+		}
+
 		&-amount {
-			width: fit-content;
+			width: 8.5ch;
 			margin-left: auto;
+			flex: 0 0 auto;
 		}
 	}
 
@@ -76,8 +135,7 @@
 	}
 }
 
-.view-expense-card,
-.expense {
+.view-expense-card {
 	width: calc(100% - 6px);
 	height: 100%;
 	display: flex;

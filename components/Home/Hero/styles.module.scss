@@ -25,15 +25,15 @@
 		object-fit: contain;
 	}
 
-	&-content {
-		width: 40%;
-		display: flex;
-		justify-content: flex-start;
-		align-items: flex-start;
-		flex-direction: column;
-		gap: 12px;
+	&-container {
+		width: 60%;
 		margin-right: auto;
 		padding: 48px;
+		display: flex;
+		justify-content: flex-start;
+		align-items: stretch;
+		flex-direction: column;
+		gap: 24px;
 
 		@include responsive(phone) {
 			width: 100%;
@@ -44,6 +44,12 @@
 
 		button {
 			margin-top: 24px;
+		}
+
+		&__logo {
+			width: auto;
+			height: 100%;
+			object-fit: contain;
 		}
 
 		&__subheading {
@@ -57,6 +63,22 @@
 		}
 	}
 
+	&-logo {
+		width: 40%;
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
+	}
+
+	&-content {
+		display: flex;
+		justify-content: flex-start;
+		align-items: flex-start;
+		flex-direction: column;
+		flex: 0 0 auto;
+		gap: 12px;
+	}
+
 	&-image {
 		object-fit: contain;
 		max-width: 80%;
@@ -66,7 +88,7 @@
 		bottom: 0;
 		right: 0;
 
-		@include color-scheme(dark) {
+		@include theme(dark) {
 			filter: invert(1);
 		}
 

@@ -1,11 +1,11 @@
-import { api } from "@/connections";
+import { AuthApi } from "@/connections";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 export const fetchAuthenticatedUser = createAsyncThunk(
 	"auth/fetchAuthenticatedUser",
 	async (_, thunkApi) => {
 		try {
-			const res = await api.auth.verifyUserIfLoggedIn();
+			const res = await AuthApi.verifyUserIfLoggedIn();
 			return Promise.resolve(res.data);
 		} catch (error: any) {
 			return thunkApi.rejectWithValue(error);
@@ -15,7 +15,7 @@ export const fetchAuthenticatedUser = createAsyncThunk(
 
 export const logoutUser = createAsyncThunk("auth/logoutUser", async () => {
 	try {
-		await api.auth.logout();
+		await AuthApi.logout();
 		return Promise.resolve();
 	} catch (error: any) {
 		return Promise.reject(error.message);

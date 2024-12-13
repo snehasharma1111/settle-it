@@ -1,6 +1,13 @@
 @import "@/styles/config/mixins";
 @import "@/styles/config/typography";
 
+.group-home {
+	width: 100%;
+	&-row {
+		cursor: pointer;
+	}
+}
+
 .create-group,
 .create-group-members {
 	width: 100%;

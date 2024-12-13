@@ -1,7 +1,7 @@
 import { fallbackAssets } from "@/constants";
 import { useStore } from "@/hooks";
 import { Responsive } from "@/layouts";
-import { Avatar, Avatars, Button, Input, Popup, Typography } from "@/library";
+import { Avatar, Avatars, Button, Input, Pane, Typography } from "@/library";
 import { IUser, UpdateGroupData } from "@/types";
 import { stylesConfig } from "@/utils";
 import React, { useState } from "react";
@@ -74,12 +74,7 @@ const UpdateGroup: React.FC<IUpdateGroupProps> = ({
 	};
 
 	return (
-		<Popup
-			onClose={onClose}
-			className={classes("")}
-			title="Update Group"
-			height="1080px"
-		>
+		<Pane onClose={onClose} className={classes("")} title="Update Group">
 			<form className={classes("-form")} onSubmit={handleSubmit}>
 				{manageMembers ? (
 					<Responsive.Row>
@@ -312,7 +307,7 @@ const UpdateGroup: React.FC<IUpdateGroupProps> = ({
 					</Responsive.Row>
 				)}
 			</form>
-		</Popup>
+		</Pane>
 	);
 };
 

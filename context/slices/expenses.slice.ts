@@ -1,8 +1,8 @@
 import { expenseHelpers } from "@/context/helpers";
-import { IExpense } from "@/types";
+import { ExpenseSlice, IExpense } from "@/types";
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState: Array<IExpense> = [];
+const initialState: ExpenseSlice = [];
 
 export const expenseSlice = createSlice({
 	name: "expense",
@@ -18,9 +18,16 @@ export const expenseSlice = createSlice({
 	},
 	extraReducers(builder) {
 		builder.addCase(
-			expenseHelpers.getAllExpensesForUser.fulfilled,
+			expenseHelpers.getAllExpenses.fulfilled,
 			(state, action) => {
 				state = action.payload;
+				return state;
+			}
+		);
+		builder.addCase(
+			expenseHelpers.getAllExpensesForGroup.fulfilled,
+			(state, action) => {
+				state = [...state, ...action.payload];
 				return state;
 			}
 		);

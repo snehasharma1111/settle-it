@@ -258,3 +258,31 @@ export const getImageUrlFromDriveLink = (link: string): string => {
 		return link;
 	}
 };
+
+export const runningCase = (text: string): string => {
+	return text
+		.split("_")
+		.map((word) => word[0].toUpperCase() + word.slice(1).toLowerCase())
+		.join(" ");
+};
+
+export const simplifyFraction = (fraction: string) => {
+	let splitted = fraction.split("/");
+	if (splitted.length !== 2 || isNaN(+splitted[0]) || isNaN(+splitted[1])) {
+		return fraction;
+	}
+	const numerator = +splitted[0];
+	const denominator = +splitted[1];
+	const divisors = [];
+	for (let i = 2; i <= Math.min(numerator, denominator); i++) {
+		if (denominator % i === 0) {
+			divisors.push(i);
+		}
+	}
+	for (let i = divisors.length - 1; i >= 0; i--) {
+		if (numerator % divisors[i] === 0) {
+			return `${numerator / divisors[i]}/${denominator / divisors[i]}`;
+		}
+	}
+	return fraction;
+};

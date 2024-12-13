@@ -10,7 +10,7 @@ export default function App({ Component, pageProps }: AppProps) {
 	if (typeof window !== "undefined") AOS.init();
 	return (
 		<Provider store={store}>
-			<Wrapper>
+			<Wrapper {...pageProps}>
 				<Component {...pageProps} />
 			</Wrapper>
 		</Provider>

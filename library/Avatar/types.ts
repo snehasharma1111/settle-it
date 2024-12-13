@@ -7,5 +7,6 @@ export interface IAvatarProps extends React.HTMLAttributes<HTMLDivElement> {
 	shape?: "circle" | "square";
 	className?: string;
 	onClick?: () => void;
+	isClickable?: boolean;
 	size?: "small" | "medium" | "large" | number;
 }
