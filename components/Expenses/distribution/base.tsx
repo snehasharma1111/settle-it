@@ -9,6 +9,7 @@ import styles from "./styles.module.scss";
 import { getAmount, getFormattedValue } from "./utils";
 
 interface IDistributionsBaseProps {
+	defaultMethod?: DistributionMethod;
 	totalAmount: number;
 	members: Array<ExpenseUser>;
 	setMembers: (_: Array<ExpenseUser>) => void;
@@ -17,13 +18,14 @@ interface IDistributionsBaseProps {
 const classes = stylesConfig(styles, "distribution");
 
 export const DistributionsBase: React.FC<IDistributionsBaseProps> = ({
+	defaultMethod,
 	totalAmount,
 	members,
 	setMembers,
 }) => {
 	const [membersCount, setMembersCount] = useState(members.length);
 	const [method, setMethod] = useState<DistributionMethod>(
-		distributionMethods.equal
+		defaultMethod || distributionMethods.equal
 	);
 
 	const handleSelectUser = (member: ExpenseUser) => {

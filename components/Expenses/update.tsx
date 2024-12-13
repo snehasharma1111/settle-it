@@ -5,7 +5,11 @@ import { Button, Input, Pane } from "@/library";
 import { UpdateExpenseData } from "@/types";
 import { getNonNullValue, notify, stylesConfig } from "@/utils";
 import React, { useEffect, useState } from "react";
-import Members, { ExpenseUser } from "./members";
+import {
+	distributionMethods,
+	DistributionsBase,
+	ExpenseUser,
+} from "./distribution";
 import styles from "./styles.module.scss";
 
 interface IUpdateExpenseProps {
@@ -29,7 +33,7 @@ const UpdateExpense: React.FC<IUpdateExpenseProps> = ({
 	const originalExpense = getNonNullValue(
 		expenses.find((expense) => expense.id === id)
 	);
-	const group = groups.find((group) => group.id === groupId);
+	const group = groups.find((group) => group.id === groupId)!;
 	const [gettingMembers, setGettingMembers] = useState(false);
 	const [fields, setFields] = useState<UpdateExpenseData>({
 		title: originalExpense.title,
@@ -40,19 +44,17 @@ const UpdateExpense: React.FC<IUpdateExpenseProps> = ({
 		description: originalExpense.description,
 		members: [],
 	});
-	const [selectedMembers, setSelectedMembers] = useState<Array<ExpenseUser>>(
-		group?.members.map((member) => ({ ...member, amount: 0 })) || []
+	const [members, setMembers] = useState<Array<ExpenseUser>>(
+		group.members.map((member) => ({
+			...member,
+			amount: 0,
+			value: 0,
+			selected: true,
+		}))
 	);
 	const handleChange = (e: any) => {
 		const { name, value } = e.target;
 		if (name === "amount") {
-			setSelectedMembers((members) => {
-				const newMembers = [...members];
-				newMembers.forEach((member) => {
-					member.amount = value / newMembers.length;
-				});
-				return newMembers;
-			});
 			setFields({ ...fields, [name]: +value });
 		} else {
 			setFields({ ...fields, [name]: value });
@@ -61,37 +63,14 @@ const UpdateExpense: React.FC<IUpdateExpenseProps> = ({
 
 	const handleSubmit = (e: any) => {
 		e.preventDefault();
-		/* if (selectedMembers.map((user) => user.id).includes(loggedInuser.id)) {
-			onSave({
-				...fields,
-				members: selectedMembers.map((user) => ({
+		onSave({
+			...fields,
+			members: members
+				.filter((user) => user.selected)
+				.map((user) => ({
 					userId: user.id,
 					amount: user.amount,
 				})),
-			});
-		} else {
-			onSave({
-				...fields,
-				members: [
-					...selectedMembers.map((user) => ({
-						userId: user.id,
-						amount: user.amount,
-					})),
-					{
-						userId: loggedInuser.id,
-						amount:
-							fields.amount -
-							fields.members.reduce((a, b) => a + b.amount, 0),
-					},
-				],
-			});
-		} */
-		onSave({
-			...fields,
-			members: selectedMembers.map((user) => ({
-				userId: user.id,
-				amount: user.amount,
-			})),
 		});
 	};
 
@@ -110,10 +89,12 @@ const UpdateExpense: React.FC<IUpdateExpenseProps> = ({
 						amount: member.amount,
 					})),
 				});
-				setSelectedMembers(
+				setMembers(
 					res.data.map((member) => ({
 						...member.user,
+						selected: true,
 						amount: member.amount,
+						value: member.amount,
 					}))
 				);
 			} catch (error) {
@@ -266,14 +247,22 @@ const UpdateExpense: React.FC<IUpdateExpenseProps> = ({
 								onChange={handleChange}
 							/>
 						</Responsive.Col>
-						<Members
-							totalAmount={fields.amount}
-							allMembers={group.members}
-							selectedMembers={selectedMembers}
-							setSelectedMembers={(newMembers) => {
-								setSelectedMembers(newMembers);
-							}}
-						/>
+						<Responsive.Col
+							xlg={100}
+							lg={100}
+							md={100}
+							sm={100}
+							xsm={100}
+						>
+							<DistributionsBase
+								defaultMethod={distributionMethods.custom}
+								totalAmount={fields.amount}
+								members={members}
+								setMembers={(newMembers) => {
+									setMembers(newMembers);
+								}}
+							/>
+						</Responsive.Col>
 					</Responsive.Row>
 					<Button
 						className={classes("-submit")}
@@ -283,13 +272,14 @@ const UpdateExpense: React.FC<IUpdateExpenseProps> = ({
 							if (loading) return "Saving...";
 							if (fields.amount <= 0) return "Enter Amount";
 							if (
-								selectedMembers.some(
-									(member) => member.amount === 0
-								)
+								members
+									.filter((user) => user.selected)
+									.some((member) => member.amount === 0)
 							)
 								return "Enter Amount for all members";
 							if (
-								selectedMembers
+								members
+									.filter((user) => user.selected)
 									.map((user) => user.amount)
 									.reduce((a, b) => a + b, 0) !==
 								fields.amount
@@ -300,10 +290,11 @@ const UpdateExpense: React.FC<IUpdateExpenseProps> = ({
 						disabled={
 							loading ||
 							fields.amount <= 0 ||
-							selectedMembers.some(
-								(member) => member.amount === 0
-							) ||
-							selectedMembers
+							members
+								.filter((user) => user.selected)
+								.some((member) => member.amount === 0) ||
+							members
+								.filter((user) => user.selected)
 								.map((user) => user.amount)
 								.reduce((a, b) => a + b, 0) !== fields.amount
 						}

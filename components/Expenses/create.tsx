@@ -4,7 +4,11 @@ import { Button, Input, Pane } from "@/library";
 import { CreateExpenseData } from "@/types";
 import { stylesConfig } from "@/utils";
 import React, { useState } from "react";
-import { DistributionsBase, ExpenseUser } from "./distribution";
+import {
+	distributionMethods,
+	DistributionsBase,
+	ExpenseUser,
+} from "./distribution";
 import styles from "./styles.module.scss";
 
 interface ICreateExpenseProps {
@@ -165,6 +169,7 @@ const CreateExpense: React.FC<ICreateExpenseProps> = ({
 						xsm={100}
 					>
 						<DistributionsBase
+							defaultMethod={distributionMethods.equal}
 							totalAmount={fields.amount}
 							members={members}
 							setMembers={(newMembers) => {
