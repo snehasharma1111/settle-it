@@ -1,6 +1,6 @@
 import { useStore } from "@/hooks";
 import { MaterialIcon, Typography } from "@/library";
-import { stylesConfig } from "@/utils/functions";
+import { stylesConfig } from "@/utils";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";

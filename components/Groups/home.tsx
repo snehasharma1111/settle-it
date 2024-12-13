@@ -1,6 +1,6 @@
 import { ExpenseCard } from "@/components";
 import { IExpense } from "@/types";
-import { stylesConfig } from "@/utils/functions";
+import { stylesConfig } from "@/utils";
 import React from "react";
 import styles from "./styles.module.scss";
 

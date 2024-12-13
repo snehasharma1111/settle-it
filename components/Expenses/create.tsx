@@ -4,7 +4,7 @@ import { Button, Input, Pane } from "@/library";
 import { CreateExpenseData } from "@/types";
 import { stylesConfig } from "@/utils";
 import React, { useState } from "react";
-import Members, { ExpenseUser } from "./members";
+import { DistributionsBase, ExpenseUser } from "./distribution";
 import styles from "./styles.module.scss";
 
 interface ICreateExpenseProps {
@@ -23,7 +23,7 @@ const CreateExpense: React.FC<ICreateExpenseProps> = ({
 	loading,
 }) => {
 	const { user: loggedInuser, groups } = useStore();
-	const group = groups.find((group) => group.id === groupId);
+	const group = groups.find((group) => group.id === groupId)!;
 	const [fields, setFields] = useState<CreateExpenseData>({
 		title: "",
 		amount: 0,
@@ -33,19 +33,17 @@ const CreateExpense: React.FC<ICreateExpenseProps> = ({
 		paidBy: loggedInuser.id,
 		members: [],
 	});
-	const [selectedMembers, setSelectedMembers] = useState<Array<ExpenseUser>>(
-		group?.members.map((member) => ({ ...member, amount: 0 })) || []
+	const [members, setMembers] = useState<Array<ExpenseUser>>(
+		group.members.map((member) => ({
+			...member,
+			amount: 0,
+			value: 0,
+			selected: true,
+		}))
 	);
 	const handleChange = (e: any) => {
 		const { name, value } = e.target;
 		if (name === "amount") {
-			setSelectedMembers((members) => {
-				const newMembers = [...members];
-				newMembers.forEach((member) => {
-					member.amount = value / newMembers.length;
-				});
-				return newMembers;
-			});
 			if (value.startsWith("0") && value.length > 1) {
 				setFields({ ...fields, [name]: +value.slice(1) });
 			} else {
@@ -60,10 +58,12 @@ const CreateExpense: React.FC<ICreateExpenseProps> = ({
 		e.preventDefault();
 		onSave({
 			...fields,
-			members: selectedMembers.map((user) => ({
-				userId: user.id,
-				amount: user.amount,
-			})),
+			members: members
+				.filter((user) => user.selected)
+				.map((user) => ({
+					userId: user.id,
+					amount: user.amount,
+				})),
 		});
 	};
 
@@ -157,14 +157,21 @@ const CreateExpense: React.FC<ICreateExpenseProps> = ({
 							onChange={handleChange}
 						/>
 					</Responsive.Col>
-					<Members
-						totalAmount={fields.amount}
-						allMembers={group.members}
-						selectedMembers={selectedMembers}
-						setSelectedMembers={(newMembers) => {
-							setSelectedMembers(newMembers);
-						}}
-					/>
+					<Responsive.Col
+						xlg={100}
+						lg={100}
+						md={100}
+						sm={100}
+						xsm={100}
+					>
+						<DistributionsBase
+							totalAmount={fields.amount}
+							members={members}
+							setMembers={(newMembers) => {
+								setMembers(newMembers);
+							}}
+						/>
+					</Responsive.Col>
 				</Responsive.Row>
 				<Button
 					className={classes("-submit")}
@@ -174,13 +181,14 @@ const CreateExpense: React.FC<ICreateExpenseProps> = ({
 						if (loading) return "Creating...";
 						if (fields.amount <= 0) return "Enter Amount";
 						if (
-							selectedMembers.some(
-								(member) => member.amount === 0
-							)
+							members
+								.filter((user) => user.selected)
+								.some((member) => member.amount === 0)
 						)
 							return "Enter Amount for all members";
 						if (
-							selectedMembers
+							members
+								.filter((user) => user.selected)
 								.map((user) => user.amount)
 								.reduce((a, b) => a + b, 0) !== fields.amount
 						)
@@ -190,8 +198,11 @@ const CreateExpense: React.FC<ICreateExpenseProps> = ({
 					disabled={
 						loading ||
 						fields.amount <= 0 ||
-						selectedMembers.some((member) => member.amount === 0) ||
-						selectedMembers
+						members
+							.filter((user) => user.selected)
+							.some((member) => member.amount === 0) ||
+						members
+							.filter((user) => user.selected)
 							.map((user) => user.amount)
 							.reduce((a, b) => a + b, 0) !== fields.amount
 					}
