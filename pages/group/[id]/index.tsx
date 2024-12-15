@@ -2,7 +2,6 @@ import { authenticatedPage } from "@/client";
 import {
 	CreateExpense,
 	GroupHome,
-	GroupInfo,
 	GroupMetaData,
 	GroupPlaceholder,
 	Loader,

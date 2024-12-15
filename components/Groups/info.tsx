@@ -2,7 +2,6 @@ import { fallbackAssets, USER_STATUS } from "@/constants";
 import { Avatar, Pane, Typography } from "@/library";
 import { IGroup } from "@/types";
 import { stylesConfig } from "@/utils";
-import { useRouter } from "next/router";
 import React from "react";
 import { FiSettings, FiX } from "react-icons/fi";
 import styles from "./styles.module.scss";
@@ -16,7 +15,6 @@ interface IGroupInfoProps {
 const classes = stylesConfig(styles, "group-info");
 
 const GroupInfo: React.FC<IGroupInfoProps> = ({ onClose, onUpdate, group }) => {
-	const router = useRouter();
 	return (
 		<Pane
 			onClose={onClose}
@@ -73,7 +71,6 @@ const GroupInfo: React.FC<IGroupInfoProps> = ({ onClose, onUpdate, group }) => {
 								<Typography
 									className={classes("-member-name")}
 									size="lg"
-									weight="medium"
 								>
 									{member.name || member.email}
 								</Typography>

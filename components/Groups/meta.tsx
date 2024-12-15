@@ -193,7 +193,12 @@ const GroupPageMeta: React.FC<IGroupPageMetaProps> = ({
 							size={50}
 						/>
 					</div>
-					<Typography size="xxl" as="h2" weight="medium">
+					<Typography
+						size="xxl"
+						as="h2"
+						weight="medium"
+						className={classes("-name")}
+					>
 						{group.name}
 					</Typography>
 				</div>

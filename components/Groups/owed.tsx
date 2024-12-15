@@ -1,10 +1,11 @@
 import { MemberApi } from "@/connections";
 import { useStore } from "@/hooks";
-import { Button, Typography } from "@/library";
+import { Avatar, Button, Typography } from "@/library";
 import { IOwedRecord } from "@/types";
 import { notify, stylesConfig } from "@/utils";
 import React, { useState } from "react";
 import styles from "./styles.module.scss";
+import { fallbackAssets } from "@/constants";
 
 interface IGroupOwedDataProps {
 	groupId: string;
@@ -49,11 +50,7 @@ const GroupOwedDataPerson: React.FC<GroupOwedDataPersonProps> = ({
 				size="sm"
 				className={classes("-person", "-person--details")}
 			>
-				{record.user.name || record.user.email}
-				<span style={{ color: "var(--theme-red)" }}>
-					owes {transaction.amount.toFixed(2)}
-				</span>
-				to {transaction.user.name || transaction.user.email}
+				{`> ${record.user.name || record.user.email} owes ${transaction.amount.toFixed(2)} to ${transaction.user.name || transaction.user.email}`}
 			</Typography>
 			{transaction.user.id === loggedInUser.id ? (
 				<Button
@@ -81,15 +78,23 @@ const GroupOwedData: React.FC<IGroupOwedDataProps> = ({
 			{data.map((record, recId) => (
 				<div
 					key={`owed-record-person-${recId}`}
-					className={classes("-person")}
+					className={classes("-person", "-person--block")}
 				>
-					<Typography size="md">
-						{record.user.name || record.user.email}{" "}
-						<span style={{ color: "var(--theme-red)" }}>
-							owes {record.amount.toFixed(2)}{" "}
-						</span>
-						in total
-					</Typography>
+					<div className={classes("-person-details")}>
+						<Avatar
+							src={record.user.avatar || fallbackAssets.avatar}
+							alt={record.user.name || record.user.email}
+							size={56}
+						/>
+						<div className={classes("-person-details__text")}>
+							<Typography size="lg">
+								{record.user.name || record.user.email}
+							</Typography>
+							<Typography size="s">
+								{`owes ${record.amount.toFixed(2)} in total`}
+							</Typography>
+						</div>
+					</div>
 					{record.transactions.map((tr, trId) => (
 						<GroupOwedDataPerson
 							key={`owed-record-person-${recId}-transaction-${trId}`}

@@ -151,10 +151,17 @@
 	align-items: center;
 	padding: 16px 24px;
 	gap: 24px;
-	background-color: var(--accent-color-500);
+	background-color: #dbe2fd;
+	position: sticky;
+	top: 0;
+	left: 0;
+
+	@include theme(dark) {
+		background-color: #646e8a;
+	}
 
 	@include responsive(phone) {
-		padding: 8px 12px;
+		padding: 8px;
 		gap: 12px;
 	}
 
@@ -173,6 +180,7 @@
 		align-items: center;
 		gap: 16px;
 		cursor: pointer;
+		margin-right: auto;
 
 		@include responsive(phone) {
 			gap: 12px;
@@ -191,13 +199,20 @@
 		}
 	}
 
+	&-name {
+		width: 100%;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		overflow: hidden;
+	}
+
 	&-action {
 		@include init-button;
 		border-radius: 500px;
 		padding: 8px;
 
 		@include responsive(phone) {
-			padding: 6px;
+			padding: 4px;
 		}
 
 		&--flat {
@@ -235,6 +250,7 @@
 		align-items: center;
 		padding: 4px;
 		overflow: hidden;
+		flex: 0 0 auto;
 	}
 
 	&-options {
@@ -378,8 +394,51 @@
 		flex-direction: column;
 		gap: 8px;
 
+		&-details {
+			display: flex;
+			justify-content: flex-start;
+			align-items: center;
+			gap: 12px;
+
+			&__text {
+				display: flex;
+				justify-content: center;
+				align-items: flex-start;
+				flex-direction: column;
+				gap: 2px;
+			}
+		}
+
+		&--block {
+			flex-direction: column;
+			border-radius: 12px;
+			background-color: var(--accent-color-300);
+			padding: 24px;
+		}
+
 		&--sub {
 			margin-left: 20px;
+			margin: 0.25rem 0;
+
+			button {
+				margin-bottom: 0.5rem;
+			}
+		}
+
+		&--gives {
+			background-color: var(--red-100);
+
+			@include theme(dark) {
+				background-color: var(--red-900);
+			}
+		}
+
+		&--gets {
+			background-color: var(--green-100);
+
+			@include theme(dark) {
+				background-color: var(--green-900);
+			}
 		}
 
 		&--details {

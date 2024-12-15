@@ -4,7 +4,7 @@ import { useStore } from "@/hooks";
 import { Responsive } from "@/layouts";
 import { Avatar, Button, Pane, Typography } from "@/library";
 import { IExpense, IMember } from "@/types";
-import { notify, stylesConfig } from "@/utils";
+import { notify, roundOff, stylesConfig } from "@/utils";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { IoCheckmarkOutline } from "react-icons/io5";
@@ -50,7 +50,13 @@ const ExpenseMember: React.FC<ExpenseMemberProps> = ({
 		}
 	};
 	return (
-		<div className={classes("-member")}>
+		<div
+			className={classes("-member", {
+				"-member--owed": owed > 0,
+				"-member--settling": settling,
+				"-member--settled": owed === 0 || expense.paidBy.id === user.id,
+			})}
+		>
 			<Avatar
 				src={user.avatar || fallbackAssets.avatar}
 				alt={user.name || user.email}
@@ -59,69 +65,22 @@ const ExpenseMember: React.FC<ExpenseMemberProps> = ({
 			{(() => {
 				if (expense.paidBy.id === user.id) {
 					return (
-						<>
-							<Typography size="sm">
-								{expense.paidBy.name ||
-									expense.paidBy.email.slice(0, 7) + "..."}
-							</Typography>{" "}
-							<Typography
-								size="sm"
-								style={{
-									color: owed === 0 ? "green" : "red",
-								}}
-							>
-								paid {paid}
-							</Typography>{" "}
-							<Typography size="sm">for this expense</Typography>
-						</>
+						<Typography size="sm">
+							{`${expense.paidBy.name || expense.paidBy.email.slice(0, 7) + "..."} paid ${roundOff(paid, 2)} for this expense`}
+						</Typography>
 					);
 				} else {
 					if (owed === 0) {
 						return (
-							<>
-								<Typography size="sm">
-									{user.name ||
-										user.email.slice(0, 7) + "..."}{" "}
-									has
-								</Typography>{" "}
-								<Typography
-									size="sm"
-									style={{
-										color: owed === 0 ? "green" : "red",
-									}}
-								>
-									paid {paid}
-								</Typography>{" "}
-								<Typography size="sm">
-									to{" "}
-									{expense.paidBy.name ||
-										expense.paidBy.email.slice(0, 7) +
-											"..."}
-								</Typography>
-							</>
+							<Typography size="sm">
+								{`${user.name || user.email.slice(0, 7) + "..."} has paid ${roundOff(paid, 2)} to ${expense.paidBy.name || expense.paidBy.email.slice(0, 7) + "..."}`}
+							</Typography>
 						);
 					} else {
 						return (
-							<>
-								<Typography size="sm">
-									{user.name ||
-										user.email.slice(0, 7) + "..."}
-								</Typography>{" "}
-								<Typography
-									size="sm"
-									style={{
-										color: owed === 0 ? "green" : "red",
-									}}
-								>
-									owes {owed}
-								</Typography>{" "}
-								<Typography size="sm">
-									to{" "}
-									{expense.paidBy.name ||
-										expense.paidBy.email.slice(0, 7) +
-											"..."}
-								</Typography>
-							</>
+							<Typography size="sm">
+								{`${user.name || user.email.slice(0, 7) + "..."} owes ${roundOff(owed, 2)} to ${expense.paidBy.name || expense.paidBy.email.slice(0, 7) + "..."}`}
+							</Typography>
 						);
 					}
 				}
