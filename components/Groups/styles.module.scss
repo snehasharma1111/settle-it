@@ -3,6 +3,7 @@
 
 .group-home {
 	width: 100%;
+
 	&-row {
 		cursor: pointer;
 	}
@@ -147,10 +148,128 @@
 	width: 100%;
 	display: flex;
 	justify-content: space-between;
-	align-items: flex-start;
+	align-items: center;
+	padding: 16px 24px;
 	gap: 24px;
+	background-color: var(--accent-color-500);
+
+	@include responsive(phone) {
+		padding: 8px 12px;
+		gap: 12px;
+	}
+
+	&-left {
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
+		flex: 0 0 auto;
+	}
+
+	&-info {
+		width: 100%;
+		height: 100%;
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
+		gap: 16px;
+		cursor: pointer;
+
+		@include responsive(phone) {
+			gap: 12px;
+		}
+	}
+
+	&-right {
+		display: flex;
+		justify-content: flex-end;
+		align-items: center;
+		gap: 24px;
+		flex: 0 0 auto;
+
+		@include responsive(phone) {
+			gap: 12px;
+		}
+	}
+
+	&-action {
+		@include init-button;
+		border-radius: 500px;
+		padding: 8px;
+
+		@include responsive(phone) {
+			padding: 6px;
+		}
+
+		&--flat {
+			border-radius: 8px;
+			padding: 12px 16px;
+			gap: 12px;
+		}
+
+		svg {
+			width: 20px;
+			height: 20px;
+			color: var(--theme-white);
+
+			@include responsive(phone) {
+				width: 16px;
+				height: 16px;
+			}
+		}
+
+		&:hover {
+			background-color: rgba(0, 0, 0, 0.1);
+
+			@include theme(dark) {
+				background-color: rgba(255, 255, 255, 0.1);
+			}
+		}
+	}
+
+	&-icon {
+		width: 50px;
+		height: 50px;
+		border-radius: 50%;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		padding: 4px;
+		overflow: hidden;
+	}
+
+	&-options {
+		position: relative;
+	}
+
+	&-dropdown {
+		@include dropdown;
+		display: flex;
+		left: unset;
+		right: 0;
+
+		button {
+			@include init-button;
+			@include dropdown-option;
+			justify-content: flex-start;
+			gap: 12px;
+			padding: 12px 16px;
+		}
+	}
+}
+
+.group-info {
+	width: 100%;
+	display: flex;
+	justify-content: flex-start;
+	align-items: flex-start;
+	flex-direction: column;
 	z-index: 2;
-	padding: 0 5%;
+
+	&-parent {
+		& > * {
+			padding: 0;
+		}
+	}
 
 	@include responsive(phone) {
 		justify-content: flex-start;
@@ -160,20 +279,31 @@
 
 	&-banner {
 		@include banner;
+		transform: none;
+	}
+
+	&-main {
+		width: 100%;
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
+		flex-direction: column;
+		gap: 24px;
+		transform: translateY(-90px);
 	}
 
 	&-details {
 		display: flex;
-		justify-content: center;
-		align-items: flex-start;
+		justify-content: flex-start;
+		align-items: center;
 		flex-direction: column;
-		gap: 12px;
+		gap: 24px;
 	}
 
 	&-icon {
-		width: 80px;
-		height: 80px;
-		border-radius: 8px;
+		width: 180px;
+		height: 180px;
+		border-radius: 24px;
 		background-color: var(--theme-white);
 		box-shadow: var(--shadow-elevation-2dp);
 		display: flex;
@@ -183,16 +313,45 @@
 		overflow: hidden;
 	}
 
-	&-actions {
+	&-members {
+		width: 100%;
 		display: flex;
-		justify-content: flex-end;
+		justify-content: flex-start;
+		align-items: flex-start;
+		flex-direction: column;
+		gap: 24px;
+		padding: 24px;
+	}
+
+	&-member {
+		width: 100%;
+		display: flex;
+		justify-content: flex-start;
 		align-items: center;
 		gap: 12px;
-		padding-top: 52px;
 
-		@include responsive(phone) {
-			padding-top: 12px;
-			justify-content: flex-start;
+		&-name {
+			width: 100%;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			overflow: hidden;
+		}
+
+		&-chip {
+			margin-left: auto;
+			border-radius: 500px;
+			padding: 8px 12px;
+			color: var(--theme-black);
+			white-space: nowrap;
+			text-align: center;
+
+			&--admin {
+				background-color: var(--green-100);
+			}
+
+			&--invited {
+				background-color: var(--yellow-100);
+			}
 		}
 	}
 }
