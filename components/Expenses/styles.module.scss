@@ -201,9 +201,30 @@
 		align-items: center;
 		gap: 8px;
 		padding: 6px 8px;
+		border-radius: 6px;
 
 		&-name {
 			margin-right: auto;
+		}
+
+		&--settling {
+			background-color: 0;
+		}
+
+		&--owed {
+			background-color: var(--red-100);
+
+			@include theme(dark) {
+				background-color: var(--red-900);
+			}
+		}
+
+		&--settled {
+			background-color: var(--green-100);
+
+			@include theme(dark) {
+				background-color: var(--green-900);
+			}
 		}
 	}
 

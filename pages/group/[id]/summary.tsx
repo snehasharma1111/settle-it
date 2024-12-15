@@ -17,7 +17,6 @@ import { IBalancesSummary, IGroup, IUser, ServerSideResult } from "@/types";
 import { getNonEmptyString, notify, stylesConfig } from "@/utils";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { FiChevronDown } from "react-icons/fi";
 
 const classes = stylesConfig(styles, "group");
 
@@ -31,9 +30,7 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 	const router = useRouter();
 	const client = useHttpClient();
 	const [groupDetails, setGroupDetails] = useState<IGroup>(props.group);
-	const [uncollapsedGroup, setUncollapsedGroup] = useState<
-		"owed" | "summary" | null
-	>(null);
+	const [activeTab, setActiveTab] = useState<"owed" | "summary">("owed");
 	const [expenditure, setExpenditure] = useState(0);
 	const [balances, setBalances] = useState<IBalancesSummary>({
 		owes: [],
@@ -50,18 +47,13 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 			setBalances(fetchedSummary.balances);
 			setExpenditure(fetchedSummary.expenditure);
 			if (fetchedSummary.balances.owes.length > 0) {
-				setUncollapsedGroup("owed");
+				setActiveTab("owed");
 			} else {
-				setUncollapsedGroup("summary");
+				setActiveTab("summary");
 			}
 		} catch (error) {
 			notify.error(error);
 		}
-	};
-
-	const handleGroupCollapse = (group: "owed" | "summary") => {
-		if (uncollapsedGroup === group) setUncollapsedGroup(null);
-		else setUncollapsedGroup(group);
 	};
 
 	useEffect(() => {
@@ -93,39 +85,36 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 			) : (
 				<section className={classes("-body")}>
 					<Typography size="xl" weight="medium">
-						Total Expenditure: {expenditure.toFixed(2)}
+						Total Expenditure:{" "}
+						{new Intl.NumberFormat("en-US", {
+							style: "currency",
+							currency: "INR",
+						}).format(expenditure)}
 					</Typography>
-					<div
-						className={classes("-head", {
-							"-head--uncollapsed": uncollapsedGroup === "owed",
-						})}
-						onClick={() => handleGroupCollapse("owed")}
-					>
-						<Typography size="lg">Owed Amount</Typography>
-						<hr />
-						<button onClick={() => handleGroupCollapse("owed")}>
-							<FiChevronDown />
+					<div className={classes("-tabs")}>
+						<button
+							className={classes("-tab", {
+								"-tab--active": activeTab === "owed",
+							})}
+							onClick={() => setActiveTab("owed")}
+						>
+							<Typography>Owed Amount</Typography>
+						</button>
+						<button
+							className={classes("-tab", {
+								"-tab--active": activeTab === "summary",
+							})}
+							onClick={() => setActiveTab("summary")}
+						>
+							<Typography>Summary</Typography>
 						</button>
 					</div>
-					{uncollapsedGroup === "owed" ? (
+					{activeTab === "owed" ? (
 						<OwedRecords
 							groupId={props.group?.id}
 							data={balances.owes}
 						/>
-					) : null}
-					<div
-						className={classes("-head", {
-							"-head--uncollapsed":
-								uncollapsedGroup === "summary",
-						})}
-					>
-						<Typography size="lg">Summary</Typography>
-						<hr />
-						<button onClick={() => handleGroupCollapse("summary")}>
-							<FiChevronDown />
-						</button>
-					</div>
-					{uncollapsedGroup === "summary" ? (
+					) : activeTab === "summary" ? (
 						<GroupSummary data={balances.balances} />
 					) : null}
 				</section>

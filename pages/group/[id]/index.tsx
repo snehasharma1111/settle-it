@@ -148,6 +148,7 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 			<main className={classes("")}>
 				<GroupMetaData
 					group={groupDetails}
+					onAddExpense={() => setOpenAddExpensePopup(true)}
 					onUpdate={() => setOpenManageGroupPopup(true)}
 				/>
 				<section
