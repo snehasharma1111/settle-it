@@ -16,8 +16,7 @@ import styles from "@/styles/pages/Group.module.scss";
 import { IBalancesSummary, IGroup, IUser, ServerSideResult } from "@/types";
 import { getNonEmptyString, notify, stylesConfig } from "@/utils";
 import { useRouter } from "next/router";
-import React, { act, useEffect, useState } from "react";
-import { FiChevronDown } from "react-icons/fi";
+import React, { useEffect, useState } from "react";
 
 const classes = stylesConfig(styles, "group");
 
