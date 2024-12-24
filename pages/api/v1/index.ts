@@ -36,6 +36,40 @@ const callApi = async (
 	}
 };
 
+const getCookiesToSet = (endpoint: string, headers: any) => {
+	const cookiesToSet = [];
+	if (endpoint === "/auth/logout") {
+		cookiesToSet.push({
+			name: "accessToken",
+			value: "",
+			maxAge: -1,
+		});
+		cookiesToSet.push({
+			name: "refreshToken",
+			value: "",
+			maxAge: -1,
+		});
+	} else {
+		const accessToken = headers["x-auth-access-token"];
+		const refreshToken = headers["x-auth-refresh-token"];
+		if (accessToken) {
+			cookiesToSet.push({
+				name: "accessToken",
+				value: accessToken,
+				maxAge: 15 * 60 * 1000,
+			});
+		}
+		if (refreshToken) {
+			cookiesToSet.push({
+				name: "refreshToken",
+				value: refreshToken,
+				maxAge: 7 * 24 * 60 * 60 * 1000,
+			});
+		}
+	}
+	return cookiesToSet;
+};
+
 const handler: NextApiHandler = async (req: ApiRequest, res: ApiResponse) => {
 	try {
 		const headers = { cookie: req.headers.cookie };
@@ -47,24 +81,32 @@ const handler: NextApiHandler = async (req: ApiRequest, res: ApiResponse) => {
 		const body = req.body || {};
 		logger.debug("proxy route", method, endpoint, body, headers);
 		const response = await callApi(method, endpoint, body, { headers });
-		if (endpoint === "/auth/logout") {
+		const cookiesToSet = getCookiesToSet(endpoint, response.headers);
+		if (cookiesToSet.length > 0) {
 			res.setHeader(
 				"Set-Cookie",
-				"token=; HttpOnly; Path=/; Max-Age=-1; SameSite=None; Secure=true;"
+				cookiesToSet.map(
+					(cookie) =>
+						`${cookie.name}=${cookie.value}; HttpOnly; Max-Age=${cookie.maxAge}; Path=/; SameSite=None; Secure=true;`
+				)
 			);
-		} else {
-			const token = response.headers?.["x-auth-token"];
-			if (token) {
-				logger.debug("token", token);
-				res.setHeader(
-					"Set-Cookie",
-					`token=${token}; HttpOnly; Path=/; Max-Age=${30 * 24 * 60 * 60 * 1000}; SameSite=None; Secure=true;`
-				);
-			}
 		}
 		return res.status(response.status).json(response.data);
 	} catch (err: any) {
 		logger.error(err);
+		if (
+			[HTTP.status.UNAUTHORIZED, HTTP.status.FORBIDDEN].includes(
+				err?.response?.status
+			)
+		) {
+			res.setHeader(
+				"Set-Cookie",
+				["accessToken", "refreshToken"].map(
+					(cookie) =>
+						`${cookie}=; HttpOnly; Max-Age=-1; Path=/; SameSite=None; Secure=true;`
+				)
+			);
+		}
 		return res
 			.status(err?.response?.status || HTTP.status.INTERNAL_SERVER_ERROR)
 			.json(
