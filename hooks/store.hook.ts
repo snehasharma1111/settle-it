@@ -16,7 +16,6 @@ import { useDispatch, useSelector } from "react-redux";
 
 export const useStore = () => {
 	const dispatch = useDispatch<any>();
-	// const client = useHttpClient();
 
 	const expenses = useSelector(expenseSelector);
 	const user = useSelector(userSelector);
