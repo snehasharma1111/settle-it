@@ -47,18 +47,20 @@ const handler: NextApiHandler = async (req: ApiRequest, res: ApiResponse) => {
 		const body = req.body || {};
 		logger.debug("proxy route", method, endpoint, body, headers);
 		const response = await callApi(method, endpoint, body, { headers });
-		if (endpoint === "/auth/login") {
-			const token = response.headers["x-auth-token"];
-			logger.debug("login api called", token);
-			res.setHeader(
-				"Set-Cookie",
-				`token=${token}; HttpOnly; Path=/; Max-Age=${30 * 24 * 60 * 60 * 1000}; SameSite=None; Secure=true;`
-			);
-		} else if (endpoint === "/auth/logout") {
+		if (endpoint === "/auth/logout") {
 			res.setHeader(
 				"Set-Cookie",
 				"token=; HttpOnly; Path=/; Max-Age=-1; SameSite=None; Secure=true;"
 			);
+		} else {
+			const token = response.headers?.["x-auth-token"];
+			if (token) {
+				logger.debug("token", token);
+				res.setHeader(
+					"Set-Cookie",
+					`token=${token}; HttpOnly; Path=/; Max-Age=${30 * 24 * 60 * 60 * 1000}; SameSite=None; Secure=true;`
+				);
+			}
 		}
 		return res.status(response.status).json(response.data);
 	} catch (err: any) {

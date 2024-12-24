@@ -14,7 +14,7 @@ export class AuthApi {
 	public static async verifyOtpWithEmail(
 		email: string,
 		otp: string
-	): Promise<{ message: string }> {
+	): Promise<ApiRes<IUser>> {
 		const response = await http.post("/auth/otp/verify", {
 			email,
 			otp,
@@ -27,17 +27,6 @@ export class AuthApi {
 	): Promise<ApiRes<IUser>> {
 		const response = await http.get("/auth/verify", {
 			headers,
-		});
-		return response.data;
-	}
-
-	public static async loginWithEmail(
-		email: string,
-		otp: string
-	): Promise<ApiRes<IUser>> {
-		const response = await http.post("/auth/login", {
-			email,
-			otp,
 		});
 		return response.data;
 	}

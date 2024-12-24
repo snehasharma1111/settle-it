@@ -47,8 +47,7 @@ const LoginPage: React.FC<LoginPageProps> = (props) => {
 	const verifyOtp = async (otp: string) => {
 		try {
 			setVerifyingOtp(true);
-			await AuthApi.verifyOtpWithEmail(email, otp);
-			const res = await AuthApi.loginWithEmail(email, otp);
+			const res = await AuthApi.verifyOtpWithEmail(email, otp);
 			syncUserState(res.data);
 			if (res.data.name) {
 				const redirectUrl =
