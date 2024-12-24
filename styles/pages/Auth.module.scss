@@ -1,7 +1,7 @@
 @import "@/styles/config/mixins";
 
 .auth {
-	max-width: 550px;
+	max-width: 400px;
 	height: 100vh;
 	display: flex;
 	justify-content: space-between;
@@ -19,7 +19,6 @@
 		align-items: flex-start;
 		flex-direction: column;
 		gap: 24px;
-		padding: 0 5%;
 
 		button {
 			width: 100%;
@@ -40,5 +39,43 @@
 
 	@include responsive(phone) {
 		padding: 20px;
+	}
+
+	&-divider {
+		width: 92%;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		text-align: center;
+		position: relative;
+		margin: 0 auto;
+
+		&::before,
+		&::after {
+			content: "";
+			position: absolute;
+			top: 50%;
+			width: 40%;
+			height: 1px;
+			background: var(--theme-black);
+
+			@include theme(light) {
+				background: var(--theme-black);
+			}
+
+			@include theme(dark) {
+				background: var(--theme-white);
+			}
+		}
+
+		&::before {
+			right: 50%;
+			transform: translateX(-4ch);
+		}
+
+		&::after {
+			left: 50%;
+			transform: translateX(4ch);
+		}
 	}
 }

@@ -96,12 +96,22 @@ const LoginPage: React.FC<LoginPageProps> = (props) => {
 						className={classes("-logo")}
 					/>
 					{authFrame === "input" ? (
-						<Components.Content
-							email={email}
-							setEmail={(value) => setEmail(value)}
-							onContinueWithEmail={requestOtpWithEmail}
-							requestingOtp={requestingOtp}
-						/>
+						<>
+							<Components.Content
+								email={email}
+								setEmail={(value) => setEmail(value)}
+								onContinueWithEmail={requestOtpWithEmail}
+								requestingOtp={requestingOtp}
+							/>
+							<span className={classes("-divider")}>
+								<Typography size="md">OR</Typography>
+							</span>
+							<Components.GoogleOAuthButton
+								onClick={() => {
+									router.push("/__/oauth/google");
+								}}
+							/>
+						</>
 					) : authFrame === "otp-verification" ? (
 						<Components.Verification
 							email={email}
