@@ -1,15 +1,3 @@
-/* export type RootState = {
-    ui: {
-        theme: AppTheme;
-        openSidebar: boolean;
-        networkStatus: AppNetworkStatus;
-        isLoggedIn: boolean;
-    };
-    user: IUser;
-    groups: IGroup[];
-    expense: IExpense[];
-}; */
-
 import { IExpense } from "./expense";
 import { IGroup } from "./group";
 import { AppNetworkStatus, AppTheme, Navigation } from "./ui";

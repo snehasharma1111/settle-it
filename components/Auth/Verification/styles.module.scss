@@ -23,10 +23,10 @@
 		gap: 16px;
 
 		&--otp {
-			justify-content: space-between;
+			justify-content: center;
 			border-radius: 10px;
 			border: 1px solid var(--theme-light-grey);
-			padding: 30px 30px 20px 30px;
+			padding: 30px 10px 20px 10px;
 
 			@include responsive(phone) {
 				padding: 20px 10px 10px 10px;
@@ -47,7 +47,7 @@
 	&-input--otp {
 		all: unset;
 		box-sizing: border-box;
-		width: 3rem;
+		width: 2.5rem;
 		text-align: center;
 		border-bottom: 2px solid #b3b9c4;
 		padding: 0 0 4px 0;
