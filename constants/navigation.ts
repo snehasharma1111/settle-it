@@ -41,9 +41,9 @@ const loggedInSideBarLinks: Array<Navigation> = [
 		route: routes.HOME,
 	},
 	{
-		title: "About",
-		icon: "info",
-		route: routes.ABOUT,
+		title: "Your Profile",
+		icon: "account_circle",
+		route: routes.PROFILE,
 	},
 	{
 		title: "Help",

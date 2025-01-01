@@ -29,6 +29,7 @@ export const Wrapper: React.FC<WrapperProps> = ({ children, user }) => {
 		routes.GROUP("[id]"),
 		routes.GROUP_SUMMARY("[id]"),
 		routes.GROUP_TRANSACTIONS("[id]"),
+		routes.PROFILE,
 	];
 	const pagesSupportingFooter: Array<string> = [
 		routes.ROOT,
@@ -40,6 +41,7 @@ export const Wrapper: React.FC<WrapperProps> = ({ children, user }) => {
 		routes.GROUP("[id]"),
 		routes.GROUP_SUMMARY("[id]"),
 		routes.GROUP_TRANSACTIONS("[id]"),
+		routes.PROFILE,
 	];
 
 	// only show router when route is changing
