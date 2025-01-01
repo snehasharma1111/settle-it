@@ -30,12 +30,14 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 	const router = useRouter();
 	const client = useHttpClient();
 	const [groupDetails, setGroupDetails] = useState<IGroup>(props.group);
-	const [activeTab, setActiveTab] = useState<"owed" | "summary">("owed");
 	const [expenditure, setExpenditure] = useState(0);
 	const [balances, setBalances] = useState<IBalancesSummary>({
 		owes: [],
 		balances: [],
 	});
+	const [activeTab, setActiveTab] = useState<"owed" | "summary">(
+		balances.owes.length > 0 ? "owed" : "summary"
+	);
 
 	const getGroupSummaryHelper = async () => {
 		try {
@@ -91,24 +93,26 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 							currency: "INR",
 						}).format(expenditure)}
 					</Typography>
-					<div className={classes("-tabs")}>
-						<button
-							className={classes("-tab", {
-								"-tab--active": activeTab === "owed",
-							})}
-							onClick={() => setActiveTab("owed")}
-						>
-							<Typography>Owed Amount</Typography>
-						</button>
-						<button
-							className={classes("-tab", {
-								"-tab--active": activeTab === "summary",
-							})}
-							onClick={() => setActiveTab("summary")}
-						>
-							<Typography>Summary</Typography>
-						</button>
-					</div>
+					{balances.owes.length > 0 ? (
+						<div className={classes("-tabs")}>
+							<button
+								className={classes("-tab", {
+									"-tab--active": activeTab === "owed",
+								})}
+								onClick={() => setActiveTab("owed")}
+							>
+								<Typography>Owed Amount</Typography>
+							</button>
+							<button
+								className={classes("-tab", {
+									"-tab--active": activeTab === "summary",
+								})}
+								onClick={() => setActiveTab("summary")}
+							>
+								<Typography>Summary</Typography>
+							</button>
+						</div>
+					) : null}
 					{activeTab === "owed" ? (
 						<OwedRecords
 							groupId={props.group?.id}

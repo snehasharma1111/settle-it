@@ -1,7 +1,7 @@
 import { authenticatedPage } from "@/client";
 import { fallbackAssets, routes } from "@/constants";
 import { useStore } from "@/hooks";
-import { Seo } from "@/layouts";
+import { Responsive, Seo } from "@/layouts";
 import { Avatar, Button, Input, Typography } from "@/library";
 import styles from "@/styles/pages/Profile.module.scss";
 import { IUser, ServerSideResult } from "@/types";
@@ -94,41 +94,79 @@ const ProfilePage: React.FC<IProfilePageProps> = (props) => {
 					/>
 				</div>
 				<form className={classes("-form")} onSubmit={handleSubmit}>
-					<Input
-						label="Name"
-						name="name"
-						type="text"
-						required
-						placeholder="Name"
-						value={fields.name}
-						onChange={handleChange}
-					/>
-					<Input
-						label="Phone"
-						name="phone"
-						type="tel"
-						required
-						placeholder="Phone"
-						value={fields.phone}
-						onChange={handleChange}
-					/>
-					<Input
-						label="Avatar"
-						name="avatar"
-						type="url"
-						required
-						placeholder="Avatar"
-						value={fields.avatar}
-						onChange={handleChange}
-					/>
-					<Button
-						type="submit"
-						loading={updating}
-						className={classes("-form-btn")}
-						size="large"
-					>
-						Save
-					</Button>
+					<Responsive.Row>
+						<Responsive.Col
+							xlg={50}
+							lg={50}
+							md={50}
+							sm={100}
+							xsm={100}
+							className={classes("-form-col")}
+						>
+							<Input
+								label="Name"
+								name="name"
+								type="text"
+								required
+								placeholder="Name"
+								value={fields.name}
+								onChange={handleChange}
+							/>
+						</Responsive.Col>
+						<Responsive.Col
+							xlg={50}
+							lg={50}
+							md={50}
+							sm={100}
+							xsm={100}
+							className={classes("-form-col")}
+						>
+							<Input
+								label="Phone"
+								name="phone"
+								type="tel"
+								required
+								placeholder="Phone"
+								value={fields.phone}
+								onChange={handleChange}
+							/>
+						</Responsive.Col>
+						<Responsive.Col
+							xlg={100}
+							lg={100}
+							md={100}
+							sm={100}
+							xsm={100}
+							className={classes("-form-col")}
+						>
+							<Input
+								label="Avatar"
+								name="avatar"
+								type="url"
+								required
+								placeholder="Avatar"
+								value={fields.avatar}
+								onChange={handleChange}
+							/>
+						</Responsive.Col>
+						<Responsive.Col
+							xlg={100}
+							lg={100}
+							md={100}
+							sm={100}
+							xsm={100}
+							className={classes("-form-col", "-form-col--btn")}
+						>
+							<Button
+								type="submit"
+								loading={updating}
+								className={classes("-form-btn")}
+								size="large"
+							>
+								Save
+							</Button>
+						</Responsive.Col>
+					</Responsive.Row>
 				</form>
 			</main>
 		</>

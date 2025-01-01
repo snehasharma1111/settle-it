@@ -20,10 +20,13 @@
 		width: 100%;
 		padding: 0 5%;
 		z-index: 5;
+		display: flex;
+		justify-content: center;
+		align-items: center;
 	}
 
 	&-form {
-		width: 50%;
+		width: 100%;
 		padding: 24px 5%;
 		display: flex;
 		justify-content: flex-start;
@@ -33,6 +36,10 @@
 
 		@include responsive(phone) {
 			width: 100%;
+		}
+
+		&-col {
+			padding: 12px;
 		}
 	}
 }
