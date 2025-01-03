@@ -7,9 +7,10 @@ type MaterialIconProps = React.HTMLAttributes<HTMLSpanElement> &
 
 export const MaterialIcon: React.FC<MaterialIconProps> = ({
 	icon,
+	className,
 	...rest
 }) => (
-	<span className="material-symbols-outlined" {...rest}>
+	<span className={`material-symbols-outlined ${className}`} {...rest}>
 		{icon}
 	</span>
 );

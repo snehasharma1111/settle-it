@@ -1,4 +1,4 @@
-import { Navigation } from "@/types";
+import { IGroup, Navigation } from "@/types";
 import { routes } from "./routes";
 
 const loggedOutSideBarLinks: Array<Navigation> = [
@@ -34,11 +34,16 @@ const loggedOutSideBarLinks: Array<Navigation> = [
 	},
 ];
 
-const loggedInSideBarLinks: Array<Navigation> = [
+const loggedInSideBarLinks = (groups: Array<IGroup>): Array<Navigation> => [
 	{
 		title: "My Groups",
-		icon: "group",
+		icon: "groups",
 		route: routes.HOME,
+		options: groups.map((group) => ({
+			title: group.name,
+			icon: "group",
+			route: routes.GROUP(group.id),
+		})),
 	},
 	{
 		title: "Your Profile",
@@ -67,5 +72,11 @@ const loggedInSideBarLinks: Array<Navigation> = [
 	},
 ];
 
-export const getSideBarLinks = (loggedIn: boolean) =>
-	loggedIn ? loggedInSideBarLinks : loggedOutSideBarLinks;
+export const getSideBarLinks = ({
+	loggedIn,
+	groups,
+}: {
+	loggedIn: boolean;
+	groups?: Array<IGroup>;
+}) =>
+	loggedIn && groups ? loggedInSideBarLinks(groups) : loggedOutSideBarLinks;

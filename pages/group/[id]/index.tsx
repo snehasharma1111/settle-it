@@ -137,7 +137,7 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 			}
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	}, [props.group.id]);
 
 	if (!props.group)
 		return <PageNotFound description={(props as any).error} />;

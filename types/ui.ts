@@ -5,4 +5,5 @@ export type Navigation = {
 	title: string;
 	icon: string;
 	route: string;
+	options?: Array<Omit<Navigation, "options">>;
 };
