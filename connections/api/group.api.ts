@@ -5,6 +5,7 @@ import {
 	IBalancesSummary,
 	IExpense,
 	IGroup,
+	IShare,
 	ITransaction,
 	UpdateGroupData,
 } from "@/types";
@@ -40,6 +41,7 @@ export class GroupApi {
 		ApiRes<{
 			expenditure: number;
 			balances: IBalancesSummary;
+			shares: Array<IShare>;
 		}>
 	> {
 		const response = await http.get(`/groups/${id}/summary`, { headers });

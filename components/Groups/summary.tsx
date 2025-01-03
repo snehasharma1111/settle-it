@@ -1,9 +1,9 @@
+import { fallbackAssets } from "@/constants";
 import { Avatar, Typography } from "@/library";
 import { IBalance } from "@/types";
 import { stylesConfig } from "@/utils";
 import React from "react";
 import styles from "./styles.module.scss";
-import { fallbackAssets } from "@/constants";
 
 interface IGroupSummaryProps {
 	data: Array<IBalance>;
