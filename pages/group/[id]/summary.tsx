@@ -104,35 +104,32 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 							currency: "INR",
 						}).format(expenditure)}
 					</Typography>
-					{balances.owes.length > 0 ? (
-						<div className={classes("-tabs")}>
-							<button
-								className={classes("-tab", {
-									"-tab--active":
-										activeTab === "contributions",
-								})}
-								onClick={() => setActiveTab("contributions")}
-							>
-								<Typography>Contributions</Typography>
-							</button>
-							<button
-								className={classes("-tab", {
-									"-tab--active": activeTab === "owed",
-								})}
-								onClick={() => setActiveTab("owed")}
-							>
-								<Typography>Owed Amount</Typography>
-							</button>
-							<button
-								className={classes("-tab", {
-									"-tab--active": activeTab === "summary",
-								})}
-								onClick={() => setActiveTab("summary")}
-							>
-								<Typography>Summary</Typography>
-							</button>
-						</div>
-					) : null}
+					<div className={classes("-tabs")}>
+						<button
+							className={classes("-tab", {
+								"-tab--active": activeTab === "contributions",
+							})}
+							onClick={() => setActiveTab("contributions")}
+						>
+							<Typography>Contributions</Typography>
+						</button>
+						<button
+							className={classes("-tab", {
+								"-tab--active": activeTab === "owed",
+							})}
+							onClick={() => setActiveTab("owed")}
+						>
+							<Typography>Owed Amount</Typography>
+						</button>
+						<button
+							className={classes("-tab", {
+								"-tab--active": activeTab === "summary",
+							})}
+							onClick={() => setActiveTab("summary")}
+						>
+							<Typography>Summary</Typography>
+						</button>
+					</div>
 					{activeTab === "contributions" ? (
 						<Contributions shares={shares} />
 					) : activeTab === "owed" ? (
