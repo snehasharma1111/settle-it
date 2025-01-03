@@ -16,7 +16,7 @@ const initialState: UiSlice = {
 	networkStatus: "online",
 	isLoggedIn: false,
 	isSyncing: false,
-	sideBarLinks: getSideBarLinks(false),
+	sideBarLinks: getSideBarLinks({ loggedIn: false }),
 };
 
 export const uiSlice = createSlice({

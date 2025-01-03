@@ -12,6 +12,7 @@ import {
 } from "@/context/slices";
 import { AppTheme, IUser } from "@/types";
 import { hexToRgb, notify } from "@/utils";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 export const useStore = () => {
@@ -52,7 +53,6 @@ export const useStore = () => {
 	const syncUserState = (user: IUser) => {
 		dispatch(userSlice.actions.setUser(user));
 		dispatch(uiSlice.actions.setIsLoggedIn(true));
-		dispatch(uiSlice.actions.setSideBarLinks(getSideBarLinks(true)));
 	};
 
 	const syncEverything = async () => {
@@ -90,6 +90,23 @@ export const useStore = () => {
 			syncUserState(user);
 		}
 	};
+
+	useEffect(() => {
+		if (user) {
+			dispatch(
+				uiSlice.actions.setSideBarLinks(
+					getSideBarLinks({ loggedIn: true, groups })
+				)
+			);
+		} else {
+			dispatch(
+				uiSlice.actions.setSideBarLinks(
+					getSideBarLinks({ loggedIn: false })
+				)
+			);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [groups, user]);
 
 	return {
 		// dispatch takes an action object and sends it to the store
