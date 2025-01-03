@@ -155,6 +155,7 @@
 	position: sticky;
 	top: 0;
 	left: 0;
+	z-index: 10;
 
 	@include theme(dark) {
 		background-color: #646e8a;
@@ -373,7 +374,8 @@
 }
 
 .group-owed-data,
-.group-summary {
+.group-summary,
+.group-contributions {
 	width: 100%;
 	display: flex;
 	justify-content: flex-start;
@@ -393,6 +395,7 @@
 		align-items: flex-start;
 		flex-direction: column;
 		gap: 8px;
+		overflow: hidden;
 
 		&-details {
 			display: flex;
@@ -472,24 +475,29 @@
 	gap: 24px;
 
 	&-bar {
+		--radius: 24px;
 		width: 100%;
 		aspect-ratio: 5 / 1;
-		border-radius: 24px;
+		border-radius: var(--radius);
 		display: flex;
 		justify-content: flex-start;
 		align-items: flex-start;
 		flex-wrap: nowrap;
+
+		@include responsive(phone) {
+			--radius: 12px;
+		}
 
 		&__item {
 			height: 100%;
 			position: relative;
 
 			&:first-child {
-				border-radius: 24px 0 0 24px;
+				border-radius: var(--radius) 0 0 var(--radius);
 			}
 
 			&:last-child {
-				border-radius: 0 24px 24px 0;
+				border-radius: 0 var(--radius) var(--radius) 0;
 			}
 
 			&:hover {
@@ -499,9 +507,9 @@
 
 			&--user {
 				position: absolute;
-				top: 100%;
+				bottom: 100%;
 				left: 50%;
-				transform: translateX(-50%) translateY(4px);
+				transform: translateX(-50%) translateY(-4px);
 				opacity: 0;
 				border-radius: 4px;
 				background-color: var(--back-shadow);
@@ -512,11 +520,21 @@
 				flex-direction: column;
 				gap: 2px;
 				text-align: center;
+				white-space: nowrap;
 			}
 
 			&:hover &--user {
 				opacity: 1;
 			}
 		}
+	}
+
+	&-cards {
+		width: 100%;
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
+		flex-direction: column;
+		gap: 24px;
 	}
 }
