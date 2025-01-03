@@ -13,6 +13,7 @@ export type GroupSlice = Array<IGroup>;
 export type UiSlice = {
 	vh: number;
 	theme: AppTheme;
+	accentColor: string;
 	isSidebarExpanded: boolean;
 	networkStatus: AppNetworkStatus;
 	isLoggedIn: boolean;

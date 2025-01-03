@@ -11,7 +11,7 @@ import {
 	userSlice,
 } from "@/context/slices";
 import { AppTheme, IUser } from "@/types";
-import { notify } from "@/utils";
+import { hexToRgb, notify } from "@/utils";
 import { useDispatch, useSelector } from "react-redux";
 
 export const useStore = () => {
@@ -34,6 +34,11 @@ export const useStore = () => {
 				dispatch(uiSlice.actions.setTheme("light"));
 			}
 		}
+		const accentColor = getComputedStyle(document.documentElement)
+			.getPropertyValue("--accent-color-heavy")
+			.trim();
+		const accentColorRgb = hexToRgb(accentColor);
+		dispatch(uiSlice.actions.setAccentColor(accentColorRgb));
 	};
 
 	const syncNetworkStatus = () => {

@@ -11,6 +11,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState: UiSlice = {
 	vh: 0,
 	theme: "light",
+	accentColor: "0, 0, 0",
 	isSidebarExpanded: true,
 	networkStatus: "online",
 	isLoggedIn: false,
@@ -75,6 +76,9 @@ export const uiSlice = createSlice({
 		setSideBarLinks: (state, action: Action<Array<Navigation>>) => {
 			state.sideBarLinks = action.payload;
 		},
+		setAccentColor: (state, action: Action<string>) => {
+			state.accentColor = action.payload;
+		},
 	},
 });
 
@@ -87,6 +91,7 @@ export const {
 	setIsLoggedIn,
 	setIsSyncing,
 	setSideBarLinks,
+	setAccentColor,
 } = uiSlice.actions;
 
 export default uiSlice.reducer;

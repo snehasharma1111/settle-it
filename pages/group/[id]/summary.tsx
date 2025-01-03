@@ -1,5 +1,6 @@
 import { authenticatedPage } from "@/client";
 import {
+	Contributions,
 	GroupMetaData,
 	GroupPlaceholder,
 	GroupSummary,
@@ -13,7 +14,13 @@ import { Seo } from "@/layouts";
 import { Typography } from "@/library";
 import PageNotFound from "@/pages/404";
 import styles from "@/styles/pages/Group.module.scss";
-import { IBalancesSummary, IGroup, IUser, ServerSideResult } from "@/types";
+import {
+	IBalancesSummary,
+	IGroup,
+	IShare,
+	IUser,
+	ServerSideResult,
+} from "@/types";
 import { getNonEmptyString, notify, stylesConfig } from "@/utils";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
@@ -25,6 +32,8 @@ type GroupPageProps = {
 	group: IGroup;
 };
 
+type GroupSummaryWindow = "owed" | "summary" | "contributions";
+
 const GroupPage: React.FC<GroupPageProps> = (props) => {
 	const { setUser, dispatch, groups } = useStore();
 	const router = useRouter();
@@ -35,7 +44,8 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 		owes: [],
 		balances: [],
 	});
-	const [activeTab, setActiveTab] = useState<"owed" | "summary">(
+	const [shares, setShares] = useState<Array<IShare>>([]);
+	const [activeTab, setActiveTab] = useState<GroupSummaryWindow>(
 		balances.owes.length > 0 ? "owed" : "summary"
 	);
 
@@ -48,6 +58,7 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 			);
 			setBalances(fetchedSummary.balances);
 			setExpenditure(fetchedSummary.expenditure);
+			setShares(fetchedSummary.shares);
 			if (fetchedSummary.balances.owes.length > 0) {
 				setActiveTab("owed");
 			} else {
@@ -97,6 +108,15 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 						<div className={classes("-tabs")}>
 							<button
 								className={classes("-tab", {
+									"-tab--active":
+										activeTab === "contributions",
+								})}
+								onClick={() => setActiveTab("contributions")}
+							>
+								<Typography>Contributions</Typography>
+							</button>
+							<button
+								className={classes("-tab", {
 									"-tab--active": activeTab === "owed",
 								})}
 								onClick={() => setActiveTab("owed")}
@@ -113,7 +133,9 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 							</button>
 						</div>
 					) : null}
-					{activeTab === "owed" ? (
+					{activeTab === "contributions" ? (
+						<Contributions shares={shares} />
+					) : activeTab === "owed" ? (
 						<OwedRecords
 							groupId={props.group?.id}
 							data={balances.owes}

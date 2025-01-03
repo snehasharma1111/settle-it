@@ -1,3 +1,4 @@
+export { default as Contributions } from "./contributions";
 export { default as CreateGroup } from "./create";
 export { default as GroupHome } from "./home";
 export { default as GroupInfo } from "./info";
