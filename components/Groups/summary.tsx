@@ -34,9 +34,9 @@ const GroupSummary: React.FC<IGroupSummaryProps> = ({ data }) => {
 							</Typography>
 							<Typography size="s">
 								{balance.gives > 0
-									? `owes ${balance.gives.toFixed(2)} in total`
+									? `gives ${balance.gives.toFixed(2)} in total`
 									: balance.gets > 0
-										? `owes ${balance.gets.toFixed(2)} in total`
+										? `gets ${balance.gets.toFixed(2)} in total`
 										: null}
 							</Typography>
 						</div>
