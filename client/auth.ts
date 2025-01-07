@@ -16,7 +16,7 @@ export const authenticatedPage: ServerSideAuthMiddleware = async (
 	try {
 		const headers = { cookie: req.headers.cookie };
 		const { data: user } = await AuthApi.verifyUserIfLoggedIn(headers);
-		if (user.name && user.phone) {
+		if (user.name) {
 			return onLoggedInAndOnboarded(user, headers);
 		} else {
 			return onLoggedInAndNotOnboarded(user, headers);
