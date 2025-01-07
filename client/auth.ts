@@ -10,7 +10,7 @@ export const authenticatedPage: ServerSideAuthMiddleware = async (
 	const { req } = context;
 	logger.debug("ssr cookies", req.headers.cookie, req.cookies);
 	const cookies = req.cookies;
-	if (!cookies.token) {
+	if (!cookies.accessToken && !cookies.refreshToken) {
 		return onLoggedOut();
 	}
 	try {
@@ -33,7 +33,7 @@ export const adminPage: ServerSideAdminMiddleware = async (
 ) => {
 	const { req } = context;
 	const cookies = req.cookies;
-	if (!cookies.token) {
+	if (!cookies.accessToken && !cookies.refreshToken) {
 		return onLoggedOut();
 	}
 	try {
