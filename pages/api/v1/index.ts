@@ -56,7 +56,7 @@ const getCookiesToSet = (endpoint: string, headers: any) => {
 			cookiesToSet.push({
 				name: "accessToken",
 				value: accessToken,
-				maxAge: 15 * 60 * 1000,
+				maxAge: 1 * 60 * 1000,
 			});
 		}
 		if (refreshToken) {
