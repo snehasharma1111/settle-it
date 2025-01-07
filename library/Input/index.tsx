@@ -2,7 +2,7 @@ import { stylesConfig } from "@/utils";
 import React, { useEffect, useRef, useState } from "react";
 import { FiChevronDown } from "react-icons/fi";
 import styles from "./styles.module.scss";
-import { InputDropdownOption, InputProps } from "./types";
+import { InputDropdownOption, InputProps, TextareaProps } from "./types";
 
 const classes = stylesConfig(styles, "input");
 
@@ -165,6 +165,39 @@ export const Input: React.FC<InputProps> = ({
 					</div>
 				) : null}
 			</div>
+		</div>
+	);
+};
+
+export const Textarea: React.FC<TextareaProps> = ({
+	label,
+	styles,
+	className,
+	style,
+	errorMessage,
+	...rest
+}) => {
+	return (
+		<div className={classes("") + ` ${className}`} style={styles?.box}>
+			{label ? (
+				<label className={classes("__label")} style={styles?.label}>
+					{label}
+				</label>
+			) : null}
+			<textarea
+				{...rest}
+				className={classes("__input")}
+				style={{
+					...styles?.input,
+					...style,
+				}}
+				onInvalid={(e) => {
+					e.currentTarget.setCustomValidity(errorMessage + "");
+				}}
+				onInput={(e) => {
+					e.currentTarget.setCustomValidity("");
+				}}
+			/>
 		</div>
 	);
 };

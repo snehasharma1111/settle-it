@@ -1,11 +1,11 @@
 import { fallbackAssets } from "@/constants";
 import { useStore } from "@/hooks";
 import { Responsive } from "@/layouts";
-import { Avatar, Avatars, Button, Input, Pane, Typography } from "@/library";
+import { Avatar, Button, Input, Pane } from "@/library";
 import { IUser, UpdateGroupData } from "@/types";
 import { stylesConfig } from "@/utils";
 import React, { useState } from "react";
-import { FiExternalLink, FiSave, FiTrash2 } from "react-icons/fi";
+import { FiSave, FiTrash2 } from "react-icons/fi";
 import Members from "./members";
 import styles from "./styles.module.scss";
 
@@ -56,7 +56,6 @@ const UpdateGroup: React.FC<IUpdateGroupProps> = ({
 		}
 		return [];
 	});
-	const [manageMembers, setManageMembers] = useState(false);
 	const handleChange = (e: any) => {
 		setFields({ ...fields, [e.target.name]: e.target.value });
 	};
@@ -76,207 +75,114 @@ const UpdateGroup: React.FC<IUpdateGroupProps> = ({
 	return (
 		<Pane onClose={onClose} className={classes("")} title="Update Group">
 			<form className={classes("-form")} onSubmit={handleSubmit}>
-				{manageMembers ? (
-					<Responsive.Row>
-						<Members
-							selectedMembers={selectedMembers}
-							setSelectedMembers={(users) =>
-								setSelectedMembers(users)
-							}
-							onSave={() => {
-								setFields({
-									...fields,
-									members: selectedMembers.map(
-										(user) => user.id
-									),
-								});
-								setManageMembers(false);
+				<Responsive.Row>
+					<Responsive.Col>
+						<div
+							className={classes("-banner")}
+							style={{
+								backgroundImage: `url(${fields.banner})`,
+							}}
+						>
+							<Avatar
+								src={fields.icon || fallbackAssets.groupIcon}
+								alt={fields.name}
+								className={classes("-banner__icon")}
+								fallback={fallbackAssets.groupIcon}
+								shape="square"
+								style={{
+									height: "80%",
+									width: "auto",
+								}}
+							/>
+						</div>
+					</Responsive.Col>
+					<Responsive.Col xlg={50} lg={50} md={50} sm={100} xsm={100}>
+						<Input
+							label="Name"
+							name="name"
+							type="text"
+							placeholder="Group Name. eg. Trip to NYC"
+							required
+							size="small"
+							value={fields.name}
+							onChange={handleChange}
+						/>
+					</Responsive.Col>
+					<Responsive.Col xlg={50} lg={50} md={50} sm={100} xsm={100}>
+						<Input
+							label="Icon URL (optional)"
+							name="icon"
+							placeholder="https://example.com/icon.png"
+							size="small"
+							value={fields.icon}
+							onChange={handleChange}
+						/>
+					</Responsive.Col>
+					<Responsive.Col xlg={50} lg={50} md={50} sm={100} xsm={100}>
+						<Input
+							label="Banner URL (optional)"
+							name="banner"
+							placeholder="https://example.com/banner.png"
+							size="small"
+							value={fields.banner}
+							onChange={handleChange}
+						/>
+					</Responsive.Col>
+					<Responsive.Col xlg={50} lg={50} md={50} sm={100} xsm={100}>
+						<Input
+							label="Type"
+							name="type"
+							size="small"
+							value={fields.type}
+							onChange={handleChange}
+							dropdown={{
+								enabled: true,
+								options: [
+									{
+										id: "Trip",
+										label: "Trip",
+										value: "Trip",
+									},
+									{
+										id: "Outing",
+										label: "Outing",
+										value: "Outing",
+									},
+									{
+										id: "Other",
+										label: "Other",
+										value: "Other",
+									},
+								],
+								onSelect(option) {
+									setFields({
+										...fields,
+										type: option.value,
+									});
+								},
 							}}
 						/>
-					</Responsive.Row>
-				) : (
-					<Responsive.Row>
-						<Responsive.Col>
-							<div
-								className={classes("-banner")}
-								style={{
-									backgroundImage: `url(${fields.banner})`,
-								}}
-							>
-								<Avatar
-									src={
-										fields.icon || fallbackAssets.groupIcon
-									}
-									alt={fields.name}
-									className={classes("-banner__icon")}
-									fallback={fallbackAssets.groupIcon}
-									shape="square"
-									style={{
-										height: "80%",
-										width: "auto",
-									}}
-								/>
-							</div>
-						</Responsive.Col>
-						<Responsive.Col
-							xlg={50}
-							lg={50}
-							md={50}
-							sm={100}
-							xsm={100}
-						>
-							<Input
-								label="Name"
-								name="name"
-								type="text"
-								placeholder="Group Name. eg. Trip to NYC"
-								required
-								size="small"
-								value={fields.name}
-								onChange={handleChange}
-							/>
-						</Responsive.Col>
-						<Responsive.Col
-							xlg={50}
-							lg={50}
-							md={50}
-							sm={100}
-							xsm={100}
-						>
-							<Input
-								label="Icon URL (optional)"
-								name="icon"
-								placeholder="https://example.com/icon.png"
-								size="small"
-								value={fields.icon}
-								onChange={handleChange}
-							/>
-						</Responsive.Col>
-						<Responsive.Col
-							xlg={50}
-							lg={50}
-							md={50}
-							sm={100}
-							xsm={100}
-						>
-							<Input
-								label="Banner URL (optional)"
-								name="banner"
-								placeholder="https://example.com/banner.png"
-								size="small"
-								value={fields.banner}
-								onChange={handleChange}
-							/>
-						</Responsive.Col>
-						<Responsive.Col
-							xlg={50}
-							lg={50}
-							md={50}
-							sm={100}
-							xsm={100}
-						>
-							<Input
-								label="Type"
-								name="type"
-								size="small"
-								value={fields.type}
-								onChange={handleChange}
-								dropdown={{
-									enabled: true,
-									options: [
-										{
-											id: "Trip",
-											label: "Trip",
-											value: "Trip",
-										},
-										{
-											id: "Outing",
-											label: "Outing",
-											value: "Outing",
-										},
-										{
-											id: "Other",
-											label: "Other",
-											value: "Other",
-										},
-									],
-									onSelect(option) {
-										setFields({
-											...fields,
-											type: option.value,
-										});
-									},
-								}}
-							/>
-						</Responsive.Col>
-						<Responsive.Col
-							xlg={100}
-							lg={100}
-							md={100}
-							sm={100}
-							xsm={100}
-							className={classes("-members-col", "-manage-col")}
-						>
-							<div
-								className={classes("-members-bar")}
-								onClick={() =>
-									setManageMembers((prev) => !prev)
-								}
-							>
-								<Typography size="s">Manage members</Typography>
-								<button
-									type="button"
-									onClick={() =>
-										setManageMembers((prev) => !prev)
-									}
-								>
-									<FiExternalLink />
-								</button>
-							</div>
-							{selectedMembers.length > 0 ? (
-								<div className={classes("-members-bar")}>
-									<Avatars stack={false} size={32}>
-										{selectedMembers.map((user) => ({
-											src:
-												user.avatar ||
-												fallbackAssets.avatar,
-											alt: user.name || "User",
-										}))}
-									</Avatars>
-								</div>
-							) : null}
-						</Responsive.Col>
-						{isLoggedInUserAuthorOfGroup ? (
-							<Responsive.Col
-								xlg={50}
-								lg={50}
-								md={50}
-								sm={50}
-								xsm={50}
-							>
-								<Button
-									className={classes("-submit")}
-									type="button"
-									theme="error"
-									variant="outlined"
-									loading={loading}
-									icon={<FiTrash2 />}
-									onClick={onDelete}
-								>
-									Delete Group
-								</Button>
-							</Responsive.Col>
-						) : (
-							<Responsive.Col
-								xlg={25}
-								lg={25}
-								md={25}
-								sm={0}
-								xsm={0}
-							>
-								<span />
-							</Responsive.Col>
-						)}
+					</Responsive.Col>
+					<Responsive.Col
+						xlg={100}
+						lg={100}
+						md={100}
+						sm={100}
+						xsm={100}
+						className={classes("-members-col", "-manage-col")}
+					>
+						<Members
+							selectedMembers={selectedMembers}
+							setSelectedMembers={(users) => {
+								setSelectedMembers(users);
+								setFields({
+									...fields,
+									members: users.map((user) => user.id),
+								});
+							}}
+						/>
+					</Responsive.Col>
+					{isLoggedInUserAuthorOfGroup ? (
 						<Responsive.Col
 							xlg={50}
 							lg={50}
@@ -285,27 +191,38 @@ const UpdateGroup: React.FC<IUpdateGroupProps> = ({
 							xsm={50}
 						>
 							<Button
-								className={classes("-submit")}
-								type="submit"
+								className={classes("-form-submit")}
+								type="button"
+								theme="error"
+								variant="outlined"
 								loading={loading}
-								icon={<FiSave />}
+								icon={<FiTrash2 />}
+								onClick={onDelete}
 							>
-								Update
+								Delete Group
 							</Button>
 						</Responsive.Col>
-						{isLoggedInUserAuthorOfGroup ? null : (
-							<Responsive.Col
-								xlg={25}
-								lg={25}
-								md={25}
-								sm={0}
-								xsm={0}
-							>
-								<span />
-							</Responsive.Col>
-						)}
-					</Responsive.Row>
-				)}
+					) : (
+						<Responsive.Col xlg={25} lg={25} md={25} sm={0} xsm={0}>
+							<span />
+						</Responsive.Col>
+					)}
+					<Responsive.Col xlg={50} lg={50} md={50} sm={50} xsm={50}>
+						<Button
+							className={classes("-form-submit")}
+							type="submit"
+							loading={loading}
+							icon={<FiSave />}
+						>
+							Update
+						</Button>
+					</Responsive.Col>
+					{isLoggedInUserAuthorOfGroup ? null : (
+						<Responsive.Col xlg={25} lg={25} md={25} sm={0} xsm={0}>
+							<span />
+						</Responsive.Col>
+					)}
+				</Responsive.Row>
 			</form>
 		</Pane>
 	);
