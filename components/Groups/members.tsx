@@ -8,6 +8,7 @@ import {
 	IconButton,
 	Input,
 	MaterialIcon,
+	Textarea,
 	Typography,
 } from "@/library";
 import { IUser } from "@/types";
@@ -21,6 +22,23 @@ interface MembersPlaceholderProps {
 	loading: boolean;
 	searchStr: string;
 	onInvited: (_: IUser) => void;
+}
+
+interface MembersBulkEditorProps {
+	selectedMembers: Array<IUser>;
+	setSelectedMembers: (_: Array<IUser>) => void;
+}
+
+interface MembersWindowProps {
+	selectedMembers: Array<IUser>;
+	setSelectedMembers: (_: Array<IUser>) => void;
+}
+
+interface MembersUserProps extends IUser {
+	index: number;
+	isSelected?: boolean;
+	onSelect?: () => void;
+	onRemove?: () => void;
 }
 
 const classes = stylesConfig(styles, "group-members");
@@ -100,18 +118,44 @@ const MembersPlaceholder: React.FC<MembersPlaceholderProps> = ({
 	}
 };
 
-interface MembersWindowProps {
-	selectedMembers: Array<IUser>;
-	setSelectedMembers: (_: Array<IUser>) => void;
-	// onSave: () => void;
-}
+const MembersBulkEditor: React.FC<MembersBulkEditorProps> = ({
+	selectedMembers,
+	setSelectedMembers,
+}) => {
+	const [editorEmails, debouncedEditorEmails, setEditorEmails] =
+		useDebounce<string>(
+			selectedMembers.map((user) => user.email).join(", "),
+			1000
+		);
+	const { call: bulkEditorCall } = useHttpClient<{
+		message: string;
+		users: Array<IUser>;
+	}>();
 
-interface MembersUserProps extends IUser {
-	index: number;
-	isSelected?: boolean;
-	onSelect?: () => void;
-	onRemove?: () => void;
-}
+	const handleSearchInBulkEditor = async (value: string) => {
+		const response = await bulkEditorCall(UserApi.searchInBulk, value);
+		if (response.message) {
+			notify.success(response.message);
+		}
+		setSelectedMembers(response.users);
+	};
+
+	useEffect(() => {
+		if (debouncedEditorEmails.length > 0)
+			handleSearchInBulkEditor(debouncedEditorEmails);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [debouncedEditorEmails]);
+
+	return (
+		<div className={classes("-bulk-editor")}>
+			<Textarea
+				type="text"
+				value={editorEmails}
+				onChange={(e: any) => setEditorEmails(e.target.value)}
+			/>
+		</div>
+	);
+};
 
 const MembersUser: React.FC<MembersUserProps> = ({
 	name,
@@ -158,6 +202,7 @@ const MembersWindow: React.FC<MembersWindowProps> = ({
 }) => {
 	const { user: loggedInUser } = useStore();
 	const [searchResults, setSearchResults] = useState<Array<IUser>>([]);
+	const [openBulkEditor, setOpenBulkEditor] = useState(false);
 	const { loading: searching, call: searchApiCall } = useHttpClient<
 		Array<IUser>
 	>([]);
@@ -200,19 +245,36 @@ const MembersWindow: React.FC<MembersWindowProps> = ({
 					Members
 				</Typography>
 				<div className={classes("-header-controls")}>
-					<Input
-						name="email"
-						placeholder="Search by email"
-						size="small"
-						value={searchStr}
-						onChange={(e: any) => setSearchStr(e.target.value)}
-					/>
+					{!openBulkEditor ? (
+						<Input
+							name="email"
+							placeholder="Search by email"
+							size="small"
+							value={searchStr}
+							onChange={(e: any) => setSearchStr(e.target.value)}
+						/>
+					) : null}
 					<IconButton
-						icon={<MaterialIcon icon="email" />}
+						icon={
+							<MaterialIcon
+								icon={openBulkEditor ? "list" : "email"}
+							/>
+						}
 						title="Bulk Editor"
+						type="button"
+						onClick={(e: any) => {
+							e.preventDefault();
+							setOpenBulkEditor((p) => !p);
+						}}
 					/>
 				</div>
 			</div>
+			{openBulkEditor ? (
+				<MembersBulkEditor
+					selectedMembers={selectedMembers}
+					setSelectedMembers={setSelectedMembers}
+				/>
+			) : null}
 			{debouncedSearchStr.length > 0 ? (
 				searching ? (
 					<Loader.Spinner />

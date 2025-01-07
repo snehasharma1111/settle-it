@@ -28,3 +28,15 @@ export interface InputProps
 	leftIcon?: React.ReactNode;
 	rightIcon?: React.ReactNode;
 }
+
+export interface TextareaProps
+	extends Omit<React.HTMLProps<HTMLTextAreaElement>, "size"> {
+	styles?: {
+		box?: React.CSSProperties;
+		label?: React.CSSProperties;
+		input?: React.CSSProperties;
+	};
+	label?: string | any;
+	error?: boolean;
+	errorMessage?: string;
+}

@@ -20,4 +20,13 @@ export class UserApi {
 		const response = await http.post("/users/invite", { email });
 		return response.data;
 	}
+	public static async searchInBulk(query: string): Promise<
+		ApiRes<{
+			users: Array<IUser>;
+			message: string;
+		}>
+	> {
+		const response = await http.post("/users/search/bulk", { query });
+		return response.data;
+	}
 }
