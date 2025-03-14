@@ -132,7 +132,9 @@ export const useHttpClient = <Type extends any = any>(
 	): Promise<T> => {
 		try {
 			setLoading(true);
-			const response = await dispatchToStore(callback(args)).unwrap();
+			const response = await dispatchToStore(
+				callback(args as U & undefined)
+			).unwrap();
 			if (response === null) throw new Error("No data found");
 			return response;
 		} catch (err) {
