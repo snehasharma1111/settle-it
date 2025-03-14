@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+import { enableDebugging } from "@/config";
 import { logsBaseUrl } from "@/constants/variables";
 import { LOG_LEVEL } from "@/types";
 
@@ -41,7 +42,9 @@ const log = (level: LOG_LEVEL, dir: string, ...messages: Array<any>) => {
 			console.error("\x1b[31m%s\x1b[0m", log);
 			break;
 		case "debug":
-			console.debug("\x1b[34m%s\x1b[0m", log);
+			if (enableDebugging) {
+				console.debug("\x1b[34m%s\x1b[0m", log);
+			}
 			break;
 		case "verbose":
 			console.log("\x1b[35m%s\x1b[0m", log);
