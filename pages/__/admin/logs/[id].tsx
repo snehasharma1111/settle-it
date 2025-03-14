@@ -1,7 +1,6 @@
 import { adminPage } from "@/client";
 import { AdminApi } from "@/connections";
 import { routes } from "@/constants";
-import { useStore } from "@/hooks";
 import { Button, Typography } from "@/library";
 import styles from "@/styles/pages/Admin.module.scss";
 import { IUser, ServerSideResult } from "@/types";
@@ -12,7 +11,7 @@ import {
 	saveFile,
 	stylesConfig,
 } from "@/utils";
-import React, { useEffect } from "react";
+import React from "react";
 import { FiDownload } from "react-icons/fi";
 
 type AdminPanelLogPageProps = {
@@ -24,12 +23,6 @@ type AdminPanelLogPageProps = {
 const classes = stylesConfig(styles, "admin");
 
 const AdminPanelLogPage: React.FC<AdminPanelLogPageProps> = (props) => {
-	const { user, setUser, dispatch } = useStore();
-
-	useEffect(() => {
-		if (!user) dispatch(setUser(props.user));
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
 	return props.content ? (
 		<main className={classes("")}>
 			<Typography size="xxl" weight="medium" as="h1">

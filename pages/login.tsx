@@ -11,7 +11,7 @@ import { IUser, ServerSideResult } from "@/types";
 import { notify, stylesConfig } from "@/utils";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 const classes = stylesConfig(styles, "auth");
 
@@ -77,10 +77,6 @@ const LoginPage: React.FC<LoginPageProps> = (props) => {
 			setUpdatingUserDetails(false);
 		}
 	};
-
-	useEffect(() => {
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [props.user]);
 
 	return (
 		<>

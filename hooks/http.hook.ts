@@ -126,13 +126,15 @@ export const useHttpClient = <Type extends any = any>(
 		}
 	};
 
-	const dispatch = async <T extends any, U extends any>(
+	const dispatch = async <T extends any, U extends any = undefined>(
 		callback: AsyncThunk<T, U, any>,
 		args: U
 	): Promise<T> => {
 		try {
 			setLoading(true);
-			const response = await dispatchToStore(callback(args)).unwrap();
+			const response = await dispatchToStore(
+				callback(args as U & undefined)
+			).unwrap();
 			if (response === null) throw new Error("No data found");
 			return response;
 		} catch (err) {

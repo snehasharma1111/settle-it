@@ -19,7 +19,7 @@ type GroupPageProps = {
 };
 
 const GroupPage: React.FC<GroupPageProps> = (props) => {
-	const { setUser, dispatch, groups } = useStore();
+	const { groups } = useStore();
 	const router = useRouter();
 	const client = useHttpClient();
 	const [groupDetails, setGroupDetails] = useState<IGroup>(props.group);
@@ -38,7 +38,6 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 	};
 
 	useEffect(() => {
-		dispatch(setUser(props.user));
 		getGroupTransactionsHelper();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);

@@ -35,7 +35,7 @@ type GroupPageProps = {
 type GroupSummaryWindow = "owed" | "summary" | "contributions";
 
 const GroupPage: React.FC<GroupPageProps> = (props) => {
-	const { setUser, dispatch, groups } = useStore();
+	const { groups } = useStore();
 	const router = useRouter();
 	const client = useHttpClient();
 	const [groupDetails, setGroupDetails] = useState<IGroup>(props.group);
@@ -70,7 +70,6 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 	};
 
 	useEffect(() => {
-		dispatch(setUser(props.user));
 		getGroupSummaryHelper();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);

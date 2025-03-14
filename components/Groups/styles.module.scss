@@ -151,20 +151,23 @@
 	}
 
 	&-left {
+		max-width: calc(100% - 92px);
 		display: flex;
 		justify-content: flex-start;
 		align-items: center;
-		flex: 0 0 auto;
+		gap: 16px;
+		flex: 0 1 auto;
 	}
 
 	&-info {
-		width: 100%;
+		width: calc(100% - 42px);
 		height: 100%;
 		display: flex;
 		justify-content: flex-start;
 		align-items: center;
 		gap: 16px;
 		cursor: pointer;
+		flex: 0 1 auto;
 		margin-right: auto;
 
 		@include responsive(phone) {
@@ -185,7 +188,6 @@
 	}
 
 	&-name {
-		width: 100%;
 		white-space: nowrap;
 		text-overflow: ellipsis;
 		overflow: hidden;
