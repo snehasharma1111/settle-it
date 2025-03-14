@@ -126,7 +126,7 @@ export const useHttpClient = <Type extends any = any>(
 		}
 	};
 
-	const dispatch = async <T extends any, U extends any>(
+	const dispatch = async <T extends any, U extends any = undefined>(
 		callback: AsyncThunk<T, U, any>,
 		args: U
 	): Promise<T> => {
