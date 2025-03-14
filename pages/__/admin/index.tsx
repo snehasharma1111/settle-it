@@ -2,7 +2,7 @@ import { adminPage } from "@/client";
 import { Loader } from "@/components";
 import { AdminApi } from "@/connections";
 import { fallbackAssets, routes } from "@/constants";
-import { useHttpClient, useStore } from "@/hooks";
+import { useHttpClient } from "@/hooks";
 import { Responsive, Seo } from "@/layouts";
 import { Avatar, Avatars, Button, Typography } from "@/library";
 import styles from "@/styles/pages/Admin.module.scss";
@@ -19,8 +19,7 @@ type AdminPanelProps = {
 
 const classes = stylesConfig(styles, "admin");
 
-const AdminPanel: React.FC<AdminPanelProps> = (props) => {
-	const { user, setUser, dispatch } = useStore();
+const AdminPanel: React.FC<AdminPanelProps> = () => {
 	const {
 		data: users,
 		call: callUsersApi,
@@ -33,7 +32,6 @@ const AdminPanel: React.FC<AdminPanelProps> = (props) => {
 	} = useHttpClient<Array<IGroup>>([]);
 
 	useEffect(() => {
-		if (!user) dispatch(setUser(props.user));
 		Promise.all([
 			callUsersApi(AdminApi.getAllUsers),
 			callGroupsApi(AdminApi.getAllGroups),

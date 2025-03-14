@@ -1,13 +1,12 @@
 import { adminPage } from "@/client";
 import { AdminApi } from "@/connections";
 import { routes } from "@/constants";
-import { useStore } from "@/hooks";
 import { Typography } from "@/library";
 import styles from "@/styles/pages/Admin.module.scss";
 import { IUser, ServerSideResult } from "@/types";
 import { copyToClipboard, stylesConfig } from "@/utils";
 import Link from "next/link";
-import React, { useEffect } from "react";
+import React from "react";
 
 type AdminPanelLogsProps = {
 	user: IUser;
@@ -17,12 +16,6 @@ type AdminPanelLogsProps = {
 const classes = stylesConfig(styles, "admin");
 
 const AdminPanelLogs: React.FC<AdminPanelLogsProps> = (props) => {
-	const { user, setUser, dispatch } = useStore();
-
-	useEffect(() => {
-		if (!user) dispatch(setUser(props.user));
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
 	return props.files ? (
 		<main className={classes("")}>
 			<Typography size="xxl" weight="medium" as="h1">

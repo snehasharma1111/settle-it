@@ -35,7 +35,6 @@ type GroupPageProps = {
 
 const GroupPage: React.FC<GroupPageProps> = (props) => {
 	const {
-		setUser,
 		dispatch,
 		updateGroup,
 		deleteGroup,
@@ -126,7 +125,6 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 	);
 
 	useEffect(() => {
-		dispatch(setUser(props.user));
 		getGroupExpensesHelper();
 		if (props.group) {
 			const group = groups.find((group) => group?.id === props.group?.id);

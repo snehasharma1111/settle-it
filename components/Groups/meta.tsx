@@ -180,27 +180,27 @@ const GroupPageMeta: React.FC<IGroupPageMetaProps> = ({
 					>
 						<MaterialIcon icon="chevron_left" />
 					</button>
-				</div>
-				<div
-					onClick={() => setOpenGroupInfo(true)}
-					className={classes("-info")}
-				>
-					<div className={classes("-icon")}>
-						<Avatar
-							src={group.icon || fallbackAssets.groupIcon}
-							fallback={fallbackAssets.groupIcon}
-							alt={group.name}
-							size={50}
-						/>
-					</div>
-					<Typography
-						size="xxl"
-						as="h2"
-						weight="medium"
-						className={classes("-name")}
+					<div
+						onClick={() => setOpenGroupInfo(true)}
+						className={classes("-info")}
 					>
-						{group.name}
-					</Typography>
+						<div className={classes("-icon")}>
+							<Avatar
+								src={group.icon || fallbackAssets.groupIcon}
+								fallback={fallbackAssets.groupIcon}
+								alt={group.name}
+								size={50}
+							/>
+						</div>
+						<Typography
+							size="xxl"
+							as="h2"
+							weight="medium"
+							className={classes("-name")}
+						>
+							{group.name}
+						</Typography>
+					</div>
 				</div>
 				<div className={classes("-right")}>
 					{onUpdate ? (

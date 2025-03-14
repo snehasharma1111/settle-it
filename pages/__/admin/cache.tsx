@@ -1,7 +1,7 @@
 import { adminPage } from "@/client";
 import { AdminApi } from "@/connections";
 import { routes } from "@/constants";
-import { useHttpClient, useStore } from "@/hooks";
+import { useHttpClient } from "@/hooks";
 import { Seo } from "@/layouts";
 import { Button, Table, Typography } from "@/library";
 import styles from "@/styles/pages/Admin.module.scss";
@@ -15,8 +15,7 @@ type AdminPanelCacheProps = {
 
 const classes = stylesConfig(styles, "admin");
 
-const AdminPanelCache: React.FC<AdminPanelCacheProps> = (props) => {
-	const { user, setUser, dispatch } = useStore();
+const AdminPanelCache: React.FC<AdminPanelCacheProps> = () => {
 	const { data: cacheData, call: getData } = useHttpClient();
 	const { loading: clearing, call: removeData } = useHttpClient();
 
@@ -33,7 +32,6 @@ const AdminPanelCache: React.FC<AdminPanelCacheProps> = (props) => {
 	};
 
 	useEffect(() => {
-		if (!user) dispatch(setUser(props.user));
 		getData(AdminApi.getAllCacheData);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);

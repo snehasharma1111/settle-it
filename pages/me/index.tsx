@@ -7,7 +7,7 @@ import styles from "@/styles/pages/Profile.module.scss";
 import { IUser, ServerSideResult } from "@/types";
 import { notify, stylesConfig } from "@/utils";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { FiArrowLeft, FiLogOut } from "react-icons/fi";
 
 const classes = stylesConfig(styles, "profile-page");
@@ -18,7 +18,7 @@ interface IProfilePageProps {
 
 const ProfilePage: React.FC<IProfilePageProps> = (props) => {
 	const router = useRouter();
-	const { dispatch, user, setUser, updateUser, logoutUser } = useStore();
+	const { dispatch, user, updateUser, logoutUser } = useStore();
 	const [updating, setUpdating] = useState(false);
 	const [fields, setFields] = useState({
 		name: user.name || props.user.name || "",
@@ -50,13 +50,6 @@ const ProfilePage: React.FC<IProfilePageProps> = (props) => {
 		await dispatch(logoutUser()).unwrap();
 		router.push(routes.LOGIN);
 	};
-
-	useEffect(() => {
-		if (!user) {
-			dispatch(setUser(props.user));
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
 
 	return (
 		<>
