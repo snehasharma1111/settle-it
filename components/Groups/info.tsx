@@ -1,9 +1,9 @@
 import { fallbackAssets, USER_STATUS } from "@/constants";
 import { Avatar, Pane, Typography } from "@/library";
 import { IGroup } from "@/types";
-import { stylesConfig } from "@/utils";
+import { copyToClipboard, stylesConfig } from "@/utils";
 import React from "react";
-import { FiSettings, FiX } from "react-icons/fi";
+import { FiCopy, FiSettings, FiX } from "react-icons/fi";
 import styles from "./styles.module.scss";
 
 interface IGroupInfoProps {
@@ -15,6 +15,12 @@ interface IGroupInfoProps {
 const classes = stylesConfig(styles, "group-info");
 
 const GroupInfo: React.FC<IGroupInfoProps> = ({ onClose, onUpdate, group }) => {
+	const copyMembers = () => {
+		const text = group.members
+			.map((m) => `${m.name || m.email.split("@")[0]} <${m.email}>`)
+			.join(", ");
+		copyToClipboard(text);
+	};
 	return (
 		<Pane
 			onClose={onClose}
@@ -59,6 +65,14 @@ const GroupInfo: React.FC<IGroupInfoProps> = ({ onClose, onUpdate, group }) => {
 						<Typography size="xxxl" as="h2" weight="medium">
 							{group.name}
 						</Typography>
+					</div>
+					<div className={classes("-title")}>
+						<Typography as="h2" size="xl" weight="medium">
+							Members
+						</Typography>
+						<button onClick={copyMembers}>
+							<FiCopy />
+						</button>
 					</div>
 					<div className={classes("-members")}>
 						{group.members.map((member) => (
