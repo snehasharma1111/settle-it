@@ -161,22 +161,24 @@ const CreateExpense: React.FC<ICreateExpenseProps> = ({
 							onChange={handleChange}
 						/>
 					</Responsive.Col>
-					<Responsive.Col
-						xlg={100}
-						lg={100}
-						md={100}
-						sm={100}
-						xsm={100}
-					>
-						<DistributionsBase
-							defaultMethod={distributionMethods.equal}
-							totalAmount={fields.amount}
-							members={members}
-							setMembers={(newMembers) => {
-								setMembers(newMembers);
-							}}
-						/>
-					</Responsive.Col>
+					{fields.amount > 0 ? (
+						<Responsive.Col
+							xlg={100}
+							lg={100}
+							md={100}
+							sm={100}
+							xsm={100}
+						>
+							<DistributionsBase
+								defaultMethod={distributionMethods.equal}
+								totalAmount={fields.amount}
+								members={members}
+								setMembers={(newMembers) => {
+									setMembers(newMembers);
+								}}
+							/>
+						</Responsive.Col>
+					) : null}
 				</Responsive.Row>
 				<Button
 					className={classes("-submit")}

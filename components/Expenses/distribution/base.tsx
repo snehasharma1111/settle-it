@@ -23,7 +23,9 @@ export const DistributionsBase: React.FC<IDistributionsBaseProps> = ({
 	members,
 	setMembers,
 }) => {
-	const [membersCount, setMembersCount] = useState(members.length);
+	const [membersCount, setMembersCount] = useState(
+		members.filter((m) => m.selected).length
+	);
 	const [method, setMethod] = useState<DistributionMethod>(
 		defaultMethod || distributionMethods.equal
 	);
