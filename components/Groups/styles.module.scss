@@ -426,6 +426,10 @@
 			border-radius: 12px;
 			background-color: var(--accent-color-300);
 			padding: 24px;
+
+			@include responsive(phone) {
+				padding: 12px;
+			}
 		}
 
 		&--sub {
@@ -481,7 +485,6 @@
 	justify-content: flex-start;
 	align-items: center;
 	flex-direction: column;
-	gap: 24px;
 
 	&-bar {
 		--radius: 24px;
@@ -540,11 +543,10 @@
 
 	&-cards {
 		width: 100%;
-		display: flex;
-		justify-content: flex-start;
-		align-items: center;
-		flex-direction: column;
-		gap: 24px;
+	}
+
+	&-person--col {
+		padding: 12px;
 	}
 }
 
