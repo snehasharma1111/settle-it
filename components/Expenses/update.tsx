@@ -3,7 +3,7 @@ import { useStore } from "@/hooks";
 import { Responsive } from "@/layouts";
 import { Button, Input, Pane } from "@/library";
 import { UpdateExpenseData } from "@/types";
-import { getNonNullValue, notify, stylesConfig } from "@/utils";
+import { getNonNullValue, getUserDetails, notify, stylesConfig } from "@/utils";
 import React, { useEffect, useState } from "react";
 import {
 	distributionMethods,
@@ -202,7 +202,7 @@ const UpdateExpense: React.FC<IUpdateExpenseProps> = ({
 									enabled: true,
 									options: group.members.map((user) => ({
 										id: user.id,
-										label: user.name || user.email,
+										label: getUserDetails(user).name || "",
 										value: user.id,
 									})),
 									onSelect(user) {

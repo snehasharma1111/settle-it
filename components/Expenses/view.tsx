@@ -1,10 +1,9 @@
 import { ExpenseApi, MemberApi } from "@/connections";
-import { fallbackAssets } from "@/constants";
 import { useStore } from "@/hooks";
 import { Responsive } from "@/layouts";
 import { Avatar, Button, Pane, Typography } from "@/library";
 import { IExpense, IMember } from "@/types";
-import { notify, roundOff, stylesConfig } from "@/utils";
+import { getUserDetails, notify, roundOff, stylesConfig } from "@/utils";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { IoCheckmarkOutline } from "react-icons/io5";
@@ -58,8 +57,8 @@ const ExpenseMember: React.FC<ExpenseMemberProps> = ({
 			})}
 		>
 			<Avatar
-				src={user.avatar || fallbackAssets.avatar}
-				alt={user.name || user.email}
+				src={getUserDetails(user).avatar || ""}
+				alt={getUserDetails(user).name || ""}
 				size={36}
 			/>
 			{(() => {
@@ -73,13 +72,13 @@ const ExpenseMember: React.FC<ExpenseMemberProps> = ({
 					if (owed === 0) {
 						return (
 							<Typography size="sm">
-								{`${user.name || user.email.slice(0, 7) + "..."} has paid ${roundOff(paid, 2)} to ${expense.paidBy.name || expense.paidBy.email.slice(0, 7) + "..."}`}
+								{`${getUserDetails(user).name} has paid ${roundOff(paid, 2)} to ${getUserDetails(expense.paidBy).name}`}
 							</Typography>
 						);
 					} else {
 						return (
 							<Typography size="sm">
-								{`${user.name || user.email.slice(0, 7) + "..."} owes ${roundOff(owed, 2)} to ${expense.paidBy.name || expense.paidBy.email.slice(0, 7) + "..."}`}
+								{`${getUserDetails(user).name} owes ${roundOff(owed, 2)} to ${getUserDetails(expense.paidBy).name}`}
 							</Typography>
 						);
 					}

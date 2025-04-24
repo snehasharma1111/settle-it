@@ -137,6 +137,7 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 						<OwedRecords
 							groupId={props.group?.id}
 							data={balances.owes}
+							sync={getGroupSummaryHelper}
 						/>
 					) : activeTab === "summary" ? (
 						<GroupSummary data={balances.balances} />

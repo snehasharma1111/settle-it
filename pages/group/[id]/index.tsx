@@ -43,6 +43,7 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 		setGroups,
 		expenses,
 		setExpenses,
+		syncEverything,
 	} = useStore();
 	const client = useHttpClient();
 	const router = useRouter();
@@ -100,6 +101,7 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 		try {
 			client.updateId("create");
 			const res = await client.dispatch(createExpense, data);
+			await syncEverything();
 			if (res) {
 				setOpenAddExpensePopup(false);
 			}

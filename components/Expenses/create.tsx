@@ -2,7 +2,7 @@ import { useStore } from "@/hooks";
 import { Responsive } from "@/layouts";
 import { Button, Input, Pane } from "@/library";
 import { CreateExpenseData } from "@/types";
-import { stylesConfig } from "@/utils";
+import { getUserDetails, stylesConfig } from "@/utils";
 import React, { useState } from "react";
 import {
 	distributionMethods,
@@ -123,7 +123,7 @@ const CreateExpense: React.FC<ICreateExpenseProps> = ({
 								enabled: true,
 								options: group.members.map((user) => ({
 									id: user.id,
-									label: user.name || user.email,
+									label: getUserDetails(user).name || "",
 									value: user.id,
 								})),
 								onSelect(user) {

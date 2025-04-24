@@ -1,9 +1,8 @@
-import { fallbackAssets } from "@/constants";
 import { useStore } from "@/hooks";
 import { Responsive } from "@/layouts";
 import { Avatar, Typography } from "@/library";
 import { IShare } from "@/types";
-import { stylesConfig } from "@/utils";
+import { getUserDetails, stylesConfig } from "@/utils";
 import React from "react";
 import styles from "./styles.module.scss";
 
@@ -32,8 +31,7 @@ const GroupContributions: React.FC<IGroupContributionsProps> = ({ shares }) => {
 								className={classes("-bar__item--user__name")}
 								size="s"
 							>
-								{share.user.name ||
-									share.user.email.slice(0, 7)}
+								{getUserDetails(share.user).name || ""}
 							</Typography>
 							<Typography
 								className={classes("-bar__item--user__share")}
@@ -73,17 +71,16 @@ const GroupContributions: React.FC<IGroupContributionsProps> = ({ shares }) => {
 							>
 								<Avatar
 									src={
-										record.user.avatar ||
-										fallbackAssets.avatar
+										getUserDetails(record.user).avatar || ""
 									}
-									alt={record.user.name || record.user.email}
+									alt={getUserDetails(record.user).name || ""}
 									size={56}
 								/>
 								<div
 									className={classes("-person-details__text")}
 								>
 									<Typography size="lg">
-										{record.user.name || record.user.email}
+										{getUserDetails(record.user).name || ""}
 									</Typography>
 									<Typography size="s">
 										{record.percentage.toFixed(2)}%
