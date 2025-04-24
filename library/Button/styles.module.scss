@@ -1,4 +1,5 @@
 @import "@/styles/config/mixins";
+@import "@/styles/config/animations";
 @import "@/styles/config/typography";
 
 .btn {
@@ -226,11 +227,5 @@
 		svg {
 			transform: translate(-50%, -50%) rotate(-90deg);
 		}
-	}
-}
-
-@keyframes spin {
-	100% {
-		transform: rotate(360deg);
 	}
 }
