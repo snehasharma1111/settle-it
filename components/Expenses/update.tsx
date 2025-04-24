@@ -3,7 +3,7 @@ import { useStore } from "@/hooks";
 import { Responsive } from "@/layouts";
 import { Button, Input, Pane } from "@/library";
 import { UpdateExpenseData } from "@/types";
-import { getNonNullValue, notify, stylesConfig } from "@/utils";
+import { getNonNullValue, getUserDetails, notify, stylesConfig } from "@/utils";
 import React, { useEffect, useState } from "react";
 import {
 	distributionMethods,
@@ -82,21 +82,23 @@ const UpdateExpense: React.FC<IUpdateExpenseProps> = ({
 					groupId,
 					expenseId: id,
 				});
-				setFields({
-					...fields,
-					members: res.data.map((member) => ({
-						userId: member.user.id,
-						amount: member.amount,
-					})),
-				});
-				setMembers(
-					res.data.map((member) => ({
-						...member.user,
-						selected: true,
-						amount: member.amount,
-						value: member.amount,
-					}))
-				);
+				const newMembers = res.data.map((member) => ({
+					...member.user,
+					selected: true,
+					amount: member.amount,
+					value: member.amount,
+				}));
+				const nonExpenseGroupMembers: Array<ExpenseUser> = group.members
+					.filter(
+						(m) => !newMembers.map((mem) => mem.id).includes(m.id)
+					)
+					.map((m) => ({
+						...m,
+						selected: false,
+						amount: 0,
+						value: 0,
+					}));
+				setMembers([...newMembers, ...nonExpenseGroupMembers]);
 			} catch (error) {
 				notify.error(error);
 			} finally {
@@ -200,7 +202,7 @@ const UpdateExpense: React.FC<IUpdateExpenseProps> = ({
 									enabled: true,
 									options: group.members.map((user) => ({
 										id: user.id,
-										label: user.name || user.email,
+										label: getUserDetails(user).name || "",
 										value: user.id,
 									})),
 									onSelect(user) {
@@ -247,22 +249,24 @@ const UpdateExpense: React.FC<IUpdateExpenseProps> = ({
 								onChange={handleChange}
 							/>
 						</Responsive.Col>
-						<Responsive.Col
-							xlg={100}
-							lg={100}
-							md={100}
-							sm={100}
-							xsm={100}
-						>
-							<DistributionsBase
-								defaultMethod={distributionMethods.custom}
-								totalAmount={fields.amount}
-								members={members}
-								setMembers={(newMembers) => {
-									setMembers(newMembers);
-								}}
-							/>
-						</Responsive.Col>
+						{fields.amount > 0 ? (
+							<Responsive.Col
+								xlg={100}
+								lg={100}
+								md={100}
+								sm={100}
+								xsm={100}
+							>
+								<DistributionsBase
+									defaultMethod={distributionMethods.custom}
+									totalAmount={fields.amount}
+									members={members}
+									setMembers={(newMembers) => {
+										setMembers(newMembers);
+									}}
+								/>
+							</Responsive.Col>
+						) : null}
 					</Responsive.Row>
 					<Button
 						className={classes("-submit")}

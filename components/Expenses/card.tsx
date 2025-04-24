@@ -20,7 +20,7 @@ const Expense: React.FC<IExpenseProps> = ({
 	amount,
 	group,
 }) => {
-	const { updateExpense, removeExpense } = useStore();
+	const { updateExpense, removeExpense, syncEverything } = useStore();
 	const client = useHttpClient();
 	const [openViewExpensePopup, setOpenViewExpensePopup] = useState(false);
 	const [openEditExpensePopup, setOpenEditExpensePopup] = useState(false);
@@ -35,6 +35,7 @@ const Expense: React.FC<IExpenseProps> = ({
 				expenseId: id,
 				data,
 			});
+			await syncEverything();
 			setOpenEditExpensePopup(false);
 			setOpenViewExpensePopup(true);
 		} catch (error) {
@@ -51,6 +52,7 @@ const Expense: React.FC<IExpenseProps> = ({
 				groupId: group.id,
 				expenseId: id,
 			});
+			await syncEverything();
 			setOpenEditExpensePopup(false);
 			setOpenViewExpensePopup(false);
 		} catch (error) {

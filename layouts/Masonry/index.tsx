@@ -11,6 +11,7 @@ interface IMasonry {
 	lg?: number;
 	xlg?: number;
 	children: React.ReactNode;
+	className?: string;
 }
 
 export const Masonry: React.FC<IMasonry> = ({
@@ -20,17 +21,22 @@ export const Masonry: React.FC<IMasonry> = ({
 	lg = 3,
 	xlg = 4,
 	children,
+	className = "",
 }) => {
 	return (
 		<div
-			className={classes(
-				"",
-				`-xsm-${xsm}`,
-				`-sm-${sm}`,
-				`-md-${md}`,
-				`-lg-${lg}`,
-				`-xlg-${xlg}`
-			)}
+			className={
+				classes(
+					"",
+					`-xsm-${xsm}`,
+					`-sm-${sm}`,
+					`-md-${md}`,
+					`-lg-${lg}`,
+					`-xlg-${xlg}`
+				) +
+				" " +
+				className
+			}
 		>
 			{React.Children.map(children, (child, index) => {
 				return (

@@ -112,14 +112,16 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 						>
 							<Typography>Contributions</Typography>
 						</button>
-						<button
-							className={classes("-tab", {
-								"-tab--active": activeTab === "owed",
-							})}
-							onClick={() => setActiveTab("owed")}
-						>
-							<Typography>Owed Amount</Typography>
-						</button>
+						{balances.owes.length > 0 ? (
+							<button
+								className={classes("-tab", {
+									"-tab--active": activeTab === "owed",
+								})}
+								onClick={() => setActiveTab("owed")}
+							>
+								<Typography>Owed Amount</Typography>
+							</button>
+						) : null}
 						<button
 							className={classes("-tab", {
 								"-tab--active": activeTab === "summary",
@@ -135,6 +137,7 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 						<OwedRecords
 							groupId={props.group?.id}
 							data={balances.owes}
+							sync={getGroupSummaryHelper}
 						/>
 					) : activeTab === "summary" ? (
 						<GroupSummary data={balances.balances} />

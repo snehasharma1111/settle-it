@@ -1,7 +1,6 @@
-import { fallbackAssets } from "@/constants";
 import { Avatar, Typography } from "@/library";
 import { IBalance } from "@/types";
-import { stylesConfig } from "@/utils";
+import { getUserDetails, stylesConfig } from "@/utils";
 import React from "react";
 import styles from "./styles.module.scss";
 
@@ -24,13 +23,13 @@ const GroupSummary: React.FC<IGroupSummaryProps> = ({ data }) => {
 				>
 					<div className={classes("-person-details")}>
 						<Avatar
-							src={balance.user.avatar || fallbackAssets.avatar}
-							alt={balance.user.name || balance.user.email}
+							src={getUserDetails(balance.user).avatar || ""}
+							alt={getUserDetails(balance.user).name || ""}
 							size={56}
 						/>
 						<div className={classes("-person-details__text")}>
 							<Typography size="lg">
-								{balance.user.name || balance.user.email}
+								{getUserDetails(balance.user).name || ""}
 							</Typography>
 							<Typography size="s">
 								{balance.gives > 0
@@ -52,9 +51,9 @@ const GroupSummary: React.FC<IGroupSummaryProps> = ({ data }) => {
 							size="sm"
 						>
 							{balance.gives > 0
-								? `${balance.user.name || balance.user.email} gives ${transaction.gives.toFixed(2)} to ${transaction.user.name || transaction.user.email}`
+								? `${getUserDetails(balance.user).name} gives ${transaction.gives.toFixed(2)} to ${getUserDetails(transaction.user).name}`
 								: balance.gets > 0
-									? `${balance.user.name || balance.user.email} gets ${transaction.gets.toFixed(2)} from ${transaction.user.name || transaction.user.email}`
+									? `${getUserDetails(balance.user).name} gets ${transaction.gets.toFixed(2)} from ${getUserDetails(transaction.user).name}`
 									: null}
 						</Typography>
 					))}

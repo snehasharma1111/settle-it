@@ -1,8 +1,8 @@
-import { fallbackAssets } from "@/constants";
 import { useStore } from "@/hooks";
+import { Responsive } from "@/layouts";
 import { Avatar, Typography } from "@/library";
 import { IShare } from "@/types";
-import { stylesConfig } from "@/utils";
+import { getUserDetails, stylesConfig } from "@/utils";
 import React from "react";
 import styles from "./styles.module.scss";
 
@@ -31,8 +31,7 @@ const GroupContributions: React.FC<IGroupContributionsProps> = ({ shares }) => {
 								className={classes("-bar__item--user__name")}
 								size="s"
 							>
-								{share.user.name ||
-									share.user.email.slice(0, 7)}
+								{getUserDetails(share.user).name || ""}
 							</Typography>
 							<Typography
 								className={classes("-bar__item--user__share")}
@@ -44,49 +43,60 @@ const GroupContributions: React.FC<IGroupContributionsProps> = ({ shares }) => {
 					</div>
 				))}
 			</div>
-			<div className={classes("-cards")}>
+			<Responsive.Row className={classes("-cards")}>
 				{shares.map((record, recId) => (
-					<div
+					<Responsive.Col
+						xlg={50}
+						lg={50}
+						md={50}
+						sm={100}
+						xsm={100}
 						key={`owed-record-person-${recId}`}
-						className={classes("-person", "-person--block")}
-						style={{
-							backgroundColor: `rgba(${accentColor}, ${record.opacity})`,
-						}}
+						className={classes("-person--col")}
 					>
 						<div
-							className={classes("-person-details")}
+							className={classes("-person", "-person--block")}
 							style={{
-								color:
-									record.opacity > 0.5 || theme === "dark"
-										? "var(--theme-white)"
-										: "var(--theme-black)",
+								backgroundColor: `rgba(${accentColor}, ${record.opacity})`,
 							}}
 						>
-							<Avatar
-								src={
-									record.user.avatar || fallbackAssets.avatar
-								}
-								alt={record.user.name || record.user.email}
-								size={56}
-							/>
-							<div className={classes("-person-details__text")}>
-								<Typography size="lg">
-									{record.user.name || record.user.email}
-								</Typography>
-								<Typography size="s">
-									{record.percentage.toFixed(2)}%
-								</Typography>
-								<Typography size="s">
-									{new Intl.NumberFormat("en-US", {
-										style: "currency",
-										currency: "INR",
-									}).format(record.amount)}
-								</Typography>
+							<div
+								className={classes("-person-details")}
+								style={{
+									color:
+										record.opacity > 0.5 || theme === "dark"
+											? "var(--theme-white)"
+											: "var(--theme-black)",
+								}}
+							>
+								<Avatar
+									src={
+										getUserDetails(record.user).avatar || ""
+									}
+									alt={getUserDetails(record.user).name || ""}
+									size={56}
+								/>
+								<div
+									className={classes("-person-details__text")}
+								>
+									<Typography size="lg">
+										{getUserDetails(record.user).name || ""}
+									</Typography>
+									<Typography size="s">
+										{record.percentage.toFixed(2)}%
+									</Typography>
+									<Typography size="s">
+										{new Intl.NumberFormat("en-US", {
+											style: "currency",
+											currency: "INR",
+										}).format(record.amount)}
+									</Typography>
+								</div>
 							</div>
 						</div>
-					</div>
+					</Responsive.Col>
 				))}
-			</div>
+			</Responsive.Row>
 		</div>
 	);
 };
