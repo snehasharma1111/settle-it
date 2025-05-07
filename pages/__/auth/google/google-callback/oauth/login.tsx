@@ -1,7 +1,7 @@
 import { AuthApi } from "@/connections";
 import { routes } from "@/constants";
 import { useStore } from "@/hooks";
-import { logger } from "@/log";
+import { Logger } from "@/log";
 import styles from "@/styles/pages/Auth.module.scss";
 import { genericParse, getNonEmptyString, notify, stylesConfig } from "@/utils";
 import Image from "next/image";
@@ -56,7 +56,7 @@ export const getServerSideProps = async (context: any) => {
 		const verificationRes = await AuthApi.verifyOAuthSignIn(code);
 		return { props: { token: verificationRes.data } };
 	} catch (error) {
-		logger.error(error);
+		Logger.error(error);
 		return {
 			redirect: {
 				destination: routes.HOME,

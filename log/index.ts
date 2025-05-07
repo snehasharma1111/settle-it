@@ -1,104 +1,125 @@
 /* eslint-disable no-console */
-import { enableDebugging } from "@/config";
-import { logsBaseUrl } from "@/constants/variables";
-import { LOG_LEVEL } from "@/types";
+import { enableDebugging, nodeEnv } from "@/config";
+import { serviceName } from "@/constants";
 
-// const writeToFile = (dir: string, log: string) => {
-// 	try {
-// 		const fs = require("fs");
-// 		const date = new Date();
-// 		if (!fs.existsSync(dir)) {
-// 			fs.mkdirSync(dir);
-// 		}
-// 		const fileName = `${dir}/${date.toISOString().slice(0, 10)}.log`;
-// 		fs.appendFileSync(fileName, log);
-// 	} catch {
-// 		console.info("Unable to write to log file");
-// 	}
-// };
+type LOG_LEVEL =
+	| "log"
+	| "info"
+	| "warn"
+	| "error"
+	| "debug"
+	| "verbose"
+	| "silly"
+	| "http";
 
-const log = (level: LOG_LEVEL, dir: string, ...messages: Array<any>) => {
-	const message = messages
-		.map((m) =>
-			typeof m === "string"
-				? m
-				: typeof m === "object"
-					? JSON.stringify(m)
-					: m
-		)
-		.map((m) => m.toString())
-		.join(" ");
-	const date = new Date();
-	const log = `[${date.toISOString()}] [${level.toUpperCase()}] ${message}\n`;
-	// writeToFile(dir, log);
-	switch (level) {
-		case "info":
-			console.info("\x1b[32m%s\x1b[37m", log);
-			break;
-		case "warn":
-			console.warn("\x1b[33m%s\x1b[0m", log);
-			break;
-		case "error":
-			console.error("\x1b[31m%s\x1b[0m", log);
-			break;
-		case "debug":
-			if (enableDebugging) {
-				console.debug("\x1b[34m%s\x1b[0m", log);
-			}
-			break;
-		case "verbose":
-			console.log("\x1b[35m%s\x1b[0m", log);
-			break;
-		case "silly":
-			console.log("\x1b[36m%s\x1b[0m", log);
-			break;
-		case "http":
-			console.log("\x1b[35m%s\x1b[0m", log);
-			break;
-		default:
-			console.log("\x1b[37m%s\x1b[0m", log);
-			break;
+export class Logger {
+	private static getTimestamp() {
+		const date = new Date();
+		return date.toISOString();
 	}
-};
-
-class Logger {
-	private readonly directory: string;
-
-	constructor(dir: string) {
-		this.directory = dir;
+	private static getLevel(level: LOG_LEVEL) {
+		return level.toUpperCase();
 	}
-
-	info(...messages: Array<any>) {
-		log("info", this.directory, messages);
+	private static getConsoleColor(level: LOG_LEVEL) {
+		switch (level) {
+			case "info":
+				return "\x1b[32m%s\x1b[37m";
+			case "warn":
+				return "\x1b[33m%s\x1b[0m";
+			case "error":
+				return "\x1b[31m%s\x1b[0m";
+			case "debug":
+				return "\x1b[34m%s\x1b[0m";
+			case "verbose":
+				return "\x1b[35m%s\x1b[0m";
+			case "silly":
+				return "\x1b[36m%s\x1b[0m";
+			case "http":
+				return "\x1b[35m%s\x1b[0m";
+			default:
+				return "\x1b[37m%s\x1b[0m";
+		}
 	}
-
-	warn(...messages: Array<any>) {
-		log("warn", this.directory, messages);
+	private static getConsoleMethod(level: LOG_LEVEL) {
+		switch (level) {
+			case "info":
+				return console.info;
+			case "warn":
+				return console.warn;
+			case "error":
+				return console.error;
+			case "debug":
+				return console.debug;
+			case "verbose":
+				return console.log;
+			case "silly":
+				return console.log;
+			case "http":
+				return console.log;
+			default:
+				return console.log;
+		}
 	}
-
-	error(...messages: Array<any>) {
-		log("error", this.directory, messages);
+	private static getMessage(...messages: Array<any>): string {
+		const message = messages
+			.map((m) => {
+				if (m === null) return "null";
+				if (m === undefined) return "undefined";
+				if (typeof m === "string") return `"${m}"`;
+				if (typeof m === "object") return JSON.stringify(m);
+				else return m;
+			})
+			.map((m) => m.toString());
+		return `${message}`;
 	}
-
-	debug(...messages: Array<any>) {
-		log("debug", this.directory, messages);
+	private static getMessageToLog(level: LOG_LEVEL, ...messages: Array<any>) {
+		const timestamp = Logger.getTimestamp();
+		const logLevel = Logger.getLevel(level);
+		const message = Logger.getMessage(...messages);
+		const service = `${serviceName}-${nodeEnv}`;
+		const messageToLog = `[${service}] [${timestamp}] [${logLevel}] [${message}]\n`;
+		return messageToLog;
 	}
-
-	verbose(...messages: Array<any>) {
-		log("verbose", this.directory, messages);
+	private static writeToConsole(level: LOG_LEVEL, message: string) {
+		const color = Logger.getConsoleColor(level);
+		const method = Logger.getConsoleMethod(level);
+		method(color, message);
 	}
+	private static logMessages = (level: LOG_LEVEL, messages: Array<any>) => {
+		const message = Logger.getMessageToLog(level, ...messages);
+		Logger.writeToConsole(level, message);
+	};
 
-	silly(...messages: Array<any>) {
-		log("silly", this.directory, messages);
-	}
-
-	http(...messages: Array<any>) {
-		log("http", this.directory, messages);
+	public static info(...messages: Array<any>) {
+		Logger.logMessages("info", messages);
 	}
 
-	log(...messages: Array<any>) {
-		log("log", this.directory, messages);
+	public static warn(...messages: Array<any>) {
+		Logger.logMessages("warn", messages);
+	}
+
+	public static error(...messages: Array<any>) {
+		Logger.logMessages("error", messages);
+	}
+
+	public static debug(...messages: Array<any>) {
+		if (!enableDebugging) return;
+		Logger.logMessages("debug", messages);
+	}
+
+	public static verbose(...messages: Array<any>) {
+		Logger.logMessages("verbose", messages);
+	}
+
+	public static silly(...messages: Array<any>) {
+		Logger.logMessages("silly", messages);
+	}
+
+	public static http(...messages: Array<any>) {
+		Logger.logMessages("http", messages);
+	}
+
+	public static log(...messages: Array<any>) {
+		Logger.logMessages("log", messages);
 	}
 }
-
-export const logger = new Logger(logsBaseUrl);

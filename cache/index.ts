@@ -1,5 +1,5 @@
 import { CHECK_INTERVAL, TTL_SECONDS } from "@/constants";
-import { logger } from "@/log";
+import { Logger } from "@/log";
 import { CacheParameter } from "@/types";
 import NodeCache from "node-cache";
 
@@ -52,10 +52,10 @@ class Cache {
 		) {
 			const cachedValue: any = this.cache.get(key);
 			if (cachedValue) {
-				logger.info(`Cache hit for ${key}`);
+				Logger.info(`Cache hit for ${key}`);
 				return cachedValue;
 			}
-			logger.info(`Cache miss for ${key}`);
+			Logger.info(`Cache miss for ${key}`);
 			const newValue = await callback();
 			this.set(key, newValue, TTL_SECONDS);
 			return newValue;

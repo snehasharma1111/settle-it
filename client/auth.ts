@@ -1,7 +1,7 @@
 import { cache, getCacheKey } from "@/cache";
 import { AuthApi } from "@/connections";
 import { admins, cacheParameter } from "@/constants";
-import { logger } from "@/log";
+import { Logger } from "@/log";
 import { ServerSideAdminMiddleware, ServerSideAuthMiddleware } from "@/types";
 
 export const authenticatedPage: ServerSideAuthMiddleware = async (
@@ -9,7 +9,7 @@ export const authenticatedPage: ServerSideAuthMiddleware = async (
 	{ onLoggedInAndNotOnboarded, onLoggedInAndOnboarded, onLoggedOut }
 ) => {
 	const { req } = context;
-	logger.debug("ssr cookies", req.headers.cookie, req.cookies);
+	Logger.debug("ssr cookies", req.headers.cookie, req.cookies);
 	const cookies = req.cookies;
 	if (!cookies.accessToken && !cookies.refreshToken) {
 		return onLoggedOut();
@@ -28,7 +28,7 @@ export const authenticatedPage: ServerSideAuthMiddleware = async (
 			return onLoggedInAndNotOnboarded(user, headers);
 		}
 	} catch (error: any) {
-		logger.error(error.message);
+		Logger.error(error.message);
 		return onLoggedOut();
 	}
 };
@@ -51,7 +51,7 @@ export const adminPage: ServerSideAdminMiddleware = async (
 			return onNonAdmin(user, headers);
 		}
 	} catch (error: any) {
-		logger.error(error.message);
+		Logger.error(error.message);
 		return onLoggedOut();
 	}
 };

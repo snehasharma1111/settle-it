@@ -1,5 +1,5 @@
 import { Input, Typography } from "@/library";
-import { logger } from "@/log";
+import { Logger } from "@/log";
 import { IUser } from "@/types";
 import { runningCase, stylesConfig } from "@/utils";
 import React, { useEffect, useState } from "react";
@@ -78,7 +78,7 @@ export const DistributionsBase: React.FC<IDistributionsBaseProps> = ({
 						membersCount,
 						totalAmount
 					);
-					logger.debug("new value after deselection", newValue);
+					Logger.debug("new value after deselection", newValue);
 					return {
 						...user,
 						selected: false,
@@ -100,7 +100,7 @@ export const DistributionsBase: React.FC<IDistributionsBaseProps> = ({
 
 	const handleMethodChange = (newMethod: DistributionMethod) => {
 		const oldMethod = method;
-		logger.debug(oldMethod, newMethod);
+		Logger.debug(oldMethod, newMethod);
 		const newMembers = members.map((member) => {
 			if (newMethod === distributionMethods.equal) {
 				if (member.selected) {
@@ -135,7 +135,7 @@ export const DistributionsBase: React.FC<IDistributionsBaseProps> = ({
 				}
 			}
 			const value = member.value;
-			logger.debug(value);
+			Logger.debug(value);
 			const amount = member.selected
 				? getAmount(value, oldMethod, membersCount, totalAmount)
 				: 0;
@@ -145,7 +145,7 @@ export const DistributionsBase: React.FC<IDistributionsBaseProps> = ({
 				membersCount,
 				totalAmount
 			);
-			logger.debug(amount, newValue);
+			Logger.debug(amount, newValue);
 			return {
 				...member,
 				value: newValue,
@@ -168,7 +168,7 @@ export const DistributionsBase: React.FC<IDistributionsBaseProps> = ({
 			membersCount,
 			totalAmount
 		);
-		logger.debug(amount, newValue);
+		Logger.debug(amount, newValue);
 		const newMembers = members.map((m) => {
 			if (!m.selected) return m;
 			if (m.id === member.id) {

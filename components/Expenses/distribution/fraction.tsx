@@ -1,5 +1,5 @@
 import { Input } from "@/library";
-import { logger } from "@/log";
+import { Logger } from "@/log";
 import { stylesConfig } from "@/utils";
 import { isValidFraction, safeValidation } from "@/validations";
 import React, { useEffect, useState } from "react";
@@ -33,9 +33,9 @@ export const FractionDistribution: React.FC<IFractionDistributionProps> = ({
 		}
 		const newFraction = newValue.join("/");
 		const newValidation = safeValidation(isValidFraction, newFraction);
-		logger.debug("newValue", newValue);
-		logger.debug("newFraction", newFraction);
-		logger.debug("newValidation", newValidation);
+		Logger.debug("newValue", newValue);
+		Logger.debug("newFraction", newFraction);
+		Logger.debug("newValidation", newValidation);
 		setIsValid(newValidation);
 		setValue(newValue);
 		onChange(newFraction);
