@@ -101,7 +101,7 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 		try {
 			client.updateId("create");
 			const res = await client.dispatch(createExpense, data);
-			await syncEverything();
+			syncEverything();
 			if (res) {
 				setOpenAddExpensePopup(false);
 			}
