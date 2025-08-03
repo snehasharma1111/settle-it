@@ -5,7 +5,7 @@ import { routes } from "@/constants";
 import { useStore } from "@/hooks";
 import { Seo } from "@/layouts";
 import { Typography } from "@/library";
-import { logger } from "@/log";
+import { Logger } from "@/log";
 import styles from "@/styles/pages/Auth.module.scss";
 import { IUser, ServerSideResult } from "@/types";
 import { notify, stylesConfig } from "@/utils";
@@ -37,7 +37,7 @@ const LoginPage: React.FC<LoginPageProps> = (props) => {
 			await AuthApi.requestOtpWithEmail(email);
 			setAuthFrame("otp-verification");
 		} catch (error: any) {
-			logger.error(error);
+			Logger.error(error);
 			notify.error(error);
 		} finally {
 			setRequestingOtp(false);
@@ -57,7 +57,7 @@ const LoginPage: React.FC<LoginPageProps> = (props) => {
 				setAuthFrame("onboarding");
 			}
 		} catch (error: any) {
-			logger.error(error);
+			Logger.error(error);
 			notify.error(error);
 		} finally {
 			setVerifyingOtp(false);
@@ -71,7 +71,7 @@ const LoginPage: React.FC<LoginPageProps> = (props) => {
 			setUser(res.data);
 			router.push(routes.HOME);
 		} catch (error: any) {
-			logger.error(error);
+			Logger.error(error);
 			notify.error(error);
 		} finally {
 			setUpdatingUserDetails(false);

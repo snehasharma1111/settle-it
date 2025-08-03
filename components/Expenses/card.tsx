@@ -2,7 +2,7 @@ import { UpdateExpense, ViewExpense } from "@/components";
 import { useConfirmationModal, useHttpClient, useStore } from "@/hooks";
 import { Typography } from "@/library";
 import { IExpense, UpdateExpenseData } from "@/types";
-import { notify, stylesConfig } from "@/utils";
+import { getUserDetails, notify, stylesConfig } from "@/utils";
 import moment from "moment";
 import React, { useState } from "react";
 import styles from "./styles.module.scss";
@@ -90,7 +90,7 @@ const Expense: React.FC<IExpenseProps> = ({
 				</Typography>
 				<Typography className={classes("-title")}>{title}</Typography>
 				<Typography className={classes("-amount")}>
-					{paidBy.name || paidBy.email.slice(0, 7) + "..."}
+					{getUserDetails(paidBy).name}
 					{" paid "}
 					{amount}
 				</Typography>

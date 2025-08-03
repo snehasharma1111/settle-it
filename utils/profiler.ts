@@ -1,4 +1,4 @@
-import { logger } from "@/log";
+import { Logger } from "@/log";
 
 /**
  * Profiles the execution time of a given function.
@@ -23,6 +23,6 @@ export const profiler = async <T extends (..._: any[]) => Promise<any>>(
 		str += ` ${prefixes.filter((s) => s.trim().length > 0).join(" ")}`;
 	}
 
-	logger.info(str, start.toISOString(), end.toISOString(), time);
+	Logger.info(str, start.toISOString(), end.toISOString(), time);
 	return result;
 };

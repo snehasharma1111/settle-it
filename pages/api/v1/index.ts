@@ -1,6 +1,6 @@
 import { server } from "@/connections";
 import { apiMethods, HTTP } from "@/constants";
-import { logger } from "@/log";
+import { Logger } from "@/log";
 import { ApiRequest, ApiResponse, T_API_METHODS } from "@/types";
 import { genericParse, getNonEmptyString } from "@/utils";
 import { NextApiHandler } from "next";
@@ -79,7 +79,7 @@ const handler: NextApiHandler = async (req: ApiRequest, res: ApiResponse) => {
 		);
 		const endpoint = getNonEmptyString(req.headers["x-endpoint"]);
 		const body = req.body || {};
-		logger.debug("proxy route", method, endpoint, body, headers);
+		Logger.debug("proxy route", method, endpoint, body, headers);
 		const response = await callApi(method, endpoint, body, { headers });
 		const cookiesToSet = getCookiesToSet(endpoint, response.headers);
 		if (cookiesToSet.length > 0) {
@@ -93,7 +93,7 @@ const handler: NextApiHandler = async (req: ApiRequest, res: ApiResponse) => {
 		}
 		return res.status(response.status).json(response.data);
 	} catch (err: any) {
-		logger.error(err);
+		Logger.error(err);
 		if (
 			[HTTP.status.UNAUTHORIZED, HTTP.status.FORBIDDEN].includes(
 				err?.response?.status

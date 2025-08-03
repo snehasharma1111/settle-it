@@ -65,7 +65,7 @@ const ExpenseMember: React.FC<ExpenseMemberProps> = ({
 				if (expense.paidBy.id === user.id) {
 					return (
 						<Typography size="sm">
-							{`${expense.paidBy.name || expense.paidBy.email.slice(0, 7) + "..."} paid ${roundOff(paid, 2)} for this expense`}
+							{`${getUserDetails(expense.paidBy).name} paid ${roundOff(paid, 2)} for this expense`}
 						</Typography>
 					);
 				} else {
