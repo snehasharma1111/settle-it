@@ -1,13 +1,11 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { IUser } from "./user";
 
-export interface ApiRequest extends NextApiRequest {
+export type ApiRequest<T = any> = Omit<NextApiRequest, "body"> & {
+	body: T;
 	user?: IUser;
-}
-
-export interface ApiResponse extends NextApiResponse {
-	user?: IUser;
-}
+};
+export type ApiResponse = NextApiResponse;
 
 export type ApiRes<T> = { message: string; data: T };
 
@@ -28,7 +26,7 @@ export type ApiControllers = {
 	DELETE?: any;
 };
 
-export type ApiController = (_: ApiRequest, __: ApiResponse) => any;
+export type ApiController = (_: ApiRequest, __: ApiResponse) => Promise<void>;
 
 export type ApiWrapperOptions = {
 	db?: boolean;

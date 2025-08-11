@@ -1,4 +1,4 @@
-type T_URL = "frontend" | "backend" | "server";
+type T_URL = "frontend" | "backend" | "db" | "server";
 type T_NODE_ENV = "development" | "production" | "test";
 
 export const url: Record<T_URL, string> = {
@@ -7,6 +7,7 @@ export const url: Record<T_URL, string> = {
 	backend:
 		process.env.NEXT_PUBLIC_BACKEND_BASE_URL || "http://localhost:3000",
 	server: process.env.NEXT_PUBLIC_SERVER_BASE_URL || "http://localhost:4000",
+	db: process.env.DB_URI || "mongodb://localhost:27017",
 };
 
 export const enableDebugging: boolean =

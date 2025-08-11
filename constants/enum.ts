@@ -15,16 +15,20 @@ export const apiMethods = getEnumeration<T_API_METHODS>([
 	"DELETE",
 ]);
 
-const message = {
+const message = Object.freeze({
 	SUCCESS: "Success",
 	ERROR: "Error",
 	NOT_FOUND: "Not Found",
 	BAD_REQUEST: "Bad Request",
-	UNAUTHORIZED: "Unauthorized",
+	UNAUTHORIZED: "Please login to continue",
 	FORBIDDEN: "Forbidden",
 	INTERNAL_SERVER_ERROR: "Internal Server Error",
 	SERVICE_UNAVAILABLE: "Service Unavailable",
-};
+	HEALTHY_API: "API is healthy",
+	HEALTHY_DB: "DB is healthy",
+	DB_CONNECTION_ERROR: "Unable to connect to database",
+	HEARTBEAT: "Heartbeat success",
+});
 
 const status = Object.freeze({
 	SUCCESS: 200,
