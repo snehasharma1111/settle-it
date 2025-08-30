@@ -8,6 +8,7 @@ export * from "./godown";
 export * from "./group";
 export * from "./log";
 export * from "./member";
+export * from "./parser";
 export * from "./server";
 export * from "./store";
 export * from "./ui";
