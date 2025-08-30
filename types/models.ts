@@ -45,15 +45,3 @@ export type Otp = {
 	createdAt: string;
 	updatedAt: string;
 };
-
-export type User = {
-	id: string;
-	name?: string;
-	email: string;
-	phone?: string;
-	avatar?: string;
-	status: T_USER_STATUS;
-	invitedBy?: string;
-	createdAt: string;
-	updatedAt: string;
-};

@@ -17,3 +17,9 @@ export const service = process.env.NEXT_PUBLIC_SERVICE || "balance-it";
 
 export const nodeEnv: T_NODE_ENV =
 	process.env.NODE_ENV || process.env.NEXT_PUBLIC_NODE_ENV || "production";
+
+export const jwtSecret = Object.freeze({
+	authRefresh: process.env.JWT_AUTH_REFRESH_SECRET || "",
+	authAccess: process.env.JWT_AUTH_ACCESS_SECRET || "",
+	oauthValidator: process.env.JWT_OAUTH_VALIDATOR_SECRET || "",
+});
