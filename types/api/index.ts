@@ -1,5 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { IUser } from "./user";
+import { IUser } from "../user";
+
+export * as ApiRequests from "./requests";
+export * as ApiResponses from "./responses";
 
 export type ApiRequest<T = any> = Omit<NextApiRequest, "body"> & {
 	body: T;
