@@ -9,6 +9,7 @@ export * from "./godown";
 export * from "./group";
 export * from "./log";
 export * from "./member";
+export * from "./models";
 export * from "./parser";
 export * from "./server";
 export * from "./seo";

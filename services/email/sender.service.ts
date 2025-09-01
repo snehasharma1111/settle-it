@@ -1,6 +1,6 @@
 import { createTransport } from "nodemailer";
 import { googleEmailConfig } from "@/config";
-import { T_EMAIL_TEMPLATE } from "@/types";
+import { EmailTemplateGenerator, T_EMAIL_TEMPLATE } from "@/types";
 import { getEmailTemplate } from "./template";
 import { AppSeo } from "@/constants";
 
@@ -41,11 +41,11 @@ export class EmailService {
 		});
 	}
 
-	public static async sendByTemplate(
+	public static async sendByTemplate<T extends T_EMAIL_TEMPLATE>(
 		to: string,
 		subject: string,
-		template: T_EMAIL_TEMPLATE,
-		data: any
+		template: T,
+		data: EmailTemplateGenerator<T>
 	) {
 		const html = getEmailTemplate(template, data);
 		return EmailService.send(to, subject, html);
