@@ -1,4 +1,4 @@
-import { cache, getCacheKey } from "@/cache";
+import { Cache } from "@/cache";
 import { AuthApi } from "@/connections";
 import { admins, cacheParameter } from "@/constants";
 import { Logger } from "@/log";
@@ -16,10 +16,10 @@ export const authenticatedPage: ServerSideAuthMiddleware = async (
 	}
 	try {
 		const headers = { cookie: req.headers.cookie };
-		const cacheKey = getCacheKey(cacheParameter.USER, {
-			token: cookies.accessToken,
+		const cacheKey = Cache.getKey(cacheParameter.USER, {
+			id: cookies.accessToken,
 		});
-		const { data: user } = await cache.fetch(cacheKey, () =>
+		const { data: user } = await Cache.fetch(cacheKey, () =>
 			AuthApi.verifyUserIfLoggedIn(headers)
 		);
 		if (user.name) {
