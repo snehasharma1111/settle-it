@@ -1,7 +1,7 @@
 import { ApiFailure, ApiSuccess } from "@/server";
-import { AuthService, OtpService } from "@/services";
+import { AuthService, OAuthService, OtpService } from "@/services";
 import { ApiRequest, ApiRequests, ApiResponse, ApiResponses } from "@/types";
-import { getNonEmptyString } from "@/utils";
+import { genericParse, getNonEmptyString } from "@/utils";
 import { HTTP } from "@/constants";
 
 export class AuthController {
@@ -53,6 +53,26 @@ export class AuthController {
 			: HTTP.status.SUCCESS;
 		return new ApiSuccess<ApiResponses.VerifyOtp>(res)
 			.status(responseStatus)
+			.cookies(cookies)
+			.data(user)
+			.send();
+	}
+	public static async verifyOAuthSignIn(
+		req: ApiRequest<ApiRequests.VerifyGoogleOAuth>,
+		res: ApiResponse
+	) {
+		const code = genericParse(getNonEmptyString, req.body.code);
+		const data = await OAuthService.verifyOAuthSignIn(code);
+		return new ApiSuccess<ApiResponses.VerifyGoogleOAuth>(res).send(data);
+	}
+	public static async continueOAuthWithGoogle(
+		req: ApiRequest<ApiRequests.ContinueGoogleOAuth>,
+		res: ApiResponse
+	) {
+		const validatorToken = genericParse(getNonEmptyString, req.body.token);
+		const { user, cookies } =
+			await OAuthService.continueOAuthWithGoogle(validatorToken);
+		return new ApiSuccess<ApiResponses.ContinueGoogleOAuth>(res)
 			.cookies(cookies)
 			.data(user)
 			.send();
