@@ -10,16 +10,16 @@ type CollectionUser = { name: string; email: string };
 
 export class UserService {
 	public static async getAllUsers(): Promise<Array<IUser>> {
-		const users = await userRepo.findAll();
-		return users;
+		return await userRepo.findAll();
 	}
+
 	public static async getUserById(id: string): Promise<IUser | null> {
-		const user = await Cache.fetch(
+		return await Cache.fetch(
 			Cache.getKey(cacheParameter.USER, { id }),
 			() => userRepo.findById(id)
 		);
-		return user;
 	}
+
 	public static async findOrCreateUser(
 		body: CreateModel<User>
 	): Promise<{ user: IUser; isNew: boolean }> {
@@ -31,17 +31,16 @@ export class UserService {
 		const createdUser = await userRepo.create(body);
 		return { user: createdUser, isNew: true };
 	}
+
 	public static async getUsersMapForUserIds(
 		userIds: string[]
 	): Promise<Map<string, IUser>> {
 		const res = await userRepo.find({ _id: { $in: userIds } });
 		if (!res) return new Map();
 		const parsedRes = res.map(getNonNullValue);
-		const usersMap = new Map<string, IUser>(
-			parsedRes.map((user) => [user.id, user])
-		);
-		return usersMap;
+		return new Map<string, IUser>(parsedRes.map((user) => [user.id, user]));
 	}
+
 	public static async getUserByEmail(email: string): Promise<IUser | null> {
 		try {
 			return await userRepo.findOne({ email });
@@ -49,6 +48,7 @@ export class UserService {
 			return null;
 		}
 	}
+
 	public static async searchByEmail(
 		emailQuery: string
 	): Promise<Array<IUser>> {
@@ -71,6 +71,7 @@ export class UserService {
 		if (!res) return [];
 		return res;
 	}
+
 	public static async updateUserDetails(
 		id: string,
 		update: Partial<IUser>
@@ -78,6 +79,12 @@ export class UserService {
 		const foundUser = await UserService.getUserById(id);
 		if (!foundUser) return null;
 		const keysToUpdate = ["name", "phone", "avatar"];
+		if (Object.keys(update).length == 0) {
+			throw new ApiError(
+				HTTP.status.BAD_REQUEST,
+				"There is nothing to update"
+			);
+		}
 		const updatedBody: any = {};
 		Object.keys(update).forEach((key) => {
 			if (keysToUpdate.includes(key)) {
@@ -112,16 +119,19 @@ export class UserService {
 		Cache.invalidate(Cache.getKey(cacheParameter.USER, { id }));
 		return updatedUser;
 	}
+
 	private static isValidEmail(email: string): boolean {
 		const emailRegex = /^[\w.%+-]+@[\w.-]+\.[a-zA-Z]{2,}$/;
 		return emailRegex.test(email);
 	}
+
 	private static capitalizeName(name: string): string {
 		return name
 			.split(/\s+/)
 			.map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
 			.join(" ");
 	}
+
 	private static getDistinctUsersFromCollection = (
 		users: Array<CollectionUser>
 	) => {
