@@ -1,4 +1,4 @@
-import { Model, T_USER_STATUS } from "@/types";
+import { Model, T_OTP_STATUS, T_USER_STATUS } from "@/types";
 import { ObjectId } from "mongoose";
 
 /**
@@ -35,6 +35,18 @@ export type User = Model<{
 	status: T_USER_STATUS;
 	invitedBy?: string;
 }>;
+
+/**
+ * Otp model
+ * @param {string} email - Email of the user
+ * @param {string} otp - Otp of the user
+ * @param {string} status - Status of the otp (Pending, Verified)
+ */
+export type Otp = {
+	email: string;
+	otp: string;
+	status: T_OTP_STATUS;
+};
 
 /**
  * Group model

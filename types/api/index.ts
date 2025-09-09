@@ -1,5 +1,5 @@
+import { IUser } from "@/types";
 import { NextApiRequest, NextApiResponse } from "next";
-import { IUser } from "../user";
 
 export * as ApiRequests from "./requests";
 export * as ApiResponses from "./responses";
