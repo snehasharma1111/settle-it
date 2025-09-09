@@ -5,6 +5,7 @@ import { BaseRepo } from "./base";
 
 class UserRepo extends BaseRepo<User, IUser> {
 	protected model = UserModel;
+
 	public async bulkCreate(
 		body: Array<CreateModel<User>>
 	): Promise<Array<IUser>> {

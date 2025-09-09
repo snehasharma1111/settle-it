@@ -1,4 +1,5 @@
 import { Model, T_USER_STATUS } from "@/types";
+import { ObjectId } from "mongoose";
 
 /**
  * AuthMapping model
@@ -33,4 +34,60 @@ export type User = Model<{
 	avatar?: string;
 	status: T_USER_STATUS;
 	invitedBy?: string;
+}>;
+
+/**
+ * Group model
+ * @param {string} name - Name of the group
+ * @param {string} icon - Icon of the group (optional)
+ * @param {string} banner - Banner of the group (optional)
+ * @param {string} type - Type of the group (optional)
+ * @param {string[]} members - Array of user ids (References User model)
+ * @param {string} createdBy - ID of the user who created the group (References User model)
+ */
+export type Group = Model<{
+	name: string;
+	icon?: string;
+	banner?: string;
+	type?: string;
+	members: string[];
+	createdBy: string | ObjectId;
+}>;
+
+/**
+ * Expense model
+ * @param {string} title - Title of the expense
+ * @param {number} amount - Amount of the expense
+ * @param {string} groupId - ID of the group (References Group model)
+ * @param {string} paidBy - ID of the user who paid the expense (References User model)
+ * @param {string} createdBy - ID of the user who created the expense (References User model)
+ * @param {string} description - Description of the expense (optional)
+ * @param {string} paidOn - Date when the expense was paid (optional)
+ */
+export type Expense = Model<{
+	title: string;
+	amount: number;
+	groupId: string | ObjectId;
+	paidBy: string | ObjectId;
+	createdBy: string | ObjectId;
+	description?: string;
+	paidOn?: string;
+}>;
+
+/**
+ * Member model
+ * @param {string} userId - ID of the user (References User model)
+ * @param {string} groupId - ID of the group (References Group model)
+ * @param {string} expenseId - ID of the expense (References Expense model)
+ * @param {number} amount - Amount of the expense
+ * @param {number} owed - Amount owed by the user
+ * @param {number} paid - Amount paid by the user
+ */
+export type Member = Model<{
+	userId: string;
+	groupId: string;
+	expenseId: string;
+	amount: number;
+	owed: number;
+	paid: number;
 }>;
