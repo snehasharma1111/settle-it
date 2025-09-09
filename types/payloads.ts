@@ -8,7 +8,9 @@ export type CachePayloadGenerator<T extends CacheParameter> = T extends
 	? { id: string }
 	: T extends "USER_GROUPS"
 		? { userId: string }
-		: never;
+		: T extends "GROUP_EXPENSES"
+			? { groupId: string }
+			: never;
 
 export type EmailTemplateGenerator<T extends T_EMAIL_TEMPLATE> = T extends "OTP"
 	? { otp: string }

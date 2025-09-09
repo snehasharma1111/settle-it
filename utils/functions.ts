@@ -301,3 +301,19 @@ export const hexToRgb = (hex: string): string => {
 		? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}`
 		: hex;
 };
+
+/**
+ * Checks if the given subset is a subset of the given superset.
+ * @example
+ * isSubset([1, 2], [1, 2, 3]) // true
+ * isSubset([1, 2, 4], [1, 2, 3]) // false
+ * @param {Array<T>} subset The subset to check.
+ * @param {Array<T>} superset The superset to check against.
+ * @returns {boolean} If the subset is a subset of the superset.
+ */
+export const isSubset = <T = any>(
+	subset: Array<T>,
+	superset: Array<T>
+): boolean => {
+	return subset.every((value) => superset.includes(value));
+};

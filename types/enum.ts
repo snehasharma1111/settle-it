@@ -13,4 +13,5 @@ export type CacheParameter =
 	| "EXPENSE"
 	| "GROUP"
 	| "MEMBER"
-	| "USER_GROUPS";
+	| "USER_GROUPS"
+	| "GROUP_EXPENSES";
