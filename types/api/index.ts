@@ -1,4 +1,4 @@
-import { IUser } from "@/types";
+import { IGroup, IUser } from "@/types";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export * as ApiRequests from "./requests";
@@ -7,6 +7,7 @@ export * as ApiResponses from "./responses";
 export type ApiRequest<T = any> = Omit<NextApiRequest, "body"> & {
 	body: T;
 	user?: IUser;
+	group?: IGroup;
 };
 export type ApiResponse = NextApiResponse;
 

@@ -1,4 +1,4 @@
-import { IUser } from "@/types";
+import { CreateGroupData, IUser, UpdateGroupData } from "@/types";
 
 // Auth
 export type VerifyGoogleOAuth = { code: string };
@@ -10,3 +10,9 @@ export type Logout = null;
 
 // User
 export type UpdateUser = Partial<IUser>;
+
+// Group
+export type CreateGroup = CreateGroupData;
+export type UpdateGroup = UpdateGroupData;
+export type DeleteGroup = { id: string };
+export type AddMembers = { members: string[] };

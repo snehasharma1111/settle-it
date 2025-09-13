@@ -431,16 +431,16 @@ export class ExpenseService {
 		return MemberService.getMembersOfExpense(foundMember.expense.id);
 	}
 	public static async settleMemberInExpense({
-		expenseId,
 		memberId,
 		loggedInUserId,
 	}: {
-		expenseId: string;
 		memberId: string;
 		loggedInUserId: string;
 	}) {
-		const foundExpense = await ExpenseService.getExpenseById(expenseId);
-		if (!foundExpense) throw new Error("Expense not found");
+		const foundMember = await memberRepo.findById(memberId);
+		if (!foundMember) throw new Error("Member not found");
+		const foundExpense = foundMember.expense;
+		const expenseId = foundExpense.id;
 		if (foundExpense.paidBy.id !== loggedInUserId) {
 			throw new ApiError(
 				HTTP.status.FORBIDDEN,
@@ -461,6 +461,6 @@ export class ExpenseService {
 		Cache.invalidate(
 			Cache.getKey(cacheParameter.EXPENSE, { id: foundExpense.id })
 		);
-		return settledMember;
+		return await MemberService.getMembersOfExpense(expenseId);
 	}
 }
