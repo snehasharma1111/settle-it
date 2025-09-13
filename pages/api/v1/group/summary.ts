@@ -3,7 +3,7 @@ import { GroupController } from "@/controllers";
 
 const apiRoute = new ApiRoute(
 	{ GET: GroupController.getBalancesSummary },
-	{ db: true, auth: true }
+	{ db: true, auth: true, groupMember: true }
 );
 
 export default apiRoute.getHandler();

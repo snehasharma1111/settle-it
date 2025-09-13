@@ -8,7 +8,7 @@ const apiRoute = new ApiRoute(
 		PATCH: GroupController.updateGroupDetails,
 		DELETE: GroupController.deleteGroup,
 	},
-	{ db: true, auth: true }
+	{ db: true, auth: true, groupMember: true }
 );
 
 export default apiRoute.getHandler();

@@ -20,6 +20,7 @@ export class ApiRoute {
 	private readonly useDatabase: boolean = false;
 	private readonly isAdmin: boolean = false;
 	private readonly isAuthenticated: boolean = false;
+	private readonly isGroupMember: boolean = false;
 	private dbContainer: DbContainer;
 
 	// API Controllers
@@ -43,7 +44,7 @@ export class ApiRoute {
 	 */
 	constructor(
 		{ GET, POST, PUT, PATCH, DELETE }: ApiControllers,
-		{ db, auth, admin }: ApiWrapperOptions = {}
+		{ db, auth, admin, groupMember }: ApiWrapperOptions = {}
 	) {
 		this.allowedMethods = [];
 		this.dbContainer = DatabaseManager.createContainer(dbUri);
@@ -58,7 +59,14 @@ export class ApiRoute {
 
 		if (admin === true) {
 			this.useDatabase = true;
+			this.isAuthenticated = true;
 			this.isAdmin = true;
+		}
+
+		if (groupMember === true) {
+			this.useDatabase = true;
+			this.isAuthenticated = true;
+			this.isGroupMember = true;
 		}
 
 		if (GET) {
@@ -96,7 +104,13 @@ export class ApiRoute {
 	private wrapper(controller: ApiController): ApiController {
 		// controller = ServerMiddleware.responseBodyPopulator(controller);
 		if (this.isAdmin) {
-			return ServerMiddleware.adminRoute(controller);
+			return ServerMiddleware.adminRoute(
+				ServerMiddleware.authenticatedRoute(controller)
+			);
+		} else if (this.isGroupMember) {
+			return ServerMiddleware.isGroupMember(
+				ServerMiddleware.authenticatedRoute(controller)
+			);
 		} else if (this.isAuthenticated) {
 			return ServerMiddleware.authenticatedRoute(controller);
 		} else {

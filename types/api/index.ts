@@ -36,6 +36,7 @@ export type ApiWrapperOptions = {
 	db?: boolean;
 	auth?: boolean;
 	admin?: boolean;
+	groupMember?: boolean;
 };
 
 export type T_API_METHODS = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";

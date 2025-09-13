@@ -1,8 +1,13 @@
 import { admins, AuthConstants, HTTP } from "@/constants";
 import { Logger } from "@/log";
-import { AuthService } from "@/services";
+import { AuthService, GroupService } from "@/services";
 import { ApiController, ApiRequest, ApiResponse } from "@/types";
-import { genericParse, getNonEmptyString } from "@/utils";
+import {
+	genericParse,
+	getNonEmptyString,
+	getSearchParam,
+	safeParse,
+} from "@/utils";
 import { ApiFailure, ApiSuccess } from "./payload";
 
 export class ServerMiddleware {
@@ -72,6 +77,7 @@ export class ServerMiddleware {
 			}
 		};
 	}
+
 	public static adminRoute(next: ApiController): ApiController {
 		return async (req: ApiRequest, res: ApiResponse) => {
 			try {
@@ -87,6 +93,53 @@ export class ServerMiddleware {
 						.json({ message: "You are not an admin" });
 				}
 				req.user = loggedInUser;
+				return next(req, res);
+			} catch (error) {
+				Logger.error(error);
+				return new ApiFailure(res)
+					.status(HTTP.status.FORBIDDEN)
+					.message(HTTP.message.FORBIDDEN)
+					.send();
+			}
+		};
+	}
+
+	public static isGroupMember(next: ApiController): ApiController {
+		return async (req: ApiRequest, res: ApiResponse) => {
+			try {
+				const loggedInUser = req.user;
+				if (!loggedInUser) {
+					return new ApiFailure(res)
+						.status(HTTP.status.UNAUTHORIZED)
+						.message(HTTP.message.UNAUTHORIZED)
+						.send();
+				}
+				let groupId = safeParse(
+					getNonEmptyString,
+					getSearchParam(req.url, "groupId")
+				);
+				if (groupId == null) {
+					groupId = safeParse(
+						getNonEmptyString,
+						getSearchParam(req.url, "id")
+					);
+				}
+				if (groupId == null) {
+					return new ApiFailure(res)
+						.status(HTTP.status.BAD_REQUEST)
+						.message("Group ID is required")
+						.send();
+				}
+				const group = await GroupService.getGroupDetailsForUser(
+					loggedInUser.id,
+					groupId
+				);
+				if (!group) {
+					return res.status(HTTP.status.FORBIDDEN).json({
+						message: "You are not a member of this group",
+					});
+				}
+				req.group = group;
 				return next(req, res);
 			} catch (error) {
 				Logger.error(error);

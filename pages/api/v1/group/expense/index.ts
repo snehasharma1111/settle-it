@@ -7,7 +7,7 @@ const apiRoute = new ApiRoute(
 		PATCH: ExpenseController.updateExpense,
 		DELETE: ExpenseController.removeExpense,
 	},
-	{ db: true, auth: true }
+	{ db: true, auth: true, groupMember: true }
 );
 
 export default apiRoute.getHandler();
