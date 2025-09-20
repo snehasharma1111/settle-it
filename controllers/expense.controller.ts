@@ -48,7 +48,7 @@ export class ExpenseController {
 		const loggedInUserId = genericParse(getNonEmptyString, req.user?.id);
 		const expenseId = genericParse(
 			getNonEmptyString,
-			getSearchParam(req.url, "id")
+			getSearchParam(req.url, "expenseId")
 		);
 		const title = safeParse(getNonEmptyString, req.body.title);
 		const amount = safeParse(getNonNegativeNumber, req.body.amount);
@@ -82,7 +82,7 @@ export class ExpenseController {
 		const loggedInUserId = genericParse(getNonEmptyString, req.user?.id);
 		const expenseId = genericParse(
 			getNonEmptyString,
-			getSearchParam(req.url, "id")
+			getSearchParam(req.url, "expenseId")
 		);
 		const removedExpense = await ExpenseService.removeExpense({
 			expenseId,
@@ -97,7 +97,7 @@ export class ExpenseController {
 		const loggedInUserId = genericParse(getNonEmptyString, req.user?.id);
 		const expenseId = genericParse(
 			getNonEmptyString,
-			getSearchParam(req.url, "id")
+			getSearchParam(req.url, "expenseId")
 		);
 		const updatedMembersInfo = await ExpenseService.settleExpense({
 			expenseId,
@@ -111,7 +111,7 @@ export class ExpenseController {
 		const loggedInUserId = genericParse(getNonEmptyString, req.user?.id);
 		const memberId = genericParse(
 			getNonEmptyString,
-			getSearchParam(req.url, "id")
+			getSearchParam(req.url, "expenseId")
 		);
 		const paidAmount = genericParse(
 			getNonNegativeNumber,

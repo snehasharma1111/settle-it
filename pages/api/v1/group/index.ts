@@ -4,7 +4,6 @@ import { GroupController } from "@/controllers";
 const apiRoute = new ApiRoute(
 	{
 		GET: GroupController.getGroupDetails,
-		POST: GroupController.createGroup,
 		PATCH: GroupController.updateGroupDetails,
 		DELETE: GroupController.deleteGroup,
 	},

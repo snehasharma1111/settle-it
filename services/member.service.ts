@@ -6,12 +6,18 @@ import { IBalancesSummary, IMember } from "@/types";
 import { ExpenseService } from "./expense.service";
 import { GroupService } from "./group.service";
 import { UserService } from "./user.service";
+import { Logger } from "@/log";
 
 export class MemberService {
 	public static async getMembersOfExpense(
 		expenseId: string
 	): Promise<Array<IMember>> {
 		const foundExpense = await ExpenseService.getExpenseById(expenseId);
+		Logger.debug(
+			"getMembersOfExpense -> expenseId, foundExpense",
+			expenseId,
+			foundExpense
+		);
 		if (!foundExpense)
 			throw new ApiError(HTTP.status.NOT_FOUND, "Expense not found");
 		const foundMembers = await memberRepo.find({ expenseId });

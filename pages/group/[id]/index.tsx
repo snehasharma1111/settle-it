@@ -25,6 +25,7 @@ import { getNonEmptyString, notify, stylesConfig } from "@/utils";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { FiPlus } from "react-icons/fi";
+import { Logger } from "@/log";
 
 const classes = stylesConfig(styles, "group");
 
@@ -137,7 +138,7 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 			}
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [props.group.id]);
+	}, [props?.group?.id]);
 
 	if (!props.group)
 		return <PageNotFound description={(props as any).error} />;
@@ -231,7 +232,7 @@ export const getServerSideProps = (
 			} catch (error: any) {
 				return {
 					props: {
-						error: error.response.data.message,
+						error: error?.response?.data?.message || error?.message,
 					},
 				};
 			}

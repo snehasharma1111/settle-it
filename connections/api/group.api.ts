@@ -22,7 +22,7 @@ export class GroupApi {
 		id: string,
 		headers?: any
 	): Promise<ApiRes<IGroup>> {
-		const response = await http.get(`/groups/${id}`, { headers });
+		const response = await http.get(`/group?id=${id}`, { headers });
 		return response.data;
 	}
 
@@ -30,7 +30,9 @@ export class GroupApi {
 		id: string,
 		headers?: any
 	): Promise<ApiRes<Array<IExpense>>> {
-		const response = await http.get(`/groups/${id}/expenses`, { headers });
+		const response = await http.get(`/group/expenses?groupId=${id}`, {
+			headers,
+		});
 		return response.data;
 	}
 
@@ -44,7 +46,9 @@ export class GroupApi {
 			shares: Array<IShare>;
 		}>
 	> {
-		const response = await http.get(`/groups/${id}/summary`, { headers });
+		const response = await http.get(`/group/summary?groupId=${id}`, {
+			headers,
+		});
 		return response.data;
 	}
 
@@ -57,7 +61,7 @@ export class GroupApi {
 			transactions: Array<ITransaction>;
 		}>
 	> {
-		const response = await http.get(`/groups/${id}/transactions`, {
+		const response = await http.get(`/group/transactions?groupId=${id}`, {
 			headers,
 		});
 		return response.data;
@@ -76,7 +80,7 @@ export class GroupApi {
 		data: UpdateGroupData,
 		headers?: any
 	): Promise<ApiRes<IGroup>> {
-		const response = await http.patch(`/groups/${id}`, data, { headers });
+		const response = await http.patch(`/group?id=${id}`, data, { headers });
 		return response.data;
 	}
 
@@ -84,7 +88,7 @@ export class GroupApi {
 		id: string,
 		headers?: any
 	): Promise<ApiRes<IGroup>> {
-		const response = await http.delete(`/groups/${id}`, { headers });
+		const response = await http.delete(`/group?id=${id}`, { headers });
 		return response.data;
 	}
 }

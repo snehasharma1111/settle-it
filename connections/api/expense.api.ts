@@ -19,7 +19,7 @@ export class ExpenseApi {
 		{ groupId }: { groupId: string },
 		headers?: any
 	): Promise<ApiRes<Array<IExpense>>> {
-		const response = await http.get(`/groups/${groupId}/expenses`, {
+		const response = await http.get(`/group/expenses?groupId=${groupId}`, {
 			headers,
 		});
 		return response.data;
@@ -30,7 +30,7 @@ export class ExpenseApi {
 		headers?: any
 	): Promise<ApiRes<Array<IMember>>> {
 		const response = await http.get(
-			`/groups/${groupId}/expenses/${expenseId}/members`,
+			`/group/expense/members?groupId=${groupId}&expenseId=${expenseId}`,
 			{ headers }
 		);
 		return response.data;
@@ -41,7 +41,7 @@ export class ExpenseApi {
 		headers?: any
 	): Promise<ApiRes<IExpense>> {
 		const response = await http.post(
-			`/groups/${data.groupId}/expenses`,
+			`/group/expense?groupId=${data.groupId}`,
 			data,
 			{
 				headers,
@@ -59,7 +59,7 @@ export class ExpenseApi {
 		headers?: any
 	): Promise<ApiRes<IExpense>> {
 		const response = await http.patch(
-			`/groups/${groupId}/expenses/${expenseId}`,
+			`/group/expense?groupId=${groupId}&expenseId=${expenseId}`,
 			data,
 			{ headers }
 		);
@@ -71,7 +71,7 @@ export class ExpenseApi {
 		headers?: any
 	): Promise<ApiRes<Array<IMember>>> {
 		const response = await http.patch(
-			`/groups/${groupId}/expenses/${expenseId}/settle`,
+			`/group/expense/settle?groupId=${groupId}&expenseId=${expenseId}`,
 			{},
 			{ headers }
 		);
@@ -83,7 +83,7 @@ export class ExpenseApi {
 		headers?: any
 	): Promise<ApiRes<IExpense>> {
 		const response = await http.delete(
-			`/groups/${groupId}/expenses/${expenseId}`,
+			`/group/expense?groupId=${groupId}&expenseId=${expenseId}`,
 			{ headers }
 		);
 		return response.data;

@@ -49,9 +49,14 @@ export class AuthService {
 				getNonEmptyString,
 				decodedAccessToken.id
 			);
+			Logger.debug(
+				"getAuthenticatedUser -> authMappingId by accessToken",
+				authMappingId
+			);
 			const user =
 				await AuthService.getUserByAuthMappingId(authMappingId);
 			if (!user) return null;
+			Logger.debug("getAuthenticatedUser -> user by accessToken", user);
 			const tokens: Tokens = { accessToken, refreshToken };
 			const cookies = AuthService.getCookies(tokens);
 			return {
@@ -76,10 +81,14 @@ export class AuthService {
 				getNonEmptyString,
 				decodedRefreshToken.id
 			);
+			Logger.debug(
+				"getAuthenticatedUser -> authMappingId by refreshToken",
+				authMappingId
+			);
 			const user =
 				await AuthService.getUserByAuthMappingId(authMappingId);
 			if (!user) return null;
-			Logger.debug("Found user", user);
+			Logger.debug("getAuthenticatedUser -> user by refreshToken", user);
 			const newAccessToken =
 				AuthService.generateAccessToken(authMappingId);
 			const newRefreshToken =

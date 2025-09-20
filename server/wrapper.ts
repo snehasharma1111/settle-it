@@ -104,12 +104,12 @@ export class ApiRoute {
 	private wrapper(controller: ApiController): ApiController {
 		// controller = ServerMiddleware.responseBodyPopulator(controller);
 		if (this.isAdmin) {
-			return ServerMiddleware.adminRoute(
-				ServerMiddleware.authenticatedRoute(controller)
+			return ServerMiddleware.authenticatedRoute(
+				ServerMiddleware.adminRoute(controller)
 			);
 		} else if (this.isGroupMember) {
-			return ServerMiddleware.isGroupMember(
-				ServerMiddleware.authenticatedRoute(controller)
+			return ServerMiddleware.authenticatedRoute(
+				ServerMiddleware.isGroupMember(controller)
 			);
 		} else if (this.isAuthenticated) {
 			return ServerMiddleware.authenticatedRoute(controller);

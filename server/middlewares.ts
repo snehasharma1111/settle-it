@@ -14,7 +14,7 @@ export class ServerMiddleware {
 	public static authenticatedRoute(next: ApiController): ApiController {
 		return async (req: ApiRequest, res: ApiResponse) => {
 			try {
-				Logger.debug("cookies", req.cookies);
+				Logger.debug("authRoute -> url, cookies", req.url, req.cookies);
 				const accessToken = genericParse(
 					getNonEmptyString,
 					req.cookies[AuthConstants.ACCESS_TOKEN]
@@ -27,11 +27,12 @@ export class ServerMiddleware {
 					accessToken,
 					refreshToken,
 				});
-				const authReponse = await AuthService.getAuthenticatedUser({
+				const authResponse = await AuthService.getAuthenticatedUser({
 					accessToken,
 					refreshToken,
 				});
-				if (!authReponse) {
+				Logger.debug("authResponse", authResponse);
+				if (!authResponse) {
 					const cookies = AuthService.getCookies({
 						accessToken: null,
 						refreshToken: null,
@@ -43,12 +44,12 @@ export class ServerMiddleware {
 						.cookies(cookies)
 						.send();
 				}
-				Logger.debug("Authenticated auth response", authReponse);
+				Logger.debug("Authenticated auth response", authResponse);
 				const {
 					user,
 					accessToken: newAccessToken,
 					refreshToken: newRefreshToken,
-				} = authReponse;
+				} = authResponse;
 				const cookies = AuthService.getUpdatedCookies(
 					{ accessToken, refreshToken },
 					{
@@ -107,6 +108,7 @@ export class ServerMiddleware {
 	public static isGroupMember(next: ApiController): ApiController {
 		return async (req: ApiRequest, res: ApiResponse) => {
 			try {
+				Logger.debug("isGroupMember -> url, user", req.url, req.user);
 				const loggedInUser = req.user;
 				if (!loggedInUser) {
 					return new ApiFailure(res)

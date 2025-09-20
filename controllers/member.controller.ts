@@ -2,15 +2,17 @@ import { HTTP } from "@/constants";
 import { ExpenseService, MemberService } from "@/services";
 import { ApiRequest, ApiResponse } from "@/types";
 import { genericParse, getNonEmptyString, getSearchParam } from "@/utils";
+import { Logger } from "@/log";
 
 export class MemberController {
 	public static async getMembersForExpense(
 		req: ApiRequest,
 		res: ApiResponse
 	) {
+		Logger.debug("getMembersForExpense -> url", req.url);
 		const expenseId = genericParse(
 			getNonEmptyString,
-			getSearchParam(req.url, "id")
+			getSearchParam(req.url, "expenseId")
 		);
 		const members = await MemberService.getMembersOfExpense(expenseId);
 		return res
@@ -24,7 +26,7 @@ export class MemberController {
 		const loggedInUserId = genericParse(getNonEmptyString, req.user?.id);
 		const memberId = genericParse(
 			getNonEmptyString,
-			getSearchParam(req.url, "id")
+			getSearchParam(req.url, "expenseId")
 		);
 		const members = await ExpenseService.settleMemberInExpense({
 			memberId,

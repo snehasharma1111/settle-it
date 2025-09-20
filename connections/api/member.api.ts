@@ -15,7 +15,7 @@ export class MemberApi {
 		headers?: any
 	): Promise<ApiRes<Array<IMember>>> {
 		const response = await http.patch(
-			`/groups/${groupId}/expenses/${expenseId}/settle/${memberId}`,
+			`/group/expense/settle?groupId=${groupId}&expenseId=${expenseId}&memberId=${memberId}`,
 			{ headers }
 		);
 		return response.data;
@@ -26,10 +26,13 @@ export class MemberApi {
 		userA: string,
 		userB: string
 	): Promise<ApiRes<Array<IOwedRecord>>> {
-		const response = await http.patch(`/groups/${groupId}/members/settle`, {
-			userA,
-			userB,
-		});
+		const response = await http.patch(
+			`/group/members/settle?groupId=${groupId}`,
+			{
+				userA,
+				userB,
+			}
+		);
 		return response.data;
 	}
 }

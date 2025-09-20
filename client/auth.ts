@@ -22,6 +22,7 @@ export const authenticatedPage: ServerSideAuthMiddleware = async (
 		const { data: user } = await Cache.fetch(cacheKey, () =>
 			AuthApi.verifyUserIfLoggedIn(headers)
 		);
+		Logger.debug("authenticatedPage -> user", user);
 		if (user.name) {
 			return onLoggedInAndOnboarded(user, headers);
 		} else {

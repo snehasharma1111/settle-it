@@ -52,10 +52,10 @@ class CacheService {
 		) {
 			const cachedValue: any = this.cache.get(key);
 			if (cachedValue) {
-				Logger.info(`Cache hit for ${key}`);
+				Logger.debug(`Cache hit for ${key}`);
 				return cachedValue;
 			}
-			Logger.info(`Cache miss for ${key}`);
+			Logger.debug(`Cache miss for ${key}`);
 			const newValue = await callback();
 			this.set(key, newValue, TTL_SECONDS);
 			return newValue;
