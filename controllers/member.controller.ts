@@ -26,7 +26,7 @@ export class MemberController {
 		const loggedInUserId = genericParse(getNonEmptyString, req.user?.id);
 		const memberId = genericParse(
 			getNonEmptyString,
-			getSearchParam(req.url, "expenseId")
+			getSearchParam(req.url, "memberId")
 		);
 		const members = await ExpenseService.settleMemberInExpense({
 			memberId,

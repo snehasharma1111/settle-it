@@ -5,7 +5,13 @@ import {
 	ApiResponses,
 	UpdateUser,
 } from "@/types";
-import { genericParse, getNonEmptyString, getString, safeParse } from "@/utils";
+import {
+	genericParse,
+	getNonEmptyString,
+	getNonNullValue,
+	getString,
+	safeParse,
+} from "@/utils";
 import { ApiFailure, ApiSuccess } from "@/server";
 import { UserService } from "@/services";
 
@@ -27,5 +33,31 @@ export class UserController {
 			return new ApiFailure(res).send();
 		}
 		return new ApiSuccess<ApiResponses.UpdateUser>(res).send(user);
+	}
+
+	public static async inviteUser(req: ApiRequest, res: ApiResponse) {
+		const loggedInUserId = genericParse<string>(
+			getNonEmptyString,
+			req.user?.id
+		);
+		const invitee = genericParse<string>(getNonEmptyString, req.body.email);
+		const invitedUser = await UserService.inviteUser(
+			loggedInUserId,
+			invitee
+		);
+		return new ApiSuccess<ApiResponses.InviteUser>(res).send(invitedUser);
+	}
+
+	public static async searchForUsers(req: ApiRequest, res: ApiResponse) {
+		const query = genericParse(getNonEmptyString, req.body.query);
+		const users = await UserService.searchByEmail(query);
+		return new ApiSuccess<ApiResponses.SearchUsers>(res).send(users);
+	}
+
+	public static async searchInBulk(req: ApiRequest, res: ApiResponse) {
+		const query = genericParse(getNonEmptyString, req.body.query);
+		const invitee = getNonNullValue(req.user);
+		const users = await UserService.searchInBulk(query, invitee);
+		return new ApiSuccess<ApiResponses.BulkUserSearch>(res).send(users);
 	}
 }

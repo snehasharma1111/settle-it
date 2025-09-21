@@ -1,18 +1,22 @@
 import { Cache } from "@/cache";
-import { cacheParameter, HTTP } from "@/constants";
+import {
+	AppSeo,
+	cacheParameter,
+	emailTemplates,
+	HTTP,
+	USER_STATUS,
+} from "@/constants";
 import { ApiError } from "@/errors";
 import { userRepo } from "@/repo";
 import { User } from "@/schema";
 import { CreateModel, IUser } from "@/types";
 import { genericParse, getNonEmptyString, getNonNullValue } from "@/utils";
+import { EmailService } from "@/services/email";
+import { Logger } from "@/log";
 
 type CollectionUser = { name: string; email: string };
 
 export class UserService {
-	public static async getAllUsers(): Promise<Array<IUser>> {
-		return await userRepo.findAll();
-	}
-
 	public static async getUserById(id: string): Promise<IUser | null> {
 		return await Cache.fetch(
 			Cache.getKey(cacheParameter.USER, { id }),
@@ -118,6 +122,157 @@ export class UserService {
 		const updatedUser = await userRepo.update({ id }, updatedBody);
 		Cache.invalidate(Cache.getKey(cacheParameter.USER, { id }));
 		return updatedUser;
+	}
+
+	public static async inviteUser(
+		invitedByUserId: string,
+		invitee: string
+	): Promise<IUser> {
+		if (invitedByUserId === invitee) {
+			throw new ApiError(
+				HTTP.status.BAD_REQUEST,
+				"You cannot invite yourself"
+			);
+		}
+		const userExists = await UserService.getUserById(invitee);
+		if (userExists) {
+			throw new ApiError(HTTP.status.CONFLICT, "User already exists");
+		}
+		const invitedByUser = await UserService.getUserById(invitedByUserId);
+		if (!invitedByUser) {
+			throw new ApiError(
+				HTTP.status.NOT_FOUND,
+				"Invited by user not found"
+			);
+		}
+		await this.invite(invitee, invitedByUser);
+		return await userRepo.create({
+			email: invitee,
+			status: USER_STATUS.INVITED,
+			invitedBy: invitedByUserId,
+		});
+	}
+
+	public static async searchInBulk(
+		query: string,
+		invitee: IUser
+	): Promise<{
+		users: Array<IUser>;
+		message: string;
+	}> {
+		const usersFromQuery = UserService.parseBulkEmailInput(query);
+		Logger.debug("usersFromQuery", usersFromQuery, invitee);
+		const emails = usersFromQuery.map((user) => user.email);
+		Logger.debug("emails", emails);
+		const users = await Promise.all(emails.map(UserService.getUserByEmail));
+		const allFoundUsers = users.filter((user) => user !== null);
+		const nonFoundUsers = emails.filter(
+			(email) => !allFoundUsers.find((user) => user.email === email)
+		);
+		if (nonFoundUsers.length > 0) {
+			Logger.debug("nonFoundUsers", nonFoundUsers);
+			await UserService.inviteMany(nonFoundUsers, invitee);
+		}
+		const newUsersCollection = await Promise.all(
+			emails.map(UserService.getUserByEmail)
+		);
+		const finalCollection = newUsersCollection.filter(
+			(user) => user !== null
+		);
+		if (!finalCollection.map((a) => a.email).includes(invitee.email)) {
+			finalCollection.push(invitee);
+		}
+		const message =
+			nonFoundUsers.length > 0
+				? `Invited ${nonFoundUsers.length} users`
+				: "";
+		return {
+			users: finalCollection,
+			message,
+		};
+	}
+
+	public static async invite(email: string, invitedByUser: IUser) {
+		await EmailService.sendByTemplate(
+			email,
+			`Invite to ${AppSeo.title}`,
+			emailTemplates.USER_INVITED,
+			{
+				invitedBy: {
+					email: invitedByUser.email,
+					name: invitedByUser.name || "",
+				},
+			}
+		);
+	}
+
+	public static async inviteMany(emails: string[], invitedByUser: IUser) {
+		await userRepo.bulkCreate(
+			emails.map((email) => ({
+				name: email.split("@")[0],
+				email,
+				status: USER_STATUS.INVITED,
+				invitedBy: invitedByUser.id,
+			}))
+		);
+		await EmailService.bulkSendByTemplate(
+			emails,
+			`Invite to ${AppSeo.title}`,
+			emailTemplates.USER_INVITED,
+			{
+				invitedBy: {
+					email: invitedByUser?.email,
+					name: invitedByUser?.name,
+				},
+			}
+		);
+	}
+
+	private static parseBulkEmailInput(value: string): Array<CollectionUser> {
+		const a = value
+			.split(",")
+			.map((a) => a.split(";"))
+			.flat()
+			.map((a) => a.trim());
+		const validCollections = a
+			.map((e) => {
+				const r = /^([^<]+)?<([\w.%+-]+@[\w.-]+\.[a-zA-Z]{2,})>$/;
+				const f = e.match(r);
+				if (f) {
+					const email = f?.[2]?.trim();
+					if (!UserService.isValidEmail(email)) {
+						return null;
+					}
+					const trimmedName = f?.[1]?.trim() || email?.split("@")[0];
+					return {
+						name: UserService.capitalizeName(trimmedName),
+						email,
+					};
+				} else {
+					const potentialEmails = e.split(/[;,\s]+/);
+					const result = [];
+
+					for (const item of potentialEmails) {
+						let name = null;
+						let email = null;
+						if (UserService.isValidEmail(item)) {
+							email = item.trim();
+						}
+
+						if (email) {
+							name = email.split("@")[0];
+							result.push({
+								name: UserService.capitalizeName(name),
+								email: email,
+							});
+						}
+					}
+					return result;
+				}
+			})
+			.flat()
+			.filter((f) => f != null);
+		return UserService.getDistinctUsersFromCollection(validCollections);
 	}
 
 	private static isValidEmail(email: string): boolean {

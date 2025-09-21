@@ -3,6 +3,7 @@ import { Typography } from "@/library";
 import styles from "@/styles/pages/Home.module.scss";
 import { stylesConfig } from "@/utils";
 import React from "react";
+import { AppSeo } from "@/constants";
 
 const classes = stylesConfig(styles, "privacy-policy");
 
@@ -21,7 +22,7 @@ const PrivacyPolicyPage: React.FC = () => {
 					1. Introduction
 				</Typography>
 				<Typography as="p">
-					Welcome to Settle It! We value your privacy and are
+					Welcome to {AppSeo.title}! We value your privacy and are
 					committed to protecting your personal data. This privacy
 					policy explains how we collect, use, and safeguard your
 					information when you use our app and services.
@@ -61,7 +62,7 @@ const PrivacyPolicyPage: React.FC = () => {
 						</li>
 						<li>
 							To improve and personalize your experience with
-							Settle It.
+							{AppSeo.title}.
 						</li>
 						<li>
 							To provide customer support and respond to

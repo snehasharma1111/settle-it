@@ -1,4 +1,4 @@
-import { routes, socials } from "@/constants";
+import { AppSeo, routes, socials } from "@/constants";
 import { stylesConfig } from "@/utils";
 import Image from "next/image";
 import Link from "next/link";
@@ -16,7 +16,7 @@ const Footer: React.FC = () => {
 				<div className={classes("-logo")}>
 					<Image
 						src="/logo-full.png"
-						alt="Settle It"
+						alt={AppSeo.title || ""}
 						onClick={() => {
 							router.push("/");
 						}}
@@ -46,7 +46,7 @@ const Footer: React.FC = () => {
 				</ul>
 				<div className={classes("-copyright")}>
 					<p>
-						© {new Date().getFullYear()} Settle It. All rights
+						© {new Date().getFullYear()} {AppSeo.title}. All rights
 						reserved.
 					</p>
 				</div>

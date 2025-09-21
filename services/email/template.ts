@@ -1,5 +1,5 @@
 import { googleEmailConfig } from "@/config";
-import { emailTemplates, frontendBaseUrl } from "@/constants";
+import { AppSeo, emailTemplates, frontendBaseUrl } from "@/constants";
 import { T_EMAIL_TEMPLATE } from "@/types";
 
 const getEmailTemplateHTML = (
@@ -131,7 +131,7 @@ table, td { color: #000000; } #u_body a { color: #0000ee; text-decoration: under
   <tr>
     <td style="padding-right: 0px;padding-left: 0px;" align="center">
       <a href="${frontendBaseUrl}" target="_blank">
-      <img align="center" border="0" src="${frontendBaseUrl}/logo-full.png" alt="Settle It Logo" title="Settle It Logo" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 29%;max-width: 168.2px;" width="168.2" class="v-src-width v-src-max-width"/>
+      <img align="center" border="0" src="${frontendBaseUrl}/logo-full.png" alt="${AppSeo.title}" title="${AppSeo.title} Logo" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 29%;max-width: 168.2px;" width="168.2" class="v-src-width v-src-max-width"/>
       </a>
     </td>
   </tr>
@@ -456,15 +456,15 @@ export const getEmailTemplate = (template: T_EMAIL_TEMPLATE, data: any) => {
 			);
 		case emailTemplates.NEW_USER_ONBOARDED:
 			return getEmailTemplateHTML(
-				"Welcome to Settle It",
+				`Welcome to ${AppSeo.title}`,
 				"Your account has been created successfully. You can now login to your account.",
 				"Login",
 				`${frontendBaseUrl}/login`
 			);
 		case emailTemplates.USER_INVITED:
 			return getEmailTemplateHTML(
-				"Welcome to Settle It",
-				`<a href="mailto:${data.invitedBy.email}" style="color:inherit;text-decoration:none">${data.invitedBy.name}</a> has invited you to join Settle It. You can now login to your account.`,
+				`Welcome to ${AppSeo.title}`,
+				`<a href="mailto:${data.invitedBy.email}" style="color:inherit;text-decoration:none">${data.invitedBy.name}</a> has invited you to join ${AppSeo.title}. You can now login to your account.`,
 				"Login",
 				`${frontendBaseUrl}/login`
 			);

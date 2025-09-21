@@ -1,5 +1,5 @@
 import { BaseRepo } from "./base";
-import { Member } from "@/schema";
+import { Expense, Member } from "@/schema";
 import {
 	CreateModel,
 	IExpense,
@@ -19,6 +19,7 @@ import {
 	omitKeys,
 } from "@/utils";
 import { FilterQuery, UpdateQuery } from "mongoose";
+import { expenseRepo } from "@/repo/expense.repo";
 
 export class MemberRepo extends BaseRepo<Member, IMember> {
 	protected model = MemberModel;
@@ -26,18 +27,51 @@ export class MemberRepo extends BaseRepo<Member, IMember> {
 		if (!member) return null;
 		const parsed = getObjectFromMongoResponse<Member>(member);
 		if (!parsed) return null;
+		let originalExpense: string | Expense = parsed.expenseId,
+			finalExpense: IExpense;
+		if (typeof originalExpense !== "string") {
+			originalExpense = parsed.expenseId as unknown as Expense;
+			const parsedExpense = expenseRepo.parser(originalExpense);
+			finalExpense = parsedExpense as IExpense;
+		} else {
+			throw new Error("Invalid expenseId");
+		}
 		return {
 			...omitKeys(parsed, ["userId", "groupId", "expenseId"]),
 			user: getObjectFromMongoResponse<IUser>(parsed.userId),
 			group: getObjectFromMongoResponse<IGroup>(parsed.groupId),
-			expense: getObjectFromMongoResponse<IExpense>(parsed.expenseId),
+			expense: finalExpense,
 		};
 	}
 
 	public async findOne(query: Partial<Member>): Promise<IMember | null> {
 		const res = await this.model
 			.findOne<Member>(query)
-			.populate("userId groupId expenseId");
+			.populate("userId groupId expenseId")
+			.populate({
+				path: "expenseId",
+				model: "Expense",
+				populate: {
+					path: "paidBy",
+					model: "User",
+				},
+			})
+			.populate({
+				path: "expenseId",
+				model: "Expense",
+				populate: {
+					path: "createdBy",
+					model: "User",
+				},
+			})
+			.populate({
+				path: "expenseId",
+				model: "Expense",
+				populate: {
+					path: "groupId",
+					model: "Group",
+				},
+			});
 		return this.parser(res);
 	}
 
@@ -45,6 +79,30 @@ export class MemberRepo extends BaseRepo<Member, IMember> {
 		const res = await this.model
 			.findById<Member>(id)
 			.populate("userId groupId expenseId")
+			.populate({
+				path: "expenseId",
+				model: "Expense",
+				populate: {
+					path: "paidBy",
+					model: "User",
+				},
+			})
+			.populate({
+				path: "expenseId",
+				model: "Expense",
+				populate: {
+					path: "createdBy",
+					model: "User",
+				},
+			})
+			.populate({
+				path: "expenseId",
+				model: "Expense",
+				populate: {
+					path: "groupId",
+					model: "Group",
+				},
+			})
 			.catch((error: any) => {
 				if (error.kind === "ObjectId") return null;
 				throw error;
@@ -57,7 +115,31 @@ export class MemberRepo extends BaseRepo<Member, IMember> {
 	): Promise<Array<IMember> | null> {
 		const res = await this.model
 			.find<Member>(query)
-			.populate("userId groupId expenseId");
+			.populate("userId groupId expenseId")
+			.populate({
+				path: "expenseId",
+				model: "Expense",
+				populate: {
+					path: "paidBy",
+					model: "User",
+				},
+			})
+			.populate({
+				path: "expenseId",
+				model: "Expense",
+				populate: {
+					path: "createdBy",
+					model: "User",
+				},
+			})
+			.populate({
+				path: "expenseId",
+				model: "Expense",
+				populate: {
+					path: "groupId",
+					model: "Group",
+				},
+			});
 		const parsedRes = res.map(this.parser).filter((obj) => obj !== null);
 		if (parsedRes.length > 0) return parsedRes;
 		return null;
@@ -67,7 +149,31 @@ export class MemberRepo extends BaseRepo<Member, IMember> {
 		const res = await this.model
 			.find<Member>({})
 			.sort({ createdAt: -1 })
-			.populate("userId groupId expenseId");
+			.populate("userId groupId expenseId")
+			.populate({
+				path: "expenseId",
+				model: "Expense",
+				populate: {
+					path: "paidBy",
+					model: "User",
+				},
+			})
+			.populate({
+				path: "expenseId",
+				model: "Expense",
+				populate: {
+					path: "createdBy",
+					model: "User",
+				},
+			})
+			.populate({
+				path: "expenseId",
+				model: "Expense",
+				populate: {
+					path: "groupId",
+					model: "Group",
+				},
+			});
 		const parsedRes = res.map(this.parser).filter((obj) => obj !== null);
 		if (parsedRes.length > 0) return parsedRes;
 		return [];
@@ -86,7 +192,31 @@ export class MemberRepo extends BaseRepo<Member, IMember> {
 		const filter = query.id ? { _id: query.id } : query;
 		const res = await this.model
 			.findOneAndUpdate<Member>(filter, update, { new: true })
-			.populate("userId groupId expenseId");
+			.populate("userId groupId expenseId")
+			.populate({
+				path: "expenseId",
+				model: "Expense",
+				populate: {
+					path: "paidBy",
+					model: "User",
+				},
+			})
+			.populate({
+				path: "expenseId",
+				model: "Expense",
+				populate: {
+					path: "createdBy",
+					model: "User",
+				},
+			})
+			.populate({
+				path: "expenseId",
+				model: "Expense",
+				populate: {
+					path: "groupId",
+					model: "Group",
+				},
+			});
 		return this.parser(res);
 	}
 
@@ -94,7 +224,31 @@ export class MemberRepo extends BaseRepo<Member, IMember> {
 		const filter = query.id ? { _id: query.id } : query;
 		const res = await this.model
 			.findOneAndDelete<Member>(filter)
-			.populate("userId groupId expenseId");
+			.populate("userId groupId expenseId")
+			.populate({
+				path: "expenseId",
+				model: "Expense",
+				populate: {
+					path: "paidBy",
+					model: "User",
+				},
+			})
+			.populate({
+				path: "expenseId",
+				model: "Expense",
+				populate: {
+					path: "createdBy",
+					model: "User",
+				},
+			})
+			.populate({
+				path: "expenseId",
+				model: "Expense",
+				populate: {
+					path: "groupId",
+					model: "Group",
+				},
+			});
 		return this.parser(res);
 	}
 

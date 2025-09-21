@@ -89,9 +89,10 @@ export class ServerMiddleware {
 						.json({ message: "Please login to continue" });
 				}
 				if (!admins.includes(loggedInUser.email)) {
-					return res
+					return new ApiFailure(res)
 						.status(HTTP.status.FORBIDDEN)
-						.json({ message: "You are not an admin" });
+						.message("You are not an admin")
+						.send();
 				}
 				req.user = loggedInUser;
 				return next(req, res);
@@ -137,9 +138,10 @@ export class ServerMiddleware {
 					groupId
 				);
 				if (!group) {
-					return res.status(HTTP.status.FORBIDDEN).json({
-						message: "You are not a member of this group",
-					});
+					return new ApiFailure(res)
+						.status(HTTP.status.FORBIDDEN)
+						.message("You are not a member of this group")
+						.send();
 				}
 				req.group = group;
 				return next(req, res);

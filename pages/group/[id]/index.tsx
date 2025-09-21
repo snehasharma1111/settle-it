@@ -8,7 +8,7 @@ import {
 	UpdateGroup,
 } from "@/components";
 import { GroupApi } from "@/connections";
-import { routes } from "@/constants";
+import { AppSeo, routes } from "@/constants";
 import { useConfirmationModal, useHttpClient, useStore } from "@/hooks";
 import { Seo } from "@/layouts";
 import { Button } from "@/library";
@@ -25,7 +25,6 @@ import { getNonEmptyString, notify, stylesConfig } from "@/utils";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { FiPlus } from "react-icons/fi";
-import { Logger } from "@/log";
 
 const classes = stylesConfig(styles, "group");
 
@@ -145,7 +144,7 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 
 	return (
 		<>
-			<Seo title={`${groupDetails?.name} - Settle It`} />
+			<Seo title={`${groupDetails?.name} - ${AppSeo.title}`} />
 			<main className={classes("")}>
 				<GroupMetaData
 					group={groupDetails}

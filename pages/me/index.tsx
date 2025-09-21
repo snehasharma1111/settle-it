@@ -1,5 +1,5 @@
 import { authenticatedPage } from "@/client";
-import { fallbackAssets, routes } from "@/constants";
+import { AppSeo, fallbackAssets, routes } from "@/constants";
 import { useStore } from "@/hooks";
 import { Responsive, Seo } from "@/layouts";
 import { Avatar, Button, Input, Typography } from "@/library";
@@ -53,7 +53,7 @@ const ProfilePage: React.FC<IProfilePageProps> = (props) => {
 
 	return (
 		<>
-			<Seo title={`${user.name} - Profile | Settle It`} />
+			<Seo title={`${user.name} - Profile | ${AppSeo.title}`} />
 			<main className={classes("")}>
 				<div className={classes("-banner")}>
 					<button

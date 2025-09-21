@@ -42,11 +42,11 @@ export type User = Model<{
  * @param {string} otp - Otp of the user
  * @param {string} status - Status of the otp (Pending, Verified)
  */
-export type Otp = {
+export type Otp = Model<{
 	email: string;
 	otp: string;
 	status: T_OTP_STATUS;
-};
+}>;
 
 /**
  * Group model

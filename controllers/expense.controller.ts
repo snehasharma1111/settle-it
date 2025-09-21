@@ -111,7 +111,7 @@ export class ExpenseController {
 		const loggedInUserId = genericParse(getNonEmptyString, req.user?.id);
 		const memberId = genericParse(
 			getNonEmptyString,
-			getSearchParam(req.url, "expenseId")
+			getSearchParam(req.url, "memberId")
 		);
 		const paidAmount = genericParse(
 			getNonNegativeNumber,

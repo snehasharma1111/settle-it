@@ -1,7 +1,7 @@
 import { authenticatedPage } from "@/client";
 import { Auth, Auth as Components } from "@/components";
 import { AuthApi, UserApi } from "@/connections";
-import { routes } from "@/constants";
+import { AppSeo, routes } from "@/constants";
 import { useStore } from "@/hooks";
 import { Seo } from "@/layouts";
 import { Typography } from "@/library";
@@ -80,13 +80,13 @@ const LoginPage: React.FC<LoginPageProps> = (props) => {
 
 	return (
 		<>
-			<Seo title="Login | Settle It" />
+			<Seo title={`Login | ${AppSeo.title}`} />
 			<main className={classes("")}>
 				<span />
 				<section>
 					<Image
 						src="/logo-full.png"
-						alt="settle it logo"
+						alt={`${AppSeo.title} logo`}
 						height={1920}
 						width={1080}
 						className={classes("-logo")}
@@ -125,8 +125,8 @@ const LoginPage: React.FC<LoginPageProps> = (props) => {
 					) : null}
 				</section>
 				<Typography size="sm" className={classes("-footer")} as="p">
-					By joining, you agree to the Settle It Terms of Service and
-					to occasionally receive emails from us. Please read our
+					By joining, you agree to the {AppSeo.title} Terms of Service
+					and to occasionally receive emails from us. Please read our
 					Privacy Policy to learn how we use your personal data.
 				</Typography>
 			</main>

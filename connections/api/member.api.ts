@@ -15,7 +15,7 @@ export class MemberApi {
 		headers?: any
 	): Promise<ApiRes<Array<IMember>>> {
 		const response = await http.patch(
-			`/group/expense/settle?groupId=${groupId}&expenseId=${expenseId}&memberId=${memberId}`,
+			`/group/expense/members/settle?groupId=${groupId}&expenseId=${expenseId}&memberId=${memberId}`,
 			{ headers }
 		);
 		return response.data;

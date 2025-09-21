@@ -7,10 +7,11 @@ import {
 	OTP_STATUS,
 	USER_STATUS,
 } from "@/constants";
-import { AuthResponse, Otp } from "@/types";
+import { AuthResponse } from "@/types";
 import { otpRepo, userRepo } from "@/repo";
 import { ApiError } from "@/errors";
 import { UserService } from "@/services";
+import { Otp } from "@/schema";
 
 export class OtpService {
 	public static async requestOtpForEmail(email: string) {
