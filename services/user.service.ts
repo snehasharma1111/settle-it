@@ -17,6 +17,11 @@ import { Logger } from "@/log";
 type CollectionUser = { name: string; email: string };
 
 export class UserService {
+	public static async getAllUsers(): Promise<Array<IUser>> {
+		const allUsers = await userRepo.findAll();
+		return allUsers.map(getNonNullValue);
+	}
+
 	public static async getUserById(id: string): Promise<IUser | null> {
 		return await Cache.fetch(
 			Cache.getKey(cacheParameter.USER, { id }),
