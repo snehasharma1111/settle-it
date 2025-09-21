@@ -24,23 +24,32 @@ export const groupSlice = createSlice({
 				return state;
 			}
 		);
-		builder.addCase(groupHelpers.createGroup.fulfilled, (state, action) => {
-			state = [...state, action.payload];
-			return state;
-		});
-		builder.addCase(groupHelpers.updateGroup.fulfilled, (state, action) => {
-			state = state.map((group) => {
-				if (group.id === action.payload.id) {
-					return action.payload;
-				}
-				return group;
-			});
-			return state;
-		});
-		builder.addCase(groupHelpers.deleteGroup.fulfilled, (state, action) => {
-			state = state.filter((group) => group.id !== action.payload.id);
-			return state;
-		});
+		builder.addCase(
+			groupHelpers.createGroup.fulfilled,
+			(state: GroupSlice, action) => {
+				state = [...state, action.payload];
+				return state;
+			}
+		);
+		builder.addCase(
+			groupHelpers.updateGroup.fulfilled,
+			(state: GroupSlice, action) => {
+				state = state.map((group) => {
+					if (group.id === action.payload.id) {
+						return action.payload;
+					}
+					return group;
+				});
+				return state;
+			}
+		);
+		builder.addCase(
+			groupHelpers.deleteGroup.fulfilled,
+			(state: GroupSlice, action) => {
+				state = state.filter((group) => group.id !== action.payload.id);
+				return state;
+			}
+		);
 	},
 });
 
