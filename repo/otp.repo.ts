@@ -1,5 +1,5 @@
 import { BaseRepo } from "./base";
-import { Otp } from "@/types";
+import { Otp } from "@/schema";
 import { OtpModel } from "@/models";
 
 class OtpRepo extends BaseRepo<Otp> {

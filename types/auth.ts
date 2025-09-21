@@ -1,4 +1,4 @@
-import { IUser } from "./user";
+import { IUser } from "./client";
 
 export type Cookie = {
 	name: string;
