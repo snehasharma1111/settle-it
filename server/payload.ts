@@ -1,11 +1,12 @@
 import { HTTP } from "@/constants";
 import { Logger } from "@/log";
 import { ApiRes, ApiResponse, Cookie } from "@/types";
+import { omitKeys } from "@/utils";
 
 abstract class ApiBaseResponse<T> {
 	protected res: ApiResponse;
 	protected payload: ApiRes<T> & { status: number };
-	constructor(r: ApiResponse) {
+	protected constructor(r: ApiResponse) {
 		this.res = r;
 		this.payload = {
 			status: HTTP.status.SUCCESS,
@@ -23,11 +24,10 @@ abstract class ApiBaseResponse<T> {
 		return this;
 	}
 	public message(message: string): this {
-		const payload = {
+		this.payload = {
 			...this.payload,
 			message,
 		};
-		this.payload = payload;
 		return this;
 	}
 	public cookies(cookies: Array<Cookie>): this {
@@ -56,11 +56,10 @@ export class ApiSuccess<T> extends ApiBaseResponse<T> {
 		super(r);
 	}
 	public data(data: T): ApiSuccess<T> {
-		const payload = {
+		this.payload = {
 			...this.payload,
 			data,
 		};
-		this.payload = payload;
 		return this;
 	}
 	public send(
@@ -101,6 +100,9 @@ export class ApiFailure extends ApiBaseResponse<null> {
 				message,
 			});
 		}
-		this.status(status).message(message).end();
+		this.status(status)
+			.message(message)
+			.json(omitKeys(this.payload, ["data"]))
+			.end();
 	}
 }
