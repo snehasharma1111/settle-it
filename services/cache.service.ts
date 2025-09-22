@@ -75,7 +75,7 @@ export class CacheService {
 		}
 	}
 
-	public static getAllCacheData(): any {
+	public static getAllCacheData(): { [key: string]: any } {
 		return Cache.getAllKeys().reduce((obj, key) => {
 			return {
 				...obj,

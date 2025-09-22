@@ -11,6 +11,9 @@ export type Logout = null;
 // User
 export type UpdateUser = Partial<IUser>;
 
+// Admin
+export type GetLogFileByName = { name: string };
+
 // Group
 export type CreateGroup = CreateGroupData;
 export type UpdateGroup = UpdateGroupData;

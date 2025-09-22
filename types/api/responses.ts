@@ -1,5 +1,4 @@
 import {
-	CreateGroupData,
 	IBalancesSummary,
 	IExpense,
 	IGroup,
@@ -24,6 +23,14 @@ export type BulkUserSearch = {
 	users: Array<IUser>;
 	message: string;
 };
+
+// Admin
+export type GetAllUsers = Array<IUser>;
+export type GetAllGroups = Array<IGroup>;
+export type GetAllCacheData = { [key: string]: any };
+export type ClearCacheData = null;
+export type GetAllLogFiles = Array<string>;
+export type GetLogFileByName = string;
 
 // Group
 export type GetGroupsForUser = Array<IGroup>;
