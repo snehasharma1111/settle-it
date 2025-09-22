@@ -36,6 +36,7 @@ export class AuthService {
 			user,
 		});
 	}
+
 	public static async getUserByAuthMappingId(
 		authMappingId: string
 	): Promise<IUser | null> {
@@ -49,10 +50,41 @@ export class AuthService {
 		Logger.debug("foundAuthMapping", foundAuthMapping);
 		return foundAuthMapping.user;
 	}
+
+	/**
+	 * Authenticates a user and manages token refresh flow.
+	 * This method handles two main scenarios:
+	 * 1. Valid access token: Returns the user directly
+	 * 2. Expired access token but valid refresh token: Issues new tokens and returns them with the user
+	 *
+	 * @param {Tokens} params - Object containing access and refresh tokens
+	 * @param {string} params.accessToken - JWT access token for authentication
+	 * @param {string} params.refreshToken - JWT refresh token for obtaining new access tokens
+	 *
+	 * @returns {Promise<(AuthResponse & Tokens) | null>}
+	 *   - If successful: Returns user data, new tokens, and cookies
+	 *   - If authentication fails: Returns null
+	 *
+	 * @description
+	 * The authentication flow works as follows:
+	 * 1. First, it attempts to verify the access token:
+	 *    - If valid: Fetches and returns the user with current tokens
+	 *    - If expired: Proceeds to refresh token flow
+	 *    - If invalid: Returns null (authentication failed)
+	 *
+	 * 2. If access token is expired, it verifies the refresh token:
+	 *    - If valid: Generates new access and refresh tokens
+	 *    - Updates the user's session with new tokens
+	 *    - Returns user data with new tokens and cookies
+	 *    - If invalid: Returns null (authentication failed)
+	 *
+	 * 3. The method includes debug logging at each major step for troubleshooting.
+	 */
 	public static async getAuthenticatedUser({
 		accessToken,
 		refreshToken,
 	}: Tokens): Promise<(AuthResponse & Tokens) | null> {
+		// First, try to verify the access token
 		try {
 			const decodedAccessToken: any = jwt.verify(
 				accessToken,
@@ -66,18 +98,25 @@ export class AuthService {
 				"getAuthenticatedUser -> authMappingId by accessToken",
 				authMappingId
 			);
+
+			// Get user by auth mapping ID
 			const user =
 				await AuthService.getUserByAuthMappingId(authMappingId);
 			if (!user) return null;
+
 			Logger.debug("getAuthenticatedUser -> user by accessToken", user);
+
+			// If we get here, access token is valid - return user with current tokens
 			const tokens: Tokens = { accessToken, refreshToken };
 			const cookies = AuthService.getCookies(tokens);
+
 			return {
 				user,
 				cookies,
 				...tokens,
 			};
 		} catch (error) {
+			// If error is not related to token expiration, fail authentication
 			if (
 				!(error instanceof TokenExpiredError) &&
 				!(error instanceof JsonWebTokenError)
@@ -85,7 +124,10 @@ export class AuthService {
 				return null;
 			}
 		}
+
+		// If we get here, access token is invalid/expired - try to refresh using refresh token
 		try {
+			// Verify the refresh token
 			const decodedRefreshToken: any = jwt.verify(
 				refreshToken,
 				jwtSecret.authRefresh
@@ -98,38 +140,52 @@ export class AuthService {
 				"getAuthenticatedUser -> authMappingId by refreshToken",
 				authMappingId
 			);
+
+			// Get user by auth mapping ID from refresh token
 			const user =
 				await AuthService.getUserByAuthMappingId(authMappingId);
 			if (!user) return null;
+
 			Logger.debug("getAuthenticatedUser -> user by refreshToken", user);
+
+			// Generate new tokens (both access and refresh)
 			const newAccessToken =
 				AuthService.generateAccessToken(authMappingId);
 			const newRefreshToken =
 				AuthService.generateRefreshToken(authMappingId);
+
 			const tokens: Tokens = {
 				accessToken: newAccessToken,
 				refreshToken: newRefreshToken,
 			};
+
+			// Generate new cookies with the fresh tokens
 			const cookies = AuthService.getCookies(tokens);
+
+			// Return user data with new tokens and cookies
 			return {
 				user,
 				cookies,
 				...tokens,
 			};
 		} catch {
+			// If refresh token is invalid/expired or any other error occurs, authentication fails
 			return null;
 		}
 	}
+
 	public static generateRefreshToken(id: string) {
 		return jwt.sign({ id }, jwtSecret.authRefresh, {
 			expiresIn: AuthConstants.REFRESH_TOKEN_EXPIRY,
 		});
 	}
+
 	public static generateAccessToken(id: string) {
 		return jwt.sign({ id }, jwtSecret.authAccess, {
 			expiresIn: AuthConstants.ACCESS_TOKEN_EXPIRY,
 		});
 	}
+
 	public static generateTokens(id: string): {
 		refreshToken: string;
 		accessToken: string;
@@ -139,6 +195,7 @@ export class AuthService {
 			accessToken: AuthService.generateAccessToken(id),
 		};
 	}
+
 	public static getCookies({
 		accessToken,
 		refreshToken,
@@ -178,6 +235,7 @@ export class AuthService {
 		}
 		return cookiesToSet;
 	}
+
 	public static getUpdatedCookies(old: Tokens, newTokens: Tokens) {
 		const cookiesToSet = [];
 		if (old.accessToken !== newTokens.accessToken) {

@@ -1,6 +1,4 @@
-import { cacheParameter, CHECK_INTERVAL, TTL_SECONDS } from "@/constants";
-import { Logger } from "@/log";
-import { CacheParameter, CachePayloadGenerator } from "@/types";
+import { CHECK_INTERVAL, TTL_SECONDS } from "@/constants";
 import NodeCache from "node-cache";
 
 class CacheFactory {
