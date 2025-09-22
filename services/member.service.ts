@@ -1,8 +1,8 @@
-import { Cache } from "@/cache";
 import { cacheParameter, HTTP } from "@/constants";
 import { ApiError } from "@/errors";
 import { expenseRepo, memberRepo } from "@/repo";
 import { IBalancesSummary, IMember } from "@/types";
+import { CacheService } from "./cache.service";
 import { ExpenseService } from "./expense.service";
 import { GroupService } from "./group.service";
 import { UserService } from "./user.service";
@@ -101,8 +101,8 @@ export class MemberService {
 			allTransactionsForGroup,
 			usersMap
 		);
-		Cache.invalidate(
-			Cache.getKey(cacheParameter.GROUP_EXPENSES, {
+		CacheService.invalidate(
+			CacheService.getKey(cacheParameter.GROUP_EXPENSES, {
 				groupId: foundGroup.id,
 			})
 		);

@@ -1,4 +1,5 @@
 export * from "./auth.service";
+export * from "./cache.service";
 export * from "./email";
 export * from "./expense.service";
 export * from "./group.service";

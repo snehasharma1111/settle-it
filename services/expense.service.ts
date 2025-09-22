@@ -1,4 +1,3 @@
-import { Cache } from "@/cache";
 import { cacheParameter, EXPENSE_STATUS, HTTP } from "@/constants";
 import { ApiError } from "@/errors";
 import { expenseRepo, memberRepo } from "@/repo";
@@ -10,14 +9,15 @@ import {
 	UpdateQuery,
 } from "@/types";
 import { isSubset } from "@/utils";
+import { CacheService } from "./cache.service";
 import { GroupService } from "./group.service";
 import { MemberService } from "./member.service";
 import { Expense, Member } from "@/schema";
 
 export class ExpenseService {
 	public static async getExpenseById(id: string): Promise<IExpense | null> {
-		return await Cache.fetch(
-			Cache.getKey(cacheParameter.EXPENSE, { id }),
+		return await CacheService.fetch(
+			CacheService.getKey(cacheParameter.EXPENSE, { id }),
 			() => expenseRepo.findById(id)
 		);
 	}
@@ -33,8 +33,8 @@ export class ExpenseService {
 	public static async getExpensesForGroup(
 		groupId: string
 	): Promise<Array<IExpense>> {
-		const expenses = await Cache.fetch(
-			Cache.getKey(cacheParameter.GROUP_EXPENSES, { groupId }),
+		const expenses = await CacheService.fetch(
+			CacheService.getKey(cacheParameter.GROUP_EXPENSES, { groupId }),
 			() => expenseRepo.getExpensesForGroup(groupId)
 		);
 		if (!expenses) return [];
@@ -93,8 +93,8 @@ export class ExpenseService {
 				paid: member.userId === body.paidBy ? member.amount : 0,
 			}));
 		await memberRepo.bulkCreate(membersForCurrentExpense);
-		Cache.invalidate(
-			Cache.getKey(cacheParameter.GROUP_EXPENSES, {
+		CacheService.invalidate(
+			CacheService.getKey(cacheParameter.GROUP_EXPENSES, {
 				groupId: body.groupId.toString(),
 			})
 		);
@@ -317,13 +317,15 @@ export class ExpenseService {
 		if (!updatedExpense) {
 			throw new ApiError(HTTP.status.NOT_FOUND, "Expense not found");
 		}
-		Cache.invalidate(
-			Cache.getKey(cacheParameter.GROUP_EXPENSES, {
+		CacheService.invalidate(
+			CacheService.getKey(cacheParameter.GROUP_EXPENSES, {
 				groupId: updatedExpense?.group.id,
 			})
 		);
-		Cache.invalidate(
-			Cache.getKey(cacheParameter.EXPENSE, { id: updatedExpense?.id })
+		CacheService.invalidate(
+			CacheService.getKey(cacheParameter.EXPENSE, {
+				id: updatedExpense?.id,
+			})
 		);
 		return updatedExpense;
 	}
@@ -346,12 +348,14 @@ export class ExpenseService {
 		// remove all members for the current expense
 		await memberRepo.bulkRemove({ expenseId });
 		const removedExpense = await expenseRepo.remove({ id: expenseId });
-		Cache.invalidate(
-			Cache.getKey(cacheParameter.GROUP_EXPENSES, {
+		CacheService.invalidate(
+			CacheService.getKey(cacheParameter.GROUP_EXPENSES, {
 				groupId: foundExpense.group.id,
 			})
 		);
-		Cache.del(Cache.getKey(cacheParameter.EXPENSE, { id: expenseId }));
+		CacheService.del(
+			CacheService.getKey(cacheParameter.EXPENSE, { id: expenseId })
+		);
 		return removedExpense;
 	}
 	public static async settleExpense({
@@ -371,13 +375,13 @@ export class ExpenseService {
 				"Only the person who paid can settle"
 			);
 		await memberRepo.settleMany({ expenseId });
-		Cache.invalidate(
-			Cache.getKey(cacheParameter.GROUP_EXPENSES, {
+		CacheService.invalidate(
+			CacheService.getKey(cacheParameter.GROUP_EXPENSES, {
 				groupId: foundExpense.group.id,
 			})
 		);
-		Cache.invalidate(
-			Cache.getKey(cacheParameter.EXPENSE, { id: expenseId })
+		CacheService.invalidate(
+			CacheService.getKey(cacheParameter.EXPENSE, { id: expenseId })
 		);
 		return MemberService.getMembersOfExpense(expenseId);
 	}
@@ -420,13 +424,15 @@ export class ExpenseService {
 				}
 			);
 		}
-		Cache.invalidate(
-			Cache.getKey(cacheParameter.GROUP_EXPENSES, {
+		CacheService.invalidate(
+			CacheService.getKey(cacheParameter.GROUP_EXPENSES, {
 				groupId: foundExpense.group.id,
 			})
 		);
-		Cache.invalidate(
-			Cache.getKey(cacheParameter.EXPENSE, { id: foundExpense?.id })
+		CacheService.invalidate(
+			CacheService.getKey(cacheParameter.EXPENSE, {
+				id: foundExpense?.id,
+			})
 		);
 		return MemberService.getMembersOfExpense(foundMember.expense.id);
 	}
@@ -453,13 +459,13 @@ export class ExpenseService {
 		});
 		if (!settledMember)
 			throw new ApiError(HTTP.status.NOT_FOUND, "Member not found");
-		Cache.invalidate(
-			Cache.getKey(cacheParameter.GROUP_EXPENSES, {
+		CacheService.invalidate(
+			CacheService.getKey(cacheParameter.GROUP_EXPENSES, {
 				groupId: foundExpense.group.id,
 			})
 		);
-		Cache.invalidate(
-			Cache.getKey(cacheParameter.EXPENSE, { id: foundExpense.id })
+		CacheService.invalidate(
+			CacheService.getKey(cacheParameter.EXPENSE, { id: foundExpense.id })
 		);
 		return await MemberService.getMembersOfExpense(expenseId);
 	}

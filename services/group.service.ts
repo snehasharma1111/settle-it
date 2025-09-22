@@ -1,4 +1,3 @@
-import { Cache } from "@/cache";
 import { cacheParameter, HTTP } from "@/constants";
 import { ApiError } from "@/errors";
 import { expenseRepo, groupRepo, memberRepo, userRepo } from "@/repo";
@@ -12,6 +11,7 @@ import {
 	Transaction,
 } from "@/types";
 import { getNonNullValue, simplifyFraction } from "@/utils";
+import { CacheService } from "./cache.service";
 import { ExpenseService } from "./expense.service";
 import { UserService } from "./user.service";
 import { EmailService } from "@/services/email";
@@ -22,8 +22,8 @@ export class GroupService {
 		return await groupRepo.findAll();
 	}
 	public static async getGroupById(id: string): Promise<IGroup | null> {
-		return await Cache.fetch(
-			Cache.getKey(cacheParameter.GROUP, { id }),
+		return await CacheService.fetch(
+			CacheService.getKey(cacheParameter.GROUP, { id }),
 			() => groupRepo.findById(id)
 		);
 	}
@@ -57,8 +57,8 @@ export class GroupService {
 	public static async getGroupsUserIsPartOf(
 		userId: string
 	): Promise<Array<IGroup>> {
-		const groups = await Cache.fetch(
-			Cache.getKey(cacheParameter.USER_GROUPS, { userId }),
+		const groups = await CacheService.fetch(
+			CacheService.getKey(cacheParameter.USER_GROUPS, { userId }),
 			() => groupRepo.find({ members: { $in: [userId] } })
 		);
 		if (!groups) return [];
@@ -151,8 +151,8 @@ export class GroupService {
 				"Group must have at least 2 members"
 			);
 		}
-		Cache.invalidate(
-			Cache.getKey(cacheParameter.USER_GROUPS, {
+		CacheService.invalidate(
+			CacheService.getKey(cacheParameter.USER_GROUPS, {
 				userId: authorId,
 			})
 		);
@@ -206,10 +206,14 @@ export class GroupService {
 				}
 			}
 		}
-		Cache.invalidate(
-			Cache.getKey(cacheParameter.USER_GROUPS, { userId: authorId })
+		CacheService.invalidate(
+			CacheService.getKey(cacheParameter.USER_GROUPS, {
+				userId: authorId,
+			})
 		);
-		Cache.invalidate(Cache.getKey(cacheParameter.GROUP, { id: groupId }));
+		CacheService.invalidate(
+			CacheService.getKey(cacheParameter.GROUP, { id: groupId })
+		);
 		return await groupRepo.update({ id: groupId }, updateBody);
 	}
 	public static async deleteGroup({
@@ -222,11 +226,17 @@ export class GroupService {
 		await GroupService.getGroupDetailsForAdmin(loggedInUserId, groupId);
 		await GroupService.clear(groupId);
 		const deletedGroup = await groupRepo.remove({ id: groupId });
-		Cache.del(Cache.getKey(cacheParameter.GROUP_EXPENSES, { groupId }));
-		Cache.invalidate(
-			Cache.getKey(cacheParameter.USER_GROUPS, { userId: loggedInUserId })
+		CacheService.del(
+			CacheService.getKey(cacheParameter.GROUP_EXPENSES, { groupId })
 		);
-		Cache.del(Cache.getKey(cacheParameter.GROUP, { id: groupId }));
+		CacheService.invalidate(
+			CacheService.getKey(cacheParameter.USER_GROUPS, {
+				userId: loggedInUserId,
+			})
+		);
+		CacheService.del(
+			CacheService.getKey(cacheParameter.GROUP, { id: groupId })
+		);
 		return deletedGroup;
 	}
 	public static async addMembersInGroup({
@@ -262,13 +272,17 @@ export class GroupService {
 			groupId,
 			membersToAdd
 		);
-		Cache.invalidate(
-			Cache.getKey(cacheParameter.GROUP_EXPENSES, { groupId })
+		CacheService.invalidate(
+			CacheService.getKey(cacheParameter.GROUP_EXPENSES, { groupId })
 		);
-		Cache.invalidate(
-			Cache.getKey(cacheParameter.USER_GROUPS, { userId: loggedInUserId })
+		CacheService.invalidate(
+			CacheService.getKey(cacheParameter.USER_GROUPS, {
+				userId: loggedInUserId,
+			})
 		);
-		Cache.invalidate(Cache.getKey(cacheParameter.GROUP, { id: groupId }));
+		CacheService.invalidate(
+			CacheService.getKey(cacheParameter.GROUP, { id: groupId })
+		);
 		return updatedGroup;
 	}
 	public static async removeMembersFromGroup({
@@ -291,13 +305,17 @@ export class GroupService {
 			groupId,
 			membersToRemove
 		);
-		Cache.invalidate(
-			Cache.getKey(cacheParameter.GROUP_EXPENSES, { groupId })
+		CacheService.invalidate(
+			CacheService.getKey(cacheParameter.GROUP_EXPENSES, { groupId })
 		);
-		Cache.invalidate(
-			Cache.getKey(cacheParameter.USER_GROUPS, { userId: loggedInUserId })
+		CacheService.invalidate(
+			CacheService.getKey(cacheParameter.USER_GROUPS, {
+				userId: loggedInUserId,
+			})
 		);
-		Cache.invalidate(Cache.getKey(cacheParameter.GROUP, { id: groupId }));
+		CacheService.invalidate(
+			CacheService.getKey(cacheParameter.GROUP, { id: groupId })
+		);
 		return updatedGroup;
 	}
 	public static getOwedBalances(

@@ -1,4 +1,3 @@
-import { Cache } from "@/cache";
 import {
 	AppSeo,
 	cacheParameter,
@@ -7,12 +6,13 @@ import {
 	USER_STATUS,
 } from "@/constants";
 import { ApiError } from "@/errors";
+import { Logger } from "@/log";
 import { userRepo } from "@/repo";
 import { User } from "@/schema";
 import { CreateModel, IUser } from "@/types";
 import { genericParse, getNonEmptyString, getNonNullValue } from "@/utils";
-import { EmailService } from "@/services/email";
-import { Logger } from "@/log";
+import { CacheService } from "./cache.service";
+import { EmailService } from "./email";
 
 type CollectionUser = { name: string; email: string };
 
@@ -23,8 +23,8 @@ export class UserService {
 	}
 
 	public static async getUserById(id: string): Promise<IUser | null> {
-		return await Cache.fetch(
-			Cache.getKey(cacheParameter.USER, { id }),
+		return await CacheService.fetch(
+			CacheService.getKey(cacheParameter.USER, { id }),
 			() => userRepo.findById(id)
 		);
 	}
@@ -125,7 +125,9 @@ export class UserService {
 			}
 		}
 		const updatedUser = await userRepo.update({ id }, updatedBody);
-		Cache.invalidate(Cache.getKey(cacheParameter.USER, { id }));
+		CacheService.invalidate(
+			CacheService.getKey(cacheParameter.USER, { id })
+		);
 		return updatedUser;
 	}
 
