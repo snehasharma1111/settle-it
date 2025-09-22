@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import { ObjectId } from "@/types";
 
 export const AuthMappingSchema = {
 	identifier: {
@@ -18,7 +18,7 @@ export const AuthMappingSchema = {
 		default: "{}",
 	},
 	user: {
-		type: mongoose.Schema.Types.ObjectId,
+		type: ObjectId,
 		ref: "User",
 		required: false,
 		default: null,

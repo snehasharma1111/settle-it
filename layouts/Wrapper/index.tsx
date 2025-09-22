@@ -1,5 +1,5 @@
 import { Footer, Header, Loader, SideBar } from "@/components";
-import { AppSeo, frontendBaseUrl, routes } from "@/constants";
+import { AppSeo, routes } from "@/constants";
 import { useDevice, useStore } from "@/hooks";
 import { Seo } from "@/layouts";
 import { IUser } from "@/types";

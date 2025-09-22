@@ -39,11 +39,8 @@ export class UserController {
 		req: ApiRequest<ApiRequests.InviteUser>,
 		res: ApiResponse
 	) {
-		const loggedInUserId = genericParse<string>(
-			getNonEmptyString,
-			req.user?.id
-		);
-		const invitee = genericParse<string>(getNonEmptyString, req.body.email);
+		const loggedInUserId = genericParse(getNonEmptyString, req.user?.id);
+		const invitee = genericParse(getNonEmptyString, req.body.email);
 		const invitedUser = await UserService.inviteUser(
 			loggedInUserId,
 			invitee

@@ -32,7 +32,7 @@ export class AuthService {
 			identifier: email,
 			providerName: provider.name,
 			providerId: provider.id,
-			misc: JSON.stringify(misc),
+			misc: JSON.stringify(misc || {}),
 			user,
 		});
 	}

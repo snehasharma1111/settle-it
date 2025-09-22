@@ -79,13 +79,13 @@ export class ServerController {
 				}
 			}
 			if (updatedCookies.length > 0) {
-				return new ApiSuccess<typeof payload>(res)
+				return new ApiSuccess<HeartbeatPayload>(res)
 					.message(HTTP.message.HEARTBEAT)
 					.cookies(updatedCookies)
 					.data(payload)
 					.send();
 			}
-			return new ApiSuccess<typeof payload>(res)
+			return new ApiSuccess<HeartbeatPayload>(res)
 				.message(HTTP.message.HEARTBEAT)
 				.data(payload)
 				.send();
