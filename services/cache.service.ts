@@ -67,8 +67,24 @@ export class CacheService {
 		} else if (parameter === cacheParameter.USER_GROUPS) {
 			const payload = data as CachePayloadGenerator<"USER_GROUPS">;
 			return `user-groups:${payload.userId}`;
+		} else if (parameter === cacheParameter.GROUP_EXPENSES) {
+			const payload = data as CachePayloadGenerator<"GROUP_EXPENSES">;
+			return `group-expenses:${payload.groupId}`;
 		} else {
 			return `cache:${parameter}:${JSON.stringify(data)}`;
 		}
+	}
+
+	public static getAllCacheData(): any {
+		return Cache.getAllKeys().reduce((obj, key) => {
+			return {
+				...obj,
+				[key]: Cache.get(key),
+			};
+		}, {});
+	}
+
+	public static clearAllCacheData() {
+		Cache.flushAll();
 	}
 }

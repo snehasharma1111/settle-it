@@ -16,11 +16,11 @@ export const authenticatedPage: ServerSideAuthMiddleware = async (
 	}
 	try {
 		const headers = { cookie: req.headers.cookie };
-		const { data: user } = await CacheService.fetch(
+		const user = await CacheService.fetch(
 			CacheService.getKey(cacheParameter.USER, {
 				id: cookies.accessToken,
 			}),
-			() => AuthApi.verifyUserIfLoggedIn(headers),
+			() => AuthApi.verifyUserIfLoggedIn(headers).then((res) => res.data),
 			AuthConstants.ACCESS_TOKEN_EXPIRY
 		);
 		Logger.debug("authenticatedPage -> user", user);
@@ -46,7 +46,13 @@ export const adminPage: ServerSideAdminMiddleware = async (
 	}
 	try {
 		const headers = { cookie: req.headers.cookie };
-		const { data: user } = await AuthApi.verifyUserIfLoggedIn(headers);
+		const user = await CacheService.fetch(
+			CacheService.getKey(cacheParameter.USER, {
+				id: cookies.accessToken,
+			}),
+			() => AuthApi.verifyUserIfLoggedIn(headers).then((res) => res.data),
+			AuthConstants.ACCESS_TOKEN_EXPIRY
+		);
 		if (admins.includes(user.email)) {
 			return onAdmin(user, headers);
 		} else {

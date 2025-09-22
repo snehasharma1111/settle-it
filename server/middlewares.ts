@@ -62,7 +62,6 @@ export class ServerMiddleware {
 				}
 				req.user = user;
 				Logger.debug("Authenticated user", user);
-				return next(req, res);
 			} catch (error) {
 				Logger.error(error);
 				const cookies = AuthService.getCookies({
@@ -76,6 +75,7 @@ export class ServerMiddleware {
 					.cookies(cookies)
 					.send();
 			}
+			return next(req, res);
 		};
 	}
 
@@ -84,9 +84,10 @@ export class ServerMiddleware {
 			try {
 				const loggedInUser = req.user;
 				if (!loggedInUser) {
-					return res
+					return new ApiFailure(res)
 						.status(HTTP.status.UNAUTHORIZED)
-						.json({ message: "Please login to continue" });
+						.message(HTTP.message.UNAUTHORIZED)
+						.send();
 				}
 				if (!admins.includes(loggedInUser.email)) {
 					return new ApiFailure(res)
@@ -95,7 +96,6 @@ export class ServerMiddleware {
 						.send();
 				}
 				req.user = loggedInUser;
-				return next(req, res);
 			} catch (error) {
 				Logger.error(error);
 				return new ApiFailure(res)
@@ -103,6 +103,7 @@ export class ServerMiddleware {
 					.message(HTTP.message.FORBIDDEN)
 					.send();
 			}
+			return next(req, res);
 		};
 	}
 
@@ -144,7 +145,6 @@ export class ServerMiddleware {
 						.send();
 				}
 				req.group = group;
-				return next(req, res);
 			} catch (error) {
 				Logger.error(error);
 				return new ApiFailure(res)
@@ -152,6 +152,7 @@ export class ServerMiddleware {
 					.message(HTTP.message.FORBIDDEN)
 					.send();
 			}
+			return next(req, res);
 		};
 	}
 }

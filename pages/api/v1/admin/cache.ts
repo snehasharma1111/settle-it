@@ -2,7 +2,10 @@ import { ApiRoute } from "@/server";
 import { AdminController } from "@/controllers";
 
 const apiRoute = new ApiRoute(
-	{ GET: AdminController.getAllGroups },
+	{
+		GET: AdminController.getAllCacheData,
+		DELETE: AdminController.clearAllCacheData,
+	},
 	{ db: true, admin: true }
 );
 

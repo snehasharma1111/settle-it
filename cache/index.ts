@@ -1,4 +1,4 @@
-import { CHECK_INTERVAL, TTL_SECONDS } from "@/constants";
+import { CHECK_INTERVAL, MAX_KEYS, TTL_SECONDS } from "@/constants";
 import NodeCache from "node-cache";
 
 class CacheFactory {
@@ -9,7 +9,7 @@ class CacheFactory {
 			stdTTL: TTL_SECONDS,
 			checkperiod: CHECK_INTERVAL,
 			useClones: false,
-			maxKeys: 2000,
+			maxKeys: MAX_KEYS,
 		});
 		global.cache = this;
 	}
