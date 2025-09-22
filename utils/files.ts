@@ -67,7 +67,7 @@ export const exportAsCSV = (data: any[], name: string) => {
 	saveFile(csv, name, "csv");
 };
 
-export const fileBasedStorage = () => {
+export const fileBasedStorage = (): any => {
 	const isUiEnv = typeof window !== "undefined";
 	const nonNodeEnv = typeof process === "undefined";
 	const envNotSupported = isUiEnv || nonNodeEnv;
