@@ -1,6 +1,7 @@
 import { HTTP } from "@/constants";
 import { ExpenseService, MemberService } from "@/services";
-import { ApiRequest, ApiResponse } from "@/types";
+import { ApiSuccess } from "@/server";
+import { ApiRequest, ApiRequests, ApiResponse, ApiResponses } from "@/types";
 import { genericParse, getNonEmptyString, getSearchParam } from "@/utils";
 import { Logger } from "@/log";
 
@@ -15,12 +16,12 @@ export class MemberController {
 			getSearchParam(req.url, "expenseId")
 		);
 		const members = await MemberService.getMembersOfExpense(expenseId);
-		return res
-			.status(HTTP.status.SUCCESS)
-			.json({ message: HTTP.message.SUCCESS, data: members });
+		return new ApiSuccess<ApiResponses.GetMembersForExpense>(res).send(
+			members
+		);
 	}
 	public static async settleMemberInExpense(
-		req: ApiRequest,
+		req: ApiRequest<ApiRequests.SettleMemberInExpense>,
 		res: ApiResponse
 	) {
 		const loggedInUserId = genericParse(getNonEmptyString, req.user?.id);
@@ -32,12 +33,12 @@ export class MemberController {
 			memberId,
 			loggedInUserId,
 		});
-		return res
-			.status(HTTP.status.SUCCESS)
-			.json({ message: HTTP.message.SUCCESS, data: members });
+		return new ApiSuccess<ApiResponses.SettleMemberInExpense>(res).send(
+			members
+		);
 	}
 	public static async settleOwedMembersInGroup(
-		req: ApiRequest,
+		req: ApiRequest<ApiRequests.SettleOwedMembersInGroup>,
 		res: ApiResponse
 	) {
 		const loggedInUserId = genericParse(getNonEmptyString, req.user?.id);
@@ -50,8 +51,8 @@ export class MemberController {
 			userA,
 			userB,
 		});
-		return res
-			.status(HTTP.status.SUCCESS)
-			.json({ message: HTTP.message.SUCCESS, data: owedBalances });
+		return new ApiSuccess<ApiResponses.SettleOwedMembersInGroup>(res).send(
+			owedBalances
+		);
 	}
 }

@@ -1,5 +1,5 @@
 import { http } from "@/connections";
-import { ApiRes, IMember, IOwedRecord } from "@/types";
+import { ApiRes, ApiRequests, ApiResponses } from "@/types";
 
 export class MemberApi {
 	public static async settleMemberInExpense(
@@ -13,9 +13,13 @@ export class MemberApi {
 			memberId: string;
 		},
 		headers?: any
-	): Promise<ApiRes<Array<IMember>>> {
-		const response = await http.patch(
+	): Promise<ApiRes<ApiResponses.SettleMemberInExpense>> {
+		const response = await http.patch<
+			ApiRes<ApiResponses.SettleMemberInExpense>,
+			ApiRequests.SettleMemberInExpense
+		>(
 			`/group/expense/members/settle?groupId=${groupId}&expenseId=${expenseId}&memberId=${memberId}`,
+			null,
 			{ headers }
 		);
 		return response.data;
@@ -25,14 +29,14 @@ export class MemberApi {
 		groupId: string,
 		userA: string,
 		userB: string
-	): Promise<ApiRes<Array<IOwedRecord>>> {
-		const response = await http.patch(
-			`/group/members/settle?groupId=${groupId}`,
-			{
-				userA,
-				userB,
-			}
-		);
+	): Promise<ApiRes<ApiResponses.SettleOwedMembersInGroup>> {
+		const response = await http.patch<
+			ApiRes<ApiResponses.SettleOwedMembersInGroup>,
+			ApiRequests.SettleOwedMembersInGroup
+		>(`/group/members/settle?groupId=${groupId}`, {
+			userA,
+			userB,
+		});
 		return response.data;
 	}
 }

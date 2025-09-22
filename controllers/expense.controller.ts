@@ -1,6 +1,13 @@
 import { EXPENSE_STATUS, HTTP } from "@/constants";
 import { ExpenseService } from "@/services";
-import { ApiRequest, ApiResponse, T_EXPENSE_STATUS } from "@/types";
+import { ApiSuccess } from "@/server";
+import {
+	ApiRequest,
+	ApiRequests,
+	ApiResponse,
+	ApiResponses,
+	T_EXPENSE_STATUS,
+} from "@/types";
 import {
 	genericParse,
 	getArray,
@@ -15,11 +22,14 @@ export class ExpenseController {
 		const loggedInUserId = genericParse(getNonEmptyString, req.user?.id);
 		const expenses =
 			await ExpenseService.getExpensesForUser(loggedInUserId);
-		return res
-			.status(HTTP.status.SUCCESS)
-			.json({ message: HTTP.message.SUCCESS, data: expenses });
+		return new ApiSuccess<ApiResponses.GetUsersExpenses>(res).send(
+			expenses
+		);
 	}
-	public static async createExpense(req: ApiRequest, res: ApiResponse) {
+	public static async createExpense(
+		req: ApiRequest<ApiRequests.CreateExpense>,
+		res: ApiResponse
+	) {
 		const loggedInUserId = genericParse(getNonEmptyString, req.user?.id);
 		const title = genericParse(getNonEmptyString, req.body.title);
 		const amount = genericParse(getNonNegativeNumber, req.body.amount);
@@ -40,11 +50,14 @@ export class ExpenseController {
 			loggedInUserId,
 			members,
 		});
-		return res
-			.status(HTTP.status.SUCCESS)
-			.json({ message: HTTP.message.SUCCESS, data: createdExpense });
+		return new ApiSuccess<ApiResponses.CreateExpense>(res)
+			.status(HTTP.status.CREATED)
+			.send(createdExpense);
 	}
-	public static async updateExpense(req: ApiRequest, res: ApiResponse) {
+	public static async updateExpense(
+		req: ApiRequest<ApiRequests.UpdateExpense>,
+		res: ApiResponse
+	) {
 		const loggedInUserId = genericParse(getNonEmptyString, req.user?.id);
 		const expenseId = genericParse(
 			getNonEmptyString,
@@ -74,11 +87,14 @@ export class ExpenseController {
 			status,
 			members,
 		});
-		return res
-			.status(HTTP.status.SUCCESS)
-			.json({ message: HTTP.message.SUCCESS, data: updatedExpense });
+		return new ApiSuccess<ApiResponses.UpdateExpense>(res).send(
+			updatedExpense
+		);
 	}
-	public static async removeExpense(req: ApiRequest, res: ApiResponse) {
+	public static async removeExpense(
+		req: ApiRequest<ApiRequests.RemoveExpense>,
+		res: ApiResponse
+	) {
 		const loggedInUserId = genericParse(getNonEmptyString, req.user?.id);
 		const expenseId = genericParse(
 			getNonEmptyString,
@@ -88,12 +104,14 @@ export class ExpenseController {
 			expenseId,
 			loggedInUserId,
 		});
-		return res.status(HTTP.status.SUCCESS).json({
-			message: HTTP.message.SUCCESS,
-			data: removedExpense,
-		});
+		return new ApiSuccess<ApiResponses.RemoveExpense>(res).send(
+			removedExpense!
+		);
 	}
-	public static async settleExpense(req: ApiRequest, res: ApiResponse) {
+	public static async settleExpense(
+		req: ApiRequest<ApiRequests.SettleExpense>,
+		res: ApiResponse
+	) {
 		const loggedInUserId = genericParse(getNonEmptyString, req.user?.id);
 		const expenseId = genericParse(
 			getNonEmptyString,
@@ -103,11 +121,14 @@ export class ExpenseController {
 			expenseId,
 			loggedInUserId,
 		});
-		return res
-			.status(HTTP.status.SUCCESS)
-			.json({ message: HTTP.message.SUCCESS, data: updatedMembersInfo });
+		return new ApiSuccess<ApiResponses.SettleExpense>(res).send(
+			updatedMembersInfo
+		);
 	}
-	public static async memberPaidAmount(req: ApiRequest, res: ApiResponse) {
+	public static async memberPaidAmount(
+		req: ApiRequest<ApiRequests.MemberPaidAmount>,
+		res: ApiResponse
+	) {
 		const loggedInUserId = genericParse(getNonEmptyString, req.user?.id);
 		const memberId = genericParse(
 			getNonEmptyString,
@@ -122,8 +143,8 @@ export class ExpenseController {
 			loggedInUserId,
 			paidAmount,
 		});
-		return res
-			.status(HTTP.status.SUCCESS)
-			.json({ message: HTTP.message.SUCCESS, data: updatedMembersInfo });
+		return new ApiSuccess<ApiResponses.MemberPaidAmount>(res).send(
+			updatedMembersInfo
+		);
 	}
 }

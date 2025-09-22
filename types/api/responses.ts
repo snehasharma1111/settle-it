@@ -2,6 +2,8 @@ import {
 	IBalancesSummary,
 	IExpense,
 	IGroup,
+	IMember,
+	IOwedRecord,
 	IShare,
 	ITransaction,
 	IUser,
@@ -40,6 +42,19 @@ export type CreateGroup = IGroup;
 export type UpdateGroupDetails = IGroup;
 export type DeleteGroup = IGroup;
 export type AddMembers = IGroup;
+
+// Expense
+export type GetUsersExpenses = Array<IExpense>;
+export type CreateExpense = IExpense;
+export type UpdateExpense = IExpense;
+export type RemoveExpense = IExpense;
+export type SettleExpense = Array<IMember>;
+export type MemberPaidAmount = Array<IMember>;
+
+// Member
+export type GetMembersForExpense = Array<IMember>;
+export type SettleMemberInExpense = Array<IMember>;
+export type SettleOwedMembersInGroup = Array<IOwedRecord>;
 
 // Wallet
 export type GetBalancesSummary = {

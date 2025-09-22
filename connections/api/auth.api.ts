@@ -1,24 +1,25 @@
 import { http } from "@/connections";
-import { ApiRes, IUser } from "@/types";
+import { ApiRes, ApiRequests, ApiResponses } from "@/types";
 
 export class AuthApi {
 	public static async requestOtpWithEmail(
 		email: string
 	): Promise<{ message: string }> {
-		const response = await http.post("/auth/otp/request", {
-			email,
-		});
+		const response = await http.post<
+			ApiRes<ApiResponses.RequestOtp>,
+			ApiRequests.RequestOtp
+		>("/auth/otp/request", { email });
 		return response.data;
 	}
 
 	public static async verifyOtpWithEmail(
 		email: string,
 		otp: string
-	): Promise<ApiRes<IUser>> {
-		const response = await http.post("/auth/otp/verify", {
-			email,
-			otp,
-		});
+	): Promise<ApiRes<ApiResponses.VerifyOtp>> {
+		const response = await http.post<
+			ApiRes<ApiResponses.VerifyOtp>,
+			ApiRequests.VerifyOtp
+		>("/auth/otp/verify", { email, otp });
 		return response.data;
 	}
 
@@ -30,8 +31,11 @@ export class AuthApi {
 	 */
 	public static async verifyOAuthSignIn(
 		code: string
-	): Promise<ApiRes<string>> {
-		const res = await http.post("/oauth/google/verify", { code });
+	): Promise<ApiRes<ApiResponses.VerifyGoogleOAuth>> {
+		const res = await http.post<
+			ApiRes<ApiResponses.VerifyGoogleOAuth>,
+			ApiRequests.VerifyGoogleOAuth
+		>("/oauth/google/verify", { code });
 		return res.data;
 	}
 
@@ -43,24 +47,29 @@ export class AuthApi {
 	 */
 	public static async continueOAuthWithGoogle(
 		token: string
-	): Promise<ApiRes<IUser>> {
-		const res = await http.post("/oauth/google/continue", { token });
+	): Promise<ApiRes<ApiResponses.ContinueGoogleOAuth>> {
+		const res = await http.post<
+			ApiRes<ApiResponses.ContinueGoogleOAuth>,
+			ApiRequests.ContinueGoogleOAuth
+		>("/oauth/google/continue", { token });
 		return res.data;
 	}
 
 	public static async verifyUserIfLoggedIn(
 		headers?: any
-	): Promise<ApiRes<IUser>> {
-		const response = await http.get("/auth/verify", {
-			headers,
-		});
+	): Promise<ApiRes<ApiResponses.VerifyUser>> {
+		const response = await http.get<ApiRes<ApiResponses.VerifyUser>>(
+			"/auth/verify",
+			{ headers }
+		);
 		return response.data;
 	}
 
 	public static async logout(headers?: any): Promise<{ message: string }> {
-		const response = await http.get("/auth/logout", {
-			headers,
-		});
+		const response = await http.get<ApiRes<ApiResponses.Logout>>(
+			"/auth/logout",
+			{ headers }
+		);
 		return response.data;
 	}
 }
