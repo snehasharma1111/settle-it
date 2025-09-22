@@ -29,7 +29,7 @@ export class AdminApi {
 	public static async getAllLogFiles(
 		headers?: any
 	): Promise<ApiRes<Array<string>>> {
-		const response = await http.get("/logs", { headers });
+		const response = await http.get("/admin/logs", { headers });
 		return response.data;
 	}
 
@@ -37,7 +37,7 @@ export class AdminApi {
 		name: string,
 		headers?: any
 	): Promise<ApiRes<string>> {
-		const response = await http.get(`/logs/${name}`, { headers });
+		const response = await http.post("/admin/logs", { name }, { headers });
 		return response.data;
 	}
 }

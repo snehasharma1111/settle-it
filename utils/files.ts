@@ -66,3 +66,15 @@ export const exportAsCSV = (data: any[], name: string) => {
 	const csv = jsonToCsv(data);
 	saveFile(csv, name, "csv");
 };
+
+export const fileBasedStorage = () => {
+	const isUiEnv = typeof window !== "undefined";
+	const nonNodeEnv = typeof process === "undefined";
+	const envNotSupported = isUiEnv || nonNodeEnv;
+	if (envNotSupported) return null;
+	try {
+		return eval("require")("fs");
+	} catch {
+		return null;
+	}
+};
