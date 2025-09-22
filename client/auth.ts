@@ -1,5 +1,5 @@
 import { AuthApi } from "@/connections";
-import { admins, cacheParameter } from "@/constants";
+import { admins, AuthConstants, cacheParameter } from "@/constants";
 import { Logger } from "@/log";
 import { ServerSideAdminMiddleware, ServerSideAuthMiddleware } from "@/types";
 import { CacheService } from "@/services";
@@ -16,11 +16,12 @@ export const authenticatedPage: ServerSideAuthMiddleware = async (
 	}
 	try {
 		const headers = { cookie: req.headers.cookie };
-		const cacheKey = CacheService.getKey(cacheParameter.USER, {
-			id: cookies.accessToken,
-		});
-		const { data: user } = await CacheService.fetch(cacheKey, () =>
-			AuthApi.verifyUserIfLoggedIn(headers)
+		const { data: user } = await CacheService.fetch(
+			CacheService.getKey(cacheParameter.USER, {
+				id: cookies.accessToken,
+			}),
+			() => AuthApi.verifyUserIfLoggedIn(headers),
+			AuthConstants.ACCESS_TOKEN_EXPIRY
 		);
 		Logger.debug("authenticatedPage -> user", user);
 		if (user.name) {

@@ -10,6 +10,7 @@ export type T_EMAIL_TEMPLATE =
 
 export type CacheParameter =
 	| "USER"
+	| "AUTH_MAPPING"
 	| "EXPENSE"
 	| "GROUP"
 	| "MEMBER"

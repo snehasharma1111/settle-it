@@ -16,20 +16,20 @@ class CacheFactory {
 		global.cache = this;
 	}
 
-	public set(key: string, value: any, ttl: number = TTL_SECONDS) {
-		this.cache.set(key, value, ttl);
+	public set<T>(key: string, value: T, ttl: number = TTL_SECONDS) {
+		this.cache.set<T>(key, value, ttl);
 	}
 
-	public get(key: string) {
-		return this.cache.get(key);
+	public get<T>(key: string) {
+		return this.cache.get<T>(key);
 	}
 
-	public getAll() {
+	public getAllKeys() {
 		return this.cache.keys();
 	}
 
 	public del(key: string) {
-		this.cache.del(key);
+		return this.cache.del(key);
 	}
 
 	public flushAll() {

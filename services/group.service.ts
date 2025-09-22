@@ -1,3 +1,4 @@
+import { Cache } from "@/cache";
 import { cacheParameter, HTTP } from "@/constants";
 import { ApiError } from "@/errors";
 import { expenseRepo, groupRepo, memberRepo, userRepo } from "@/repo";
@@ -34,6 +35,9 @@ export class GroupService {
 			memberRepo.bulkRemove({ groupId: id }),
 			expenseRepo.removeMultiple({ groupId: id }),
 		]);
+		Cache.del(
+			CacheService.getKey(cacheParameter.GROUP_EXPENSES, { groupId: id })
+		);
 		return true;
 	}
 	private static async addMembers(
@@ -84,7 +88,7 @@ export class GroupService {
 		}
 		return group;
 	}
-	public static async getGroupDetailsForAdmin(
+	public static async getGroupDetailsForGroupAdmin(
 		userId: string,
 		groupId: string
 	): Promise<IGroup> {
@@ -151,7 +155,7 @@ export class GroupService {
 				"Group must have at least 2 members"
 			);
 		}
-		CacheService.invalidate(
+		Cache.invalidate(
 			CacheService.getKey(cacheParameter.USER_GROUPS, {
 				userId: authorId,
 			})
@@ -206,12 +210,12 @@ export class GroupService {
 				}
 			}
 		}
-		CacheService.invalidate(
+		Cache.invalidate(
 			CacheService.getKey(cacheParameter.USER_GROUPS, {
 				userId: authorId,
 			})
 		);
-		CacheService.invalidate(
+		Cache.invalidate(
 			CacheService.getKey(cacheParameter.GROUP, { id: groupId })
 		);
 		return await groupRepo.update({ id: groupId }, updateBody);
@@ -223,20 +227,18 @@ export class GroupService {
 		groupId: string;
 		loggedInUserId: string;
 	}) {
-		await GroupService.getGroupDetailsForAdmin(loggedInUserId, groupId);
+		await GroupService.getGroupDetailsForGroupAdmin(
+			loggedInUserId,
+			groupId
+		);
 		await GroupService.clear(groupId);
 		const deletedGroup = await groupRepo.remove({ id: groupId });
-		CacheService.del(
-			CacheService.getKey(cacheParameter.GROUP_EXPENSES, { groupId })
-		);
-		CacheService.invalidate(
+		Cache.invalidate(
 			CacheService.getKey(cacheParameter.USER_GROUPS, {
 				userId: loggedInUserId,
 			})
 		);
-		CacheService.del(
-			CacheService.getKey(cacheParameter.GROUP, { id: groupId })
-		);
+		Cache.del(CacheService.getKey(cacheParameter.GROUP, { id: groupId }));
 		return deletedGroup;
 	}
 	public static async addMembersInGroup({
@@ -248,7 +250,7 @@ export class GroupService {
 		loggedInUserId: string;
 		members: Array<string>;
 	}) {
-		const foundGroup = await GroupService.getGroupDetailsForAdmin(
+		const foundGroup = await GroupService.getGroupDetailsForGroupAdmin(
 			loggedInUserId,
 			groupId
 		);
@@ -272,15 +274,15 @@ export class GroupService {
 			groupId,
 			membersToAdd
 		);
-		CacheService.invalidate(
+		Cache.invalidate(
 			CacheService.getKey(cacheParameter.GROUP_EXPENSES, { groupId })
 		);
-		CacheService.invalidate(
+		Cache.invalidate(
 			CacheService.getKey(cacheParameter.USER_GROUPS, {
 				userId: loggedInUserId,
 			})
 		);
-		CacheService.invalidate(
+		Cache.invalidate(
 			CacheService.getKey(cacheParameter.GROUP, { id: groupId })
 		);
 		return updatedGroup;
@@ -294,7 +296,7 @@ export class GroupService {
 		loggedInUserId: string;
 		members: Array<string>;
 	}) {
-		const foundGroup = await GroupService.getGroupDetailsForAdmin(
+		const foundGroup = await GroupService.getGroupDetailsForGroupAdmin(
 			loggedInUserId,
 			groupId
 		);
@@ -305,15 +307,15 @@ export class GroupService {
 			groupId,
 			membersToRemove
 		);
-		CacheService.invalidate(
+		Cache.invalidate(
 			CacheService.getKey(cacheParameter.GROUP_EXPENSES, { groupId })
 		);
-		CacheService.invalidate(
+		Cache.invalidate(
 			CacheService.getKey(cacheParameter.USER_GROUPS, {
 				userId: loggedInUserId,
 			})
 		);
-		CacheService.invalidate(
+		Cache.invalidate(
 			CacheService.getKey(cacheParameter.GROUP, { id: groupId })
 		);
 		return updatedGroup;

@@ -1,3 +1,4 @@
+import { Cache } from "@/cache";
 import {
 	AppSeo,
 	cacheParameter,
@@ -33,11 +34,15 @@ export class UserService {
 		body: CreateModel<User>
 	): Promise<{ user: IUser; isNew: boolean }> {
 		const email = genericParse(getNonEmptyString, body.email);
-		const foundUser = await userRepo.findOne({ email });
+		const foundUser = await UserService.getUserByEmail(email);
 		if (foundUser) {
 			return { user: foundUser, isNew: false };
 		}
 		const createdUser = await userRepo.create(body);
+		Cache.set(
+			CacheService.getKey(cacheParameter.USER, { email }),
+			createdUser
+		);
 		return { user: createdUser, isNew: true };
 	}
 
@@ -52,7 +57,10 @@ export class UserService {
 
 	public static async getUserByEmail(email: string): Promise<IUser | null> {
 		try {
-			return await userRepo.findOne({ email });
+			return await CacheService.fetch(
+				CacheService.getKey(cacheParameter.USER, { email }),
+				() => userRepo.findOne({ email })
+			);
 		} catch {
 			return null;
 		}
@@ -125,8 +133,9 @@ export class UserService {
 			}
 		}
 		const updatedUser = await userRepo.update({ id }, updatedBody);
-		CacheService.invalidate(
-			CacheService.getKey(cacheParameter.USER, { id })
+		Cache.invalidate(CacheService.getKey(cacheParameter.USER, { id }));
+		Cache.invalidate(
+			CacheService.getKey(cacheParameter.USER, { email: foundUser.email })
 		);
 		return updatedUser;
 	}

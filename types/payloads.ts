@@ -1,16 +1,16 @@
 import { CacheParameter, T_EMAIL_TEMPLATE } from "./enum";
 
-export type CachePayloadGenerator<T extends CacheParameter> = T extends
-	| "USER"
-	| "EXPENSE"
-	| "GROUP"
-	| "MEMBER"
-	? { id: string }
-	: T extends "USER_GROUPS"
-		? { userId: string }
-		: T extends "GROUP_EXPENSES"
-			? { groupId: string }
-			: never;
+type CachePayloadMap = {
+	USER: { id: string } | { email: string };
+	AUTH_MAPPING: { id: string } | { identifier: string; provider: string };
+	EXPENSE: { id: string };
+	GROUP: { id: string };
+	MEMBER: { id: string };
+	USER_GROUPS: { userId: string };
+	GROUP_EXPENSES: { groupId: string };
+};
+export type CachePayloadGenerator<T extends CacheParameter> =
+	CachePayloadMap[T];
 
 export type EmailTemplateGenerator<T extends T_EMAIL_TEMPLATE> = T extends "OTP"
 	? { otp: string }

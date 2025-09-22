@@ -8,6 +8,7 @@ export const CHECK_INTERVAL = 2 * TTL_SECONDS;
 
 export const cacheParameter = getEnumeration<CacheParameter>([
 	"USER",
+	"AUTH_MAPPING",
 	"EXPENSE",
 	"GROUP",
 	"MEMBER",

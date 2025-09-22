@@ -1,10 +1,11 @@
 import { jwtSecret } from "@/config";
-import { AuthConstants } from "@/constants";
+import { AuthConstants, cacheParameter } from "@/constants";
 import { Logger } from "@/log";
 import { authRepo } from "@/repo";
 import { AuthResponse, Cookie, IAuthMapping, IUser, Tokens } from "@/types";
 import { genericParse, getNonEmptyString } from "@/utils";
 import jwt, { JsonWebTokenError, TokenExpiredError } from "jsonwebtoken";
+import { CacheService } from "./cache.service";
 
 export class AuthService {
 	public static async findOrCreateAuthMapping(
@@ -13,10 +14,17 @@ export class AuthService {
 		user: string | null = null,
 		misc: any = {}
 	): Promise<IAuthMapping> {
-		const foundAuthMapping = await authRepo.findOne({
-			identifier: email,
-			providerName: provider.name,
-		});
+		const foundAuthMapping = await CacheService.fetch(
+			CacheService.getKey(cacheParameter.AUTH_MAPPING, {
+				identifier: email,
+				provider: provider.name,
+			}),
+			() =>
+				authRepo.findOne({
+					identifier: email,
+					providerName: provider.name,
+				})
+		);
 		if (foundAuthMapping) {
 			return foundAuthMapping;
 		}
@@ -31,7 +39,12 @@ export class AuthService {
 	public static async getUserByAuthMappingId(
 		authMappingId: string
 	): Promise<IUser | null> {
-		const foundAuthMapping = await authRepo.findById(authMappingId);
+		const foundAuthMapping = await CacheService.fetch(
+			CacheService.getKey(cacheParameter.AUTH_MAPPING, {
+				id: authMappingId,
+			}),
+			() => authRepo.findById(authMappingId)
+		);
 		if (!foundAuthMapping) return null;
 		Logger.debug("foundAuthMapping", foundAuthMapping);
 		return foundAuthMapping.user;
@@ -109,12 +122,12 @@ export class AuthService {
 	}
 	public static generateRefreshToken(id: string) {
 		return jwt.sign({ id }, jwtSecret.authRefresh, {
-			expiresIn: "7d",
+			expiresIn: AuthConstants.REFRESH_TOKEN_EXPIRY,
 		});
 	}
 	public static generateAccessToken(id: string) {
 		return jwt.sign({ id }, jwtSecret.authAccess, {
-			expiresIn: "1m",
+			expiresIn: AuthConstants.ACCESS_TOKEN_EXPIRY,
 		});
 	}
 	public static generateTokens(id: string): {

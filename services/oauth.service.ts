@@ -1,5 +1,6 @@
+import { Cache } from "@/cache";
 import { jwtSecret, oauth_google } from "@/config";
-import { fallbackAssets, HTTP, USER_STATUS } from "@/constants";
+import { cacheParameter, fallbackAssets, HTTP, USER_STATUS } from "@/constants";
 import { ApiError } from "@/errors";
 import { Logger } from "@/log";
 import { authRepo } from "@/repo";
@@ -10,6 +11,7 @@ import { OAuth2Client } from "google-auth-library";
 import jwt from "jsonwebtoken";
 import { AuthService } from "./auth.service";
 import { UserService } from "./user.service";
+import { CacheService } from "@/services/cache.service";
 
 export class OAuthService {
 	private static client: OAuth2Client;
@@ -49,6 +51,19 @@ export class OAuthService {
 		Logger.debug("Found or created auth mapping", authMapping);
 		if (isNew || !authMapping.user || authMapping.user.id !== user.id) {
 			await authRepo.update({ id: authMapping.id }, { user: user.id });
+			Cache.set(
+				CacheService.getKey(cacheParameter.AUTH_MAPPING, {
+					identifier: email,
+					provider: "google",
+				}),
+				authMapping
+			);
+			Cache.set(
+				CacheService.getKey(cacheParameter.AUTH_MAPPING, {
+					id: authMapping.id,
+				}),
+				authMapping
+			);
 		}
 		const oauthValidatorToken = jwt.sign(
 			{ id: authMapping.id },
@@ -68,7 +83,12 @@ export class OAuthService {
 		Logger.debug("Decoded validator token", decodedToken);
 		const authMappingId = genericParse(getNonEmptyString, decodedToken.id);
 		Logger.debug("Decoded auth mapping id", authMappingId);
-		const foundAuthMapping = await authRepo.findById(authMappingId);
+		const foundAuthMapping = await CacheService.fetch(
+			CacheService.getKey(cacheParameter.AUTH_MAPPING, {
+				id: authMappingId,
+			}),
+			() => authRepo.findById(authMappingId)
+		);
 		Logger.debug("Found auth mapping", foundAuthMapping);
 		if (!foundAuthMapping || !foundAuthMapping.user) {
 			throw new ApiError(

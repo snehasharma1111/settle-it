@@ -1,3 +1,4 @@
+import { Cache } from "@/cache";
 import { cacheParameter, HTTP } from "@/constants";
 import { ApiError } from "@/errors";
 import { expenseRepo, memberRepo } from "@/repo";
@@ -18,8 +19,9 @@ export class MemberService {
 			expenseId,
 			foundExpense
 		);
-		if (!foundExpense)
+		if (!foundExpense) {
 			throw new ApiError(HTTP.status.NOT_FOUND, "Expense not found");
+		}
 		const foundMembers = await memberRepo.find({ expenseId });
 		if (!foundMembers) return [];
 		return foundMembers;
@@ -101,7 +103,7 @@ export class MemberService {
 			allTransactionsForGroup,
 			usersMap
 		);
-		CacheService.invalidate(
+		Cache.invalidate(
 			CacheService.getKey(cacheParameter.GROUP_EXPENSES, {
 				groupId: foundGroup.id,
 			})
