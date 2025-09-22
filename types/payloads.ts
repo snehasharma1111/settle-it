@@ -12,13 +12,14 @@ type CachePayloadMap = {
 export type CachePayloadGenerator<T extends CacheParameter> =
 	CachePayloadMap[T];
 
-export type EmailTemplateGenerator<T extends T_EMAIL_TEMPLATE> = T extends "OTP"
-	? { otp: string }
-	: T extends "USER_INVITED"
-		? { invitedBy: { name: string; email: string } }
-		: T extends "USER_ADDED_TO_GROUP"
-			? {
-					invitedBy: { name: string; email: string };
-					group: { id: string; name: string };
-				}
-			: never;
+type EmailTemplateDataMap = {
+	OTP: { otp: string };
+	USER_INVITED: { invitedBy: { name: string; email: string } };
+	USER_ADDED_TO_GROUP: {
+		invitedBy: { name: string; email: string };
+		group: { id: string; name: string };
+	};
+	NEW_USER_ONBOARDED: never;
+};
+export type EmailTemplateGenerator<T extends T_EMAIL_TEMPLATE> =
+	EmailTemplateDataMap[T];
