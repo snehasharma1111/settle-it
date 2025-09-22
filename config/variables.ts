@@ -23,3 +23,5 @@ export const jwtSecret = Object.freeze({
 	authAccess: process.env.JWT_AUTH_ACCESS_SECRET || "",
 	oauthValidator: process.env.JWT_OAUTH_VALIDATOR_SECRET || "",
 });
+
+export const admin_access_emails = process.env.ADMIN_EMAILS?.split(",") || [];

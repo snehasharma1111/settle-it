@@ -149,17 +149,6 @@ class HttpWrapper {
 					throw error;
 				}
 			} else if (statusCode === HTTP.status.UNAUTHORIZED) {
-				if (this.retryConfig.retryCount > 0) {
-					this.retryConfig.retryCount--;
-					Logger.debug(
-						`Failed to authenticate, retrying ${method} ${url} before logging out...`,
-						`Retries left: ${this.retryConfig.retryCount}`
-					);
-					return await this.makeRequest(method, url, {
-						data,
-						config,
-					});
-				}
 				if (typeof window !== "undefined") {
 					const currentPath = window.location.pathname;
 					if (protectedRoutes.includes(currentPath)) {

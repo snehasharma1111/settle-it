@@ -1,4 +1,4 @@
-import { admins, AuthConstants, HTTP } from "@/constants";
+import { AuthConstants, HTTP } from "@/constants";
 import { Logger } from "@/log";
 import { AuthService, GroupService } from "@/services";
 import { ApiController, ApiRequest, ApiResponse } from "@/types";
@@ -89,7 +89,7 @@ export class ServerMiddleware {
 						.message(HTTP.message.UNAUTHORIZED)
 						.send();
 				}
-				if (!admins.includes(loggedInUser.email)) {
+				if (!AuthConstants.admins.includes(loggedInUser.email)) {
 					return new ApiFailure(res)
 						.status(HTTP.status.FORBIDDEN)
 						.message("You are not an admin")

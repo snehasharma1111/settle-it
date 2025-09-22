@@ -1,5 +1,5 @@
 import { AuthApi } from "@/connections";
-import { admins, AuthConstants, cacheParameter } from "@/constants";
+import { AuthConstants, cacheParameter } from "@/constants";
 import { Logger } from "@/log";
 import { ServerSideAdminMiddleware, ServerSideAuthMiddleware } from "@/types";
 import { CacheService } from "@/services";
@@ -53,7 +53,7 @@ export const adminPage: ServerSideAdminMiddleware = async (
 			() => AuthApi.verifyUserIfLoggedIn(headers).then((res) => res.data),
 			AuthConstants.ACCESS_TOKEN_EXPIRY
 		);
-		if (admins.includes(user.email)) {
+		if (AuthConstants.admins.includes(user.email)) {
 			return onAdmin(user, headers);
 		} else {
 			return onNonAdmin(user, headers);
