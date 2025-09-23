@@ -1,7 +1,5 @@
-import { IExpense } from "./expense";
-import { IGroup } from "./group";
 import { AppNetworkStatus, AppTheme, Navigation } from "./ui";
-import { IUser } from "./user";
+import { IExpense, IGroup, IUser } from "./client";
 
 export type Action<T> = {
 	type: string;

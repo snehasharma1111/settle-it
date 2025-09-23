@@ -8,7 +8,7 @@ import {
 	UpdateGroup,
 } from "@/components";
 import { GroupApi } from "@/connections";
-import { routes } from "@/constants";
+import { AppSeo, routes } from "@/constants";
 import { useConfirmationModal, useHttpClient, useStore } from "@/hooks";
 import { Seo } from "@/layouts";
 import { Button } from "@/library";
@@ -137,14 +137,14 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 			}
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [props.group.id]);
+	}, [props?.group?.id]);
 
 	if (!props.group)
 		return <PageNotFound description={(props as any).error} />;
 
 	return (
 		<>
-			<Seo title={`${groupDetails?.name} - Settle It`} />
+			<Seo title={`${groupDetails?.name} - ${AppSeo.title}`} />
 			<main className={classes("")}>
 				<GroupMetaData
 					group={groupDetails}
@@ -231,7 +231,7 @@ export const getServerSideProps = (
 			} catch (error: any) {
 				return {
 					props: {
-						error: error.response.data.message,
+						error: error?.response?.data?.message || error?.message,
 					},
 				};
 			}

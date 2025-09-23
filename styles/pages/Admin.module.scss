@@ -84,4 +84,23 @@
 		gap: 12px;
 		padding: 12px 0;
 	}
+
+	&-cache {
+		&-key-cell {
+			max-width: 200px;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			vertical-align: top;
+			padding: 2rem 1rem;
+		}
+
+		&-value-container {
+			max-height: 200px;
+			overflow-x: hidden;
+			overflow-y: auto;
+			vertical-align: top;
+			padding: 2rem 1rem;
+		}
+	}
 }

@@ -1,3 +1,5 @@
+import { ApiRequest } from "@/types";
+
 /**
  * Opens a link in a new tab.
  * @param {string} link - The link to open.
@@ -300,4 +302,61 @@ export const hexToRgb = (hex: string): string => {
 	return result
 		? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}`
 		: hex;
+};
+
+/**
+ * Checks if the given subset is a subset of the given superset.
+ * @example
+ * isSubset([1, 2], [1, 2, 3]) // true
+ * isSubset([1, 2, 4], [1, 2, 3]) // false
+ * @param {Array<T>} subset The subset to check.
+ * @param {Array<T>} superset The superset to check against.
+ * @returns {boolean} If the subset is a subset of the superset.
+ */
+export const isSubset = <T = any>(
+	subset: Array<T>,
+	superset: Array<T>
+): boolean => {
+	return subset.every((value) => superset.includes(value));
+};
+
+/**
+ * Tries to extract a search parameter from a given URI. The search parameter
+ * is looked up in the following order:
+ * 1. The URI is parsed as a URL and the search parameter is looked up in the
+ *    URL's searchParams.
+ * 2. If the URI is not a valid URL, the search parameter is looked up in the
+ *    query string part of the URI.
+ * @param {string | undefined} uri The URI to look up the search parameter in.
+ * @param {string} param The name of the search parameter to look up.
+ * @returns {string | null} The value of the search parameter if it exists, or
+ * null if it does not exist.
+ */
+export const getSearchParam = (
+	uri: string | undefined,
+	param: string
+): string | null => {
+	try {
+		if (uri === undefined || uri.length === 0) return null;
+		const url = (() => {
+			try {
+				return new URL(uri);
+			} catch {
+				return null;
+			}
+		})();
+		if (url !== null) {
+			const searchParams = url.searchParams;
+			const value = searchParams.get(param);
+			if (value !== null && value.length !== 0) {
+				return value;
+			}
+		}
+
+		const paramsStr = uri.split("?").length > 1 ? uri.split("?")[1] : "";
+		const params = new URLSearchParams(paramsStr);
+		return params.get(param);
+	} catch {
+		return null;
+	}
 };

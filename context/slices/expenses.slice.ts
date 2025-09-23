@@ -19,28 +19,28 @@ export const expenseSlice = createSlice({
 	extraReducers(builder) {
 		builder.addCase(
 			expenseHelpers.getAllExpenses.fulfilled,
-			(state, action) => {
+			(state: ExpenseSlice, action) => {
 				state = action.payload;
 				return state;
 			}
 		);
 		builder.addCase(
 			expenseHelpers.getAllExpensesForGroup.fulfilled,
-			(state, action) => {
+			(state: ExpenseSlice, action) => {
 				state = [...state, ...action.payload];
 				return state;
 			}
 		);
 		builder.addCase(
 			expenseHelpers.createExpense.fulfilled,
-			(state, action) => {
+			(state: ExpenseSlice, action) => {
 				state = [...state, action.payload];
 				return state;
 			}
 		);
 		builder.addCase(
 			expenseHelpers.updateExpense.fulfilled,
-			(state, action) => {
+			(state: ExpenseSlice, action) => {
 				state = state.map((expense) => {
 					if (expense.id === action.payload.id) {
 						return action.payload;
@@ -52,7 +52,7 @@ export const expenseSlice = createSlice({
 		);
 		builder.addCase(
 			expenseHelpers.removeExpense.fulfilled,
-			(state, action) => {
+			(state: ExpenseSlice, action) => {
 				state = state.filter(
 					(expense) => expense.id !== action.payload.id
 				);

@@ -1,6 +1,6 @@
 import { authenticatedPage } from "@/client";
 import { CreateGroup, Loader } from "@/components";
-import { fallbackAssets, routes } from "@/constants";
+import { AppSeo, fallbackAssets, routes } from "@/constants";
 import { useHttpClient, useStore } from "@/hooks";
 import { Responsive, Seo } from "@/layouts";
 import { Avatar, Avatars, Button, MaterialIcon, Typography } from "@/library";
@@ -53,7 +53,7 @@ const HomePage: React.FC<HomePageProps> = (props) => {
 
 	return (
 		<>
-			<Seo title={`${props.user.name} - Home | Settle It`} />
+			<Seo title={`${props.user.name} - Home | ${AppSeo.title}`} />
 			<main className={classes("")}>
 				{client.loading && groups.length === 0 ? (
 					<Loader.Spinner />

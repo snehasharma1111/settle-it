@@ -66,7 +66,10 @@ const AdminPanelCache: React.FC<AdminPanelCacheProps> = () => {
 					<Table.Body>
 						{Object.keys(cacheData).map((key, index) => (
 							<Table.Row key={`admin-page-cache-${index}`}>
-								<Table.Cell>
+								<Table.Cell
+									className={classes("-cache-key-cell")}
+									title={key}
+								>
 									<Typography
 										size="md"
 										weight="medium"
@@ -79,6 +82,9 @@ const AdminPanelCache: React.FC<AdminPanelCacheProps> = () => {
 									<Typography
 										size="md"
 										as="pre"
+										className={classes(
+											"-cache-value-container"
+										)}
 										onClick={() =>
 											copyToClipboard(
 												JSON.stringify(

@@ -1,26 +1,20 @@
-import { HTTP, serverBaseUrl } from "@/constants";
-import { Logger } from "@/log";
+import { apiMethods, dbUri, HTTP } from "@/constants";
+import { DatabaseManager } from "@/db";
+import { ServerController } from "@/controllers";
+import { ApiFailure } from "@/server";
 import { ApiRequest, ApiResponse } from "@/types";
-import axios from "axios";
-import { NextApiHandler } from "next";
 
-const handler: NextApiHandler = async (req: ApiRequest, res: ApiResponse) => {
-	try {
-		const headers = { cookie: req.headers.cookie };
-		Logger.debug("health headers", headers);
-		const response = await axios.get(`${serverBaseUrl}/api/heartbeat`, {
-			headers,
-		});
-		return res.status(response.status).json(response.data);
-	} catch (err: any) {
-		Logger.error(err);
-		return res
-			.status(err?.response?.status || HTTP.status.INTERNAL_SERVER_ERROR)
-			.json(
-				err?.response?.data || {
-					message: HTTP.message.INTERNAL_SERVER_ERROR,
-				}
-			);
+const handler = async (req: ApiRequest, res: ApiResponse) => {
+	const dbContainer = DatabaseManager.createContainer(dbUri);
+	await dbContainer.db.connect().catch(() => {});
+	if (req.method === apiMethods.GET) {
+		return ServerController.heartbeat(dbContainer.db)(req, res);
+	} else {
+		return new ApiFailure(res)
+			.status(HTTP.status.METHOD_NOT_ALLOWED)
+			.headers("Allow", [apiMethods.GET])
+			.message(`Method ${req.method} Not Allowed`)
+			.send();
 	}
 };
 

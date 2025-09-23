@@ -37,7 +37,7 @@ export const uiSlice = createSlice({
 			}
 		},
 		setOpenSidebar: (state, action: Action<boolean>) => {
-			if (action.payload === true) {
+			if (action.payload) {
 				document.body.style.setProperty(
 					"--side-width",
 					"var(--side-width-expanded)"

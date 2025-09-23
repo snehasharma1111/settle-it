@@ -1,7 +1,7 @@
 import { authenticatedPage } from "@/client";
 import { GroupMetaData, GroupPlaceholder, Loader } from "@/components";
 import { GroupApi } from "@/connections";
-import { routes } from "@/constants";
+import { AppSeo, routes } from "@/constants";
 import { useHttpClient, useStore } from "@/hooks";
 import { Seo } from "@/layouts";
 import PageNotFound from "@/pages/404";
@@ -52,7 +52,9 @@ const GroupPage: React.FC<GroupPageProps> = (props) => {
 
 	return (
 		<main className={classes("")}>
-			<Seo title={`${groupDetails?.name} - Transactions | Settle It`} />
+			<Seo
+				title={`${groupDetails?.name} - Transactions | ${AppSeo.title}`}
+			/>
 			<GroupMetaData group={groupDetails} />
 			{client.loading ? (
 				<section className={classes("-body", "-body--center")}>

@@ -20,3 +20,18 @@ export const routes = Object.freeze({
 	LOG_FILE: (file: string) => `/__/admin/logs/${file}`,
 	PRIVACY_POLICY: "/privacy-policy",
 });
+
+export const protectedRoutes: Array<String | Function> = [
+	routes.GROUP,
+	routes.GROUP_SUMMARY,
+	routes.GROUP_TRANSACTIONS,
+	routes.ADMIN,
+	routes.CACHE,
+	routes.LOGS,
+	routes.LOG_FILE,
+	routes.PROFILE,
+];
+
+export const redirectToLogin = (currentPath: string) => {
+	return routes.LOGIN + `?redirect=${currentPath}`;
+};

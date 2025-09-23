@@ -1,4 +1,4 @@
-import { routes } from "@/constants";
+import { AppSeo, routes } from "@/constants";
 import { Button, Typography } from "@/library";
 import { stylesConfig } from "@/utils";
 import Image from "next/image";
@@ -32,7 +32,7 @@ const HomeHero: React.FC<IHomeHeroProps> = () => {
 						weight="bold"
 						as="h1"
 					>
-						Settle It ✨
+						{AppSeo.title} ✨
 					</Typography>
 					<Typography
 						className={classes("-container__subheading")}

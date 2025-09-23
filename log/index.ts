@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import { enableDebugging, nodeEnv } from "@/config";
-import { serviceName } from "@/constants";
+import { logsBaseUrl, serviceName } from "@/constants";
+import { fileBasedStorage } from "@/utils";
 
 type LOG_LEVEL =
 	| "log"
@@ -77,17 +78,29 @@ export class Logger {
 		const logLevel = Logger.getLevel(level);
 		const message = Logger.getMessage(...messages);
 		const service = `${serviceName}-${nodeEnv}`;
-		const messageToLog = `[${service}] [${timestamp}] [${logLevel}] [${message}]\n`;
-		return messageToLog;
+		return `[${service}] [${timestamp}] [${logLevel}] [${message}]\n`;
 	}
 	private static writeToConsole(level: LOG_LEVEL, message: string) {
 		const color = Logger.getConsoleColor(level);
 		const method = Logger.getConsoleMethod(level);
 		method(color, message);
 	}
+
+	private static writeToFile(log: string) {
+		const dir: string = logsBaseUrl;
+		const fs = fileBasedStorage();
+		if (!fs) return;
+		const date = new Date();
+		if (!fs.existsSync(dir)) {
+			fs.mkdirSync(dir);
+		}
+		const fileName = `${dir}/${date.toISOString().slice(0, 10)}.log`;
+		fs.appendFileSync(fileName, log);
+	}
 	private static logMessages = (level: LOG_LEVEL, messages: Array<any>) => {
 		const message = Logger.getMessageToLog(level, ...messages);
 		Logger.writeToConsole(level, message);
+		Logger.writeToFile(message);
 	};
 
 	public static info(...messages: Array<any>) {
