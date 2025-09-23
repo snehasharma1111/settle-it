@@ -308,6 +308,31 @@ export class MemberRepo extends BaseRepo<Member, IMember> {
 		);
 		return res.modifiedCount;
 	}
+	/**
+	 * Builds a compact pairwise transaction summary for a group.
+	 *
+	 * Purpose:
+	 * - For each (member -> expense.paidBy) pair, aggregate how much the member still owes and has already paid.
+	 * - Output is a list of directed edges suitable for higher-level balance computations.
+	 *
+	 * Process (MongoDB aggregation pipeline):
+	 * 1) $match: limit members by groupId.
+	 * 2) $lookup expenses by each member's expenseId.
+	 * 3) $unwind: flatten the joined expense array to a single document per member-expense.
+	 * 4) $group by { userId, expense.paidBy } and sum owed/paid.
+	 *
+	 * Post-processing:
+	 * - map to { from, to, stillOwes, hasPaid }
+	 * - filter out self-edges (from === to)
+	 * - filter out edges where both stillOwes and hasPaid are zero
+	 * - map to Transaction shape { from, to, owed, paid }
+	 *
+	 * Input:
+	 * - groupId: string (Mongo ObjectId as string)
+	 *
+	 * Output:
+	 * - Array<Transaction> where `from` and `to` are userId strings, and `owed`/`paid` are totals.
+	 */
 	public async getAllTransactionsSummaryForGroup(
 		groupId: string
 	): Promise<Array<Transaction>> {
@@ -361,6 +386,31 @@ export class MemberRepo extends BaseRepo<Member, IMember> {
 				paid: a.hasPaid,
 			}));
 	}
+	/**
+	 * Returns the full denormalized transaction list for a group with populated users.
+	 *
+	 * Purpose:
+	 * - Provide detailed audit-friendly records: title, from (user), to (paidBy), owed, paid.
+	 * - Unlike the summary endpoint, this keeps user objects populated for rich display.
+	 *
+	 * Process (MongoDB aggregation pipeline):
+	 * 1) $match group members by groupId.
+	 * 2) $lookup the expense for each member.
+	 * 3) $unwind expense.
+	 * 4) $lookup the `user` (member.userId) and unwind.
+	 * 5) $lookup the `expense.paidBy` and unwind.
+	 * 6) $project desired fields and strip _id.
+	 *
+	 * Post-processing:
+	 * - Convert raw user docs to IUser using getObjectFromMongoResponse.
+	 * - Cast owed/paid to numbers and drop self-edges (from.id !== to.id).
+	 *
+	 * Input:
+	 * - groupId: string
+	 *
+	 * Output:
+	 * - Array<ITransaction> where `from` and `to` are IUser objects.
+	 */
 	public async getAllTransactionsForGroup(
 		groupId: string
 	): Promise<Array<ITransaction>> {
@@ -431,6 +481,23 @@ export class MemberRepo extends BaseRepo<Member, IMember> {
 			}))
 			.filter((obj) => obj.from.id !== obj.to.id);
 	}
+	/**
+	 * Aggregates each member's total share (amount) within a group.
+	 *
+	 * Purpose:
+	 * - Compute per-user contribution totals for use in share charts and summaries.
+	 *
+	 * Process (MongoDB aggregation pipeline):
+	 * 1) $match by groupId.
+	 * 2) $group by userId and sum `amount`.
+	 * 3) $project to { user, amount } with stringified user id.
+	 *
+	 * Input:
+	 * - groupId: string
+	 *
+	 * Output:
+	 * - Array<Share> where each item is { user: string, amount: number }.
+	 */
 	public async getSharesForGroup(groupId: string): Promise<Array<Share>> {
 		const result = await this.model.aggregate([
 			// get members involved in this group

@@ -16,8 +16,7 @@ class AuthRepo extends BaseRepo<AuthMapping, IAuthMapping> {
 	public parser(input: AuthMapping | null): IAuthMapping | null {
 		const res = super.parser(input);
 		if (!res) return null;
-		const user = getObjectFromMongoResponse<IUser>(res.user);
-		res.user = user;
+		res.user = getObjectFromMongoResponse<IUser>(res.user);
 		return res;
 	}
 	public async findOne(

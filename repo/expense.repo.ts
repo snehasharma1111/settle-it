@@ -125,6 +125,23 @@ export class ExpenseRepo extends BaseRepo<Expense, IExpense> {
 		return res.map(this.parser).map(getNonNullValue);
 	}
 
+	/**
+	 * Computes the total expenditure for a group by summing the `amount` of all expenses in that group.
+	 *
+	 * Process (MongoDB aggregation pipeline):
+	 * - $match: Filter documents by `groupId`.
+	 * - $group: Group by `groupId` and sum the `amount` field as `totalAmountSpent`.
+	 * - $project: Remove `_id`, expose `groupId` and `totalAmountSpent`.
+	 *
+	 * Input:
+	 * - groupId: string (Mongo ObjectId as string) identifying the group.
+	 *
+	 * Output:
+	 * - number representing the aggregated total amount. Returns 0 when no expenses are found.
+	 *
+	 * Edge cases:
+	 * - If there are no matching expenses, pipeline returns an empty array => we return 0.
+	 */
 	public async getExpenditureForGroup(groupId: string): Promise<number> {
 		const result = await this.model.aggregate([
 			{
