@@ -100,7 +100,9 @@ export class Logger {
 	private static logMessages = (level: LOG_LEVEL, messages: Array<any>) => {
 		const message = Logger.getMessageToLog(level, ...messages);
 		Logger.writeToConsole(level, message);
-		Logger.writeToFile(message);
+		if (nodeEnv === "development") {
+			Logger.writeToFile(message);
+		}
 	};
 
 	public static info(...messages: Array<any>) {
