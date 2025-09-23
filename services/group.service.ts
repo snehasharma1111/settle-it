@@ -11,12 +11,13 @@ import {
 	IUser,
 	Transaction,
 } from "@/types";
-import { getNonNullValue, simplifyFraction } from "@/utils";
+import { getNonNullValue, getUserDetails, simplifyFraction } from "@/utils";
 import { CacheService } from "./cache.service";
 import { ExpenseService } from "./expense.service";
 import { UserService } from "./user.service";
 import { EmailService } from "@/services/email";
 import { Group } from "@/schema";
+import { Logger } from "@/log";
 
 export class GroupService {
 	public static async getAllGroups(): Promise<Array<IGroup>> {
@@ -119,25 +120,37 @@ export class GroupService {
 				"Could not send invitation to users"
 			);
 		}
-		await Promise.all(
-			allUsers.map((user) => {
-				return EmailService.sendByTemplate(
-					user.email,
-					`${invitedByUser.name} has added you to ${group.name}`,
-					"USER_ADDED_TO_GROUP",
-					{
-						invitedBy: {
-							email: invitedByUser.email,
-							name: invitedByUser.name || "",
-						},
-						group: {
-							id: group.id,
-							name: group.name,
-						},
-					}
-				);
-			})
+		const emailPromises = allUsers.map((user) =>
+			EmailService.sendByTemplate(
+				user.email,
+				`${invitedByUser.name} has added you to ${group.name}`,
+				"USER_ADDED_TO_GROUP",
+				{
+					invitedBy: {
+						email: getUserDetails(invitedByUser).email,
+						name: getUserDetails(invitedByUser).name || "",
+					},
+					group: {
+						id: group.id,
+						name: group.name,
+					},
+				}
+			)
 		);
+		const emailsSent = await Promise.allSettled(emailPromises);
+		const failedEmails = emailsSent.filter(
+			(email) => email.status === "rejected"
+		);
+		if (failedEmails.length > 0) {
+			Logger.warn(
+				"Failed to send invitation to some users",
+				failedEmails
+			);
+			throw new ApiError(
+				HTTP.status.INTERNAL_SERVER_ERROR,
+				"Could not send invitation to some users"
+			);
+		}
 	}
 	public static async createGroup({
 		body,
@@ -165,11 +178,17 @@ export class GroupService {
 			createdBy: authorId,
 		};
 		const createdGroup = await groupRepo.create(payload);
-		await GroupService.sendInvitationToUsers(
-			{ name: createdGroup.name, id: createdGroup.id },
-			body.members.filter((m) => m !== authorId),
-			authorId
-		);
+		try {
+			await GroupService.sendInvitationToUsers(
+				{ name: createdGroup.name, id: createdGroup.id },
+				body.members.filter((m) => m !== authorId),
+				authorId
+			);
+		} catch (e: any) {
+			if (!(e instanceof ApiError)) {
+				throw e;
+			}
+		}
 		return createdGroup;
 	}
 	public static async updateGroupDetails({

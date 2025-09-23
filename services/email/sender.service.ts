@@ -12,6 +12,12 @@ export class EmailService {
 				user: googleEmailConfig.email,
 				pass: googleEmailConfig.password,
 			},
+			// Built-in connection pooling and rate limiting
+			pool: true, // Enable connection pooling
+			maxConnections: 5, // Max concurrent connections
+			maxMessages: 100, // Max messages per connection
+			rateDelta: 1000, // Time window for rate limiting (1 second)
+			rateLimit: 5, // Max messages per rateDelta period
 		};
 		return createTransport(transportOptions);
 	}
