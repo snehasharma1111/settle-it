@@ -11,7 +11,12 @@ import { Logger } from "@/log";
 import { userRepo } from "@/repo";
 import { User } from "@/schema";
 import { CreateModel, IUser } from "@/types";
-import { genericParse, getNonEmptyString, getNonNullValue } from "@/utils";
+import {
+	genericParse,
+	getNonEmptyString,
+	getNonNullValue,
+	getUserDetails,
+} from "@/utils";
 import { CacheService } from "./cache.service";
 import { EmailService } from "./email";
 
@@ -64,6 +69,19 @@ export class UserService {
 		} catch {
 			return null;
 		}
+	}
+
+	public static async getUsersByEmails(
+		emails: string[]
+	): Promise<Array<IUser | null>> {
+		// search by email, if the user is found, insert user in array,
+		// else insert null in its place in array
+		const users = await userRepo.find({ email: { $in: emails } });
+		if (!users) return emails.map(() => null);
+		const usersMap = new Map<string, IUser>(
+			users.map((user) => [user.email, user])
+		);
+		return emails.map((email) => usersMap.get(email) || null);
 	}
 
 	public static async searchByEmail(
@@ -180,7 +198,7 @@ export class UserService {
 		Logger.debug("usersFromQuery", usersFromQuery, invitee);
 		const emails = usersFromQuery.map((user) => user.email);
 		Logger.debug("emails", emails);
-		const users = await Promise.all(emails.map(UserService.getUserByEmail));
+		const users = await UserService.getUsersByEmails(emails);
 		const allFoundUsers = users.filter((user) => user !== null);
 		const nonFoundUsers = emails.filter(
 			(email) => !allFoundUsers.find((user) => user.email === email)
@@ -189,9 +207,7 @@ export class UserService {
 			Logger.debug("nonFoundUsers", nonFoundUsers);
 			await UserService.inviteMany(nonFoundUsers, invitee);
 		}
-		const newUsersCollection = await Promise.all(
-			emails.map(UserService.getUserByEmail)
-		);
+		const newUsersCollection = await UserService.getUsersByEmails(emails);
 		const finalCollection = newUsersCollection.filter(
 			(user) => user !== null
 		);
@@ -237,8 +253,8 @@ export class UserService {
 			emailTemplates.USER_INVITED,
 			{
 				invitedBy: {
-					email: invitedByUser?.email,
-					name: invitedByUser?.name,
+					email: getUserDetails(invitedByUser).email,
+					name: getUserDetails(invitedByUser).name || "",
 				},
 			}
 		);
